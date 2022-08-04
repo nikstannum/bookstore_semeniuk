@@ -31,3 +31,5 @@ values ('The Pilgrim’s Progress', 'John Bunyan', '978-985-581-391-1', 365, 56.
 		('The Moonstone', 'Wilkie Collins', '843-985-581-391-1', 115, 56.35),
 		('Little Women', 'Louisa May Alcott', '842-985-581-391-1', 198, 36.42),
 		('Middlemarch', 'George Eliot', '841-985-581-391-1', 196, 9.99);
+
+ALTER TABLE book RENAME TO books;
