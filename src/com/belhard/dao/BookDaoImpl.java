@@ -1,7 +1,7 @@
 package com.belhard.dao;
 
 import com.belhard.beans.Book;
-import java.sql.Connection;
+import com.belhard.util.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,19 +17,19 @@ public class BookDaoImpl implements BookDao {
     public static final String GET_BY_ISBN = "SELECT * FROM books b WHERE b.isbn = ?;";
     public static final String GET_BY_AUTHOR = "SELECT * FROM books b WHERE b.author = ?;";
     public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) from books b;";
-    public static final String UPDATE = "UPDATE books b SET b.title = ?, b.author = ?, b.isbn = ?, b.pages = ?, b.price = ?;";
+    public static final String UPDATE = "UPDATE books SET title = ?, author = ?, isbn = ?, pages = ?, price = ? WHERE book_id = ?;";
     public static final String DELETE = "DELETE FROM books b WHERE b.book_id = ?;";
 
-    private Connection connection;
+    private final DataSource dataSource;
 
-    public BookDaoImpl(Connection connection) {
-        this.connection = connection;
+    public BookDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public Book create(Book book) {
         try {
-            PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = dataSource.getConnection().prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, book.getTitle());
             statement.setString(2, book.getAuthor());
             statement.setString(3, book.getIsbn());
@@ -51,7 +51,7 @@ public class BookDaoImpl implements BookDao {
     @Override
     public Book get(long id) {
         try {
-            PreparedStatement statement = connection.prepareStatement(GET_BY_ID);
+            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ID);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -67,7 +67,7 @@ public class BookDaoImpl implements BookDao {
     public List<Book> getAll() {
         List<Book> list = new ArrayList<>();
         try {
-            PreparedStatement statement = connection.prepareStatement(GET_ALL);
+            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_ALL);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 list.add(processBook(resultSet));
@@ -82,7 +82,7 @@ public class BookDaoImpl implements BookDao {
     @Override
     public Book getBookByIsbn(String isbn) {
         try {
-            PreparedStatement statement = connection.prepareStatement(GET_BY_ISBN);
+            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ISBN);
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -98,7 +98,7 @@ public class BookDaoImpl implements BookDao {
     public List<Book> getBooksByAuthor(String author) {
         List<Book> list = new ArrayList<>();
         try {
-            PreparedStatement statement = connection.prepareStatement(GET_BY_AUTHOR);
+            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_AUTHOR);
             statement.setString(1, author);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -114,18 +114,16 @@ public class BookDaoImpl implements BookDao {
     @Override
     public Book update(Book book) {
         try {
-            PreparedStatement statement = connection.prepareStatement(UPDATE, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = dataSource.getConnection().prepareStatement(UPDATE, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, book.getTitle());
             statement.setString(2, book.getAuthor());
             statement.setString(3, book.getIsbn());
             statement.setInt(4, book.getPages());
             statement.setBigDecimal(5, book.getPrice());
+            statement.setLong(6, book.getId());
             statement.executeUpdate();
 
-            ResultSet keys = statement.getGeneratedKeys();
-            if (keys.next()) {
-                return get(keys.getLong("book_id"));
-            }
+            return get(book.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -136,7 +134,7 @@ public class BookDaoImpl implements BookDao {
     public boolean delete(long id) {
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement(DELETE);
+            statement = dataSource.getConnection().prepareStatement(DELETE);
             statement.setLong(1, id);
             int rowsDelete = statement.executeUpdate();
             return rowsDelete == 1;
@@ -149,7 +147,7 @@ public class BookDaoImpl implements BookDao {
     @Override
     public int countAllBooks() {
         try {
-            PreparedStatement statement = connection.prepareStatement(GET_COUNT_ALL_BOOKS);
+            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_COUNT_ALL_BOOKS);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("count");
