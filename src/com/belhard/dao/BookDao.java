@@ -16,7 +16,7 @@ public interface BookDao {
 
     Book update(Book book);
 
-    boolean delete (long id);
+    boolean delete(long id);
 
     int countAllBooks();
 }
