@@ -1,7 +1,8 @@
-package com.belhard.dao;
+package com.belhard.dao.impl;
 
-import com.belhard.entity.Book;
-import com.belhard.util.DataSource;
+import com.belhard.dao.BookDao;
+import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.entity.Book;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

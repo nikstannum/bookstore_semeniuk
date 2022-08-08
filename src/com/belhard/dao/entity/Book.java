@@ -1,4 +1,4 @@
-package com.belhard.entity;
+package com.belhard.dao.entity;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -11,8 +11,6 @@ public class Book {
     private Integer pages;
     private BigDecimal price;
 
-    public Book() {
-    }
 
     public Long getId() {
         return id;

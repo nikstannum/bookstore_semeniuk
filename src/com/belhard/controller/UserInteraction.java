@@ -1,7 +1,8 @@
-package com.belhard.util;
+package com.belhard.controller;
 
 import com.belhard.dao.BookDao;
-import com.belhard.entity.Book;
+import com.belhard.dao.entity.Book;
+import com.belhard.service.BookService;
 import java.util.Scanner;
 
 public class UserInteraction {
@@ -28,12 +29,18 @@ public class UserInteraction {
     private static final String messageForPages = "insert number of pages: ";
     private static final String messageForPrice = "insert price : ";
 
-    public static void userInteract(BookDao bookDao) {
+    private BookService bookService;
+
+    public UserInteraction(BookService bookService) {
+        this.bookService = bookService;
+    }
+
+    public void userInteract() {
         Scanner scanner = new Scanner(System.in);
         System.out.print(MESSAGE1);
         String result = scanner.nextLine();
         if (result.toLowerCase().equals("all")) {
-            bookDao.getAll().forEach(b -> System.out.printf
+            bookService.getAll().forEach(b -> System.out.printf
                     ("Book: id = %d, title = %s, author = %s\n", b.getId(), b.getTitle(), b.getAuthor()));
         } else if (result.toLowerCase().equals("exit")) {
             System.out.println("Good bye");
@@ -48,19 +55,19 @@ public class UserInteraction {
             System.out.print(MESSAGE3);
             String resultAction = scanner.nextLine();
             if (resultAction.toLowerCase().equals("v")) {
-                System.out.println(bookDao.get(id));
+                System.out.println(bookService.get(id));
             } else if (resultAction.toLowerCase().equals("d")) {
-                bookDao.delete(id);
+                bookService.delete(id);
             } else if (resultAction.toLowerCase().equals("u")) {
                 Book book = createBook(scanner);
                 book.setId(id);
-                bookDao.update(book);
+                bookService.update(bookService.get(book.getId())); // FIXME
             } else {
                 throw new RuntimeException("you entered an invalid value");
             }
         } catch (NumberFormatException e) {
             switch (resultHelp.toLowerCase()) {
-                case "create" -> bookDao.create(createBook(scanner));
+                case "create" -> bookService.create(bookService.get(createBook(scanner).getId())); // FIXME
                 case "exit" -> System.out.println("Good bye");
                 default -> throw new RuntimeException("you entered an invalid value");
             }

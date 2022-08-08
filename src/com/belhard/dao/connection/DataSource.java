@@ -1,14 +1,10 @@
-package com.belhard.util;
+package com.belhard.dao.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DataSource implements AutoCloseable {
-
-    private static final String URL = "jdbc:postgresql://127.0.0.1:5432/bookstore";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "root";
 
     private Connection connection;
 
@@ -20,8 +16,9 @@ public class DataSource implements AutoCloseable {
     }
 
     private void init() {
+        ConnectionProperties props = new ConnectionProperties();
         try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection = DriverManager.getConnection(props.getUrl(), props.getUser(), props.getPassword());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

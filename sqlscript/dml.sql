@@ -1,4 +1,4 @@
-INSERT INTO book (title, author, isbn, pages, price)
+INSERT INTO books (title, author, isbn, pages, price)
 VALUES ('The Pilgrim’s Progress', 'John Bunyan', '978-985-581-391-1', 365, 56.35),
 		('Robinson Crusoe', 'Daniel Defoe', '968-985-581-391-1', 320, 56),
 		('Gulliver’s Travels', 'Jonathan Swift', '988-985-581-391-1', 562, 56.35),
@@ -19,3 +19,28 @@ VALUES ('The Pilgrim’s Progress', 'John Bunyan', '978-985-581-391-1', 365, 56.
 		('The Moonstone', 'Wilkie Collins', '843-985-581-391-1', 115, 56.35),
 		('Little Women', 'Louisa May Alcott', '842-985-581-391-1', 198, 36.42),
 		('Middlemarch', 'George Eliot', '841-985-581-391-1', 196, 9.99);
+
+
+
+INSERT INTO users (firstname, lastname, email, "password")
+VALUES ('Nick', 'Biden', 'biden@gmail.us', 'qwerty'),
+		('Mike', 'Scholz', 'scholz@gmail.de', 'password'),
+		('Joseph', 'Black', 'black@yandex.ru', 'hardpassword'),
+		('Donald', 'Duda', 'duda@gmail.pl', 'dvjkshkvgjjsfd'),
+		('Vladimir', 'Orban', 'orban@gmail.hu', 'qwerty'),
+		('Alexandr', 'Zelenskiy', 'zelenkiy@gmail.ua', 'kdjvskdj'),
+		('Gitanas', 'Kind', 'kind@gmail.com', 'ytrewq'),
+		('Arturs', 'Nauseda', 'nauseda@gmail.lt', 'asdfghj'),
+		('Alar', 'Makron', 'makron@gmail.fr', 'qwerty'),
+		('Emmanual', 'Karis', 'karis@gmail.ee', 'qwerty'),
+		('Alexander', 'Benet', 'benet@gmail.il', 'doogrepus'),
+		('Ilham', 'Pashinian', 'pashinian@gmail.am', 'ararat'),
+		('Recep ', 'Aliev', 'aliev@gmail.az', 'qazxsw'),
+		('Ilham', 'Erdogan', 'erdogan@gmail.tr', 'bayraktar'),
+		('Justin', 'Johnson', 'johnson@gmail.gb', 'London'),
+		('Boris', 'Triudo', 'triudo@gmail.ca', 'quebec'),
+		('Mario', 'Sarkozi', 'sarkozi@gmail.fr', 'svgsdjvg'),
+		('Nikola', 'Dragi', 'dragi@gmail.it', 'napoli'),
+		('Yuri', 'Gagarin', 'space@gmail.com', 'poehali'),
+		('Elon', 'Mask', 'tesla@gmail.com', 'spaceX'),
+		('Nikolo', 'Tesla', 'electricity@gmail.com', 'induction');

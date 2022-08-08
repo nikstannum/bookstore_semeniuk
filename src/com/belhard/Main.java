@@ -1,9 +1,11 @@
 package com.belhard;
 
 import com.belhard.dao.BookDao;
-import com.belhard.dao.BookDaoImpl;
-import com.belhard.util.DataSource;
-import com.belhard.util.UserInteraction;
+import com.belhard.dao.impl.BookDaoImpl;
+import com.belhard.dao.connection.DataSource;
+import com.belhard.controller.UserInteraction;
+import com.belhard.service.BookService;
+import com.belhard.service.impl.BookServiceImpl;
 
 public class Main {
 
@@ -11,7 +13,9 @@ public class Main {
 
         try (DataSource dataSource = new DataSource()) {
             BookDao bookDao = new BookDaoImpl(dataSource);
-            UserInteraction.userInteract(bookDao);
+            BookService bookService = new BookServiceImpl(bookDao);
+            UserInteraction userInteraction = new UserInteraction(bookService);
+            userInteraction.userInteract();
         }
     }
 }
