@@ -77,16 +77,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto update(BookDto bookDto) {
-        return null;
+        Book book = toEntity(bookDto);
+        bookDao.update(book);
+        return get(book.getId());
     }
 
     @Override
     public boolean delete(long id) {
-        return false;
+        return bookDao.delete(id);
     }
 
     @Override
     public int countAllBooks() {
-        return 0;
+        return bookDao.countAllBooks();
     }
 }

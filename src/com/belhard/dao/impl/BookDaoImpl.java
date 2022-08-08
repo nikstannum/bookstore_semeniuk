@@ -40,7 +40,7 @@ public class BookDaoImpl implements BookDao {
 
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
-                Long id = keys.getLong("book_id");
+                long id = keys.getLong("book_id");
                 return get(id);
             }
         } catch (SQLException e) {

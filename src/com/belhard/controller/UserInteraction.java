@@ -2,6 +2,7 @@ package com.belhard.controller;
 
 import com.belhard.dao.entity.Book;
 import com.belhard.service.BookService;
+import com.belhard.service.dto.BookDto;
 import java.util.Scanner;
 
 public class UserInteraction {
@@ -58,33 +59,33 @@ public class UserInteraction {
             } else if (resultAction.toLowerCase().equals("d")) {
                 bookService.delete(id);
             } else if (resultAction.toLowerCase().equals("u")) {
-                Book book = createBook(scanner);
-                book.setId(id);
-                bookService.update(bookService.get(book.getId())); // FIXME
+                BookDto bookDto = createBookDto(scanner);
+                bookDto.setId(id);
+                bookService.update(bookDto);
             } else {
                 throw new RuntimeException("you entered an invalid value");
             }
         } catch (NumberFormatException e) {
             switch (resultHelp.toLowerCase()) {
-                case "create" -> bookService.create(bookService.get(createBook(scanner).getId())); // FIXME
+                case "create" -> bookService.create(bookService.get(createBookDto(scanner).getId())); 
                 case "exit" -> System.out.println("Good bye");
                 default -> throw new RuntimeException("you entered an invalid value");
             }
         }
     }
 
-    private static Book createBook(Scanner scanner) {
-        Book book = new Book();
+    private static BookDto createBookDto(Scanner scanner) {
+        BookDto bookDto = new BookDto();
         System.out.print(messageForTitle);
-        book.setTitle(scanner.nextLine());
+        bookDto.setTitle(scanner.nextLine());
         System.out.print(messageForAuthor);
-        book.setAuthor(scanner.nextLine());
+        bookDto.setAuthor(scanner.nextLine());
         System.out.print(messageForIsbn);
-        book.setIsbn(scanner.nextLine());
+        bookDto.setIsbn(scanner.nextLine());
         System.out.print(messageForPages);
-        book.setPages(scanner.nextInt());
+        bookDto.setPages(scanner.nextInt());
         System.out.print(messageForPrice);
-        book.setPrice(scanner.nextBigDecimal());
-        return book;
+        bookDto.setPrice(scanner.nextBigDecimal());
+        return bookDto;
     }
 }
