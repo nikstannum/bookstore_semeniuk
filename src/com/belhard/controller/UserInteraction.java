@@ -1,6 +1,5 @@
 package com.belhard.controller;
 
-import com.belhard.dao.BookDao;
 import com.belhard.dao.entity.Book;
 import com.belhard.service.BookService;
 import java.util.Scanner;

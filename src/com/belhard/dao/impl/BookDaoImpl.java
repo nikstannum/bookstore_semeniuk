@@ -151,7 +151,7 @@ public class BookDaoImpl implements BookDao {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_COUNT_ALL_BOOKS);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getInt("count");
+                return resultSet.getInt("total");
             }
         } catch (SQLException e) {
             e.printStackTrace();
