@@ -1,6 +1,6 @@
 package com.belhard.dao;
 
-import com.belhard.beans.Book;
+import com.belhard.entity.Book;
 import com.belhard.util.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,14 +11,14 @@ import java.util.List;
 
 public class BookDaoImpl implements BookDao {
 
-    public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price) VALUES (?, ?, ?, ?, ?);";
-    public static final String GET_BY_ID = "SELECT * from books b WHERE b.book_id = ?;";
-    public static final String GET_ALL = "SELECT * FROM books b;";
-    public static final String GET_BY_ISBN = "SELECT * FROM books b WHERE b.isbn = ?;";
-    public static final String GET_BY_AUTHOR = "SELECT * FROM books b WHERE b.author = ?;";
-    public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) from books b;";
-    public static final String UPDATE = "UPDATE books SET title = ?, author = ?, isbn = ?, pages = ?, price = ? WHERE book_id = ?;";
-    public static final String DELETE = "DELETE FROM books b WHERE b.book_id = ?;";
+    public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price) VALUES (?, ?, ?, ?, ?)";
+    public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price from books b WHERE b.book_id = ?";
+    public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price FROM books b";
+    public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price FROM books b WHERE b.isbn = ?";
+    public static final String GET_BY_AUTHOR = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price FROM books b WHERE b.author = ?";
+    public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) AS total from books b";
+    public static final String UPDATE = "UPDATE books SET title = ?, author = ?, isbn = ?, pages = ?, price = ? WHERE book_id = ?";
+    public static final String DELETE = "DELETE FROM books b WHERE b.book_id = ?";
 
     private final DataSource dataSource;
 

@@ -1,17 +1,5 @@
--- bookstore script
-
-create database bookstore;
-
-create table book
-(book_id BIGSERIAL primary key,
-title VARCHAR (75),
-author VARCHAR (35),
-isbn VARCHAR (30) UNIQUE,
-pages INT2,
-price numeric(6,2) check (price > 0));
-
-insert into book (title, author, isbn, pages, price)
-values ('The Pilgrim’s Progress', 'John Bunyan', '978-985-581-391-1', 365, 56.35),
+INSERT INTO book (title, author, isbn, pages, price)
+VALUES ('The Pilgrim’s Progress', 'John Bunyan', '978-985-581-391-1', 365, 56.35),
 		('Robinson Crusoe', 'Daniel Defoe', '968-985-581-391-1', 320, 56),
 		('Gulliver’s Travels', 'Jonathan Swift', '988-985-581-391-1', 562, 56.35),
 		('Tom Jones', 'Henry Fielding', '999-985-581-391-1', 421, 23.21),
@@ -31,5 +19,3 @@ values ('The Pilgrim’s Progress', 'John Bunyan', '978-985-581-391-1', 365, 56.
 		('The Moonstone', 'Wilkie Collins', '843-985-581-391-1', 115, 56.35),
 		('Little Women', 'Louisa May Alcott', '842-985-581-391-1', 198, 36.42),
 		('Middlemarch', 'George Eliot', '841-985-581-391-1', 196, 9.99);
-
-ALTER TABLE book RENAME TO books;

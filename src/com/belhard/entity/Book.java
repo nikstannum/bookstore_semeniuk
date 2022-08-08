@@ -1,4 +1,4 @@
-package com.belhard.beans;
+package com.belhard.entity;
 
 import java.math.BigDecimal;
 import java.util.Objects;

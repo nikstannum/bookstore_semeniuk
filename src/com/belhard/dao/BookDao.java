@@ -1,6 +1,6 @@
 package com.belhard.dao;
 
-import com.belhard.beans.Book;
+import com.belhard.entity.Book;
 import java.util.List;
 
 public interface BookDao {
