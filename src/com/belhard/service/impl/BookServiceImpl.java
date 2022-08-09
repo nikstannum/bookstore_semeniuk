@@ -17,7 +17,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto create(BookDto bookDto) {
         Book book = toEntity(bookDto);
-        return get(book.getId());
+        return toDto(bookDao.create(book));
     }
 
     private Book toEntity(BookDto bookDto) {
@@ -66,20 +66,11 @@ public class BookServiceImpl implements BookService {
         return bookDao.getBooksByAuthor(author).stream().map(this::toDto).toList();
     }
 
-    public BigDecimal totalCostAllBooksOfAuthor(String author) {
-        List<BookDto> dtos = getBooksByAuthor(author);
-        BigDecimal totalCost = BigDecimal.valueOf(0);
-        for (BookDto dto : dtos) {
-            totalCost = totalCost.add(dto.getPrice());
-        }
-        return totalCost;
-    }
 
     @Override
     public BookDto update(BookDto bookDto) {
         Book book = toEntity(bookDto);
-        bookDao.update(book);
-        return get(book.getId());
+        return toDto(bookDao.update(book));
     }
 
     @Override
@@ -90,5 +81,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public int countAllBooks() {
         return bookDao.countAllBooks();
+    }
+
+    @Override
+    public BigDecimal totalCostAllBooksOfAuthor(String author) {
+        List<BookDto> dtos = getBooksByAuthor(author);
+        BigDecimal totalCost = BigDecimal.valueOf(0);
+        for (BookDto dto : dtos) {
+            totalCost = totalCost.add(dto.getPrice());
+        }
+        return totalCost;
     }
 }

@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         User user = toEntity(userDto);
-        return get(user.getId());
+        return toDto(userDao.create(user));
     }
 
     private User toEntity(UserDto userDto) {
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(UserDto userDto) {
         User user = toEntity(userDto);
-        return get(user.getId());
+        return toDto(userDao.update(user));
     }
 
     @Override
@@ -77,6 +77,7 @@ public class UserServiceImpl implements UserService {
         return userDao.delete(id);
     }
 
+    @Override
     public boolean validate(String email, String password) {
         User user = userDao.getUserByEmail(email);
         String userPassword = user.getPassword();

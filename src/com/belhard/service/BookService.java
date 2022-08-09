@@ -1,7 +1,7 @@
 package com.belhard.service;
 
-import com.belhard.dao.entity.Book;
 import com.belhard.service.dto.BookDto;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface BookService {
@@ -20,4 +20,6 @@ public interface BookService {
     boolean delete(long id);
 
     int countAllBooks();
+
+    BigDecimal totalCostAllBooksOfAuthor(String author);
 }

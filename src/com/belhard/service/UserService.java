@@ -19,4 +19,6 @@ public interface UserService {
     UserDto update(UserDto userDto);
 
     boolean delete(long id);
+
+    boolean validate(String email, String password);
 }

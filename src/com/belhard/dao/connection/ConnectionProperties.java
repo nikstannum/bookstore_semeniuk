@@ -14,7 +14,7 @@ public class ConnectionProperties {
 
     public ConnectionProperties() {
         Properties properties = new Properties();
-        try (InputStream input = new FileInputStream(propsFile)){
+        try (InputStream input = new FileInputStream(propsFile)) {
             properties.load(input);
         } catch (IOException e) {
             throw new RuntimeException(e);

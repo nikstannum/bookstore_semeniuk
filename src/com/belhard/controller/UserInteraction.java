@@ -1,6 +1,5 @@
 package com.belhard.controller;
 
-import com.belhard.dao.entity.Book;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 import java.util.Scanner;
@@ -67,7 +66,7 @@ public class UserInteraction {
             }
         } catch (NumberFormatException e) {
             switch (resultHelp.toLowerCase()) {
-                case "create" -> bookService.create(bookService.get(createBookDto(scanner).getId())); 
+                case "create" -> bookService.create(createBookDto(scanner));
                 case "exit" -> System.out.println("Good bye");
                 default -> throw new RuntimeException("you entered an invalid value");
             }

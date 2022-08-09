@@ -17,5 +17,10 @@ public class Main {
             UserInteraction userInteraction = new UserInteraction(bookService);
             userInteraction.userInteract();
         }
+//        try (DataSource ds = new DataSource()) {
+//            UserDao ud = new UserDaoImpl(ds);
+//            UserServiceImpl us = new UserServiceImpl(ud);
+//            System.out.println(us.validate("electricity@gmail.com", "induction"));
+//        }
     }
 }
