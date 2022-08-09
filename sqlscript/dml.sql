@@ -44,3 +44,7 @@ VALUES ('Nick', 'Biden', 'biden@gmail.us', 'qwerty'),
 		('Yuri', 'Gagarin', 'space@gmail.com', 'poehali'),
 		('Elon', 'Mask', 'tesla@gmail.com', 'spaceX'),
 		('Nikolo', 'Tesla', 'electricity@gmail.com', 'induction');
+
+
+INSERT INTO book_cover (book_id)
+(SELECT b.book_id  FROM books b);

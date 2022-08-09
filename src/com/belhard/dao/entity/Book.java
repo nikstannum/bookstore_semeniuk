@@ -10,7 +10,15 @@ public class Book {
     private String isbn;
     private Integer pages;
     private BigDecimal price;
+    private BookCover cover;
 
+    public BookCover getCover() {
+        return cover;
+    }
+
+    public void setCover(BookCover cover) {
+        this.cover = cover;
+    }
 
     public Long getId() {
         return id;
@@ -75,12 +83,14 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book { " +
-                "id = " + id +
-                ", title = " + title + ", author = " + author +
-                ", isbn = " + isbn +
-                ", pages = " + pages +
-                ", price = " + price +
-                " }";
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", pages=" + pages +
+                ", price=" + price +
+                ", cover=" + cover.getCover() +
+                '}';
     }
 }

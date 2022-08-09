@@ -21,4 +21,9 @@ email VARCHAR (40) UNIQUE NOT NULL,
 --DROP TABLE if EXISTS users;
 
 
+CREATE type covers AS enum ('hard', 'soft', 'special');
 
+CREATE TABLE if NOT EXISTS book_cover
+(book_id BIGINT REFERENCES books (book_id),
+cover covers);
+--DROP TABLE if EXISTS book_cover;
