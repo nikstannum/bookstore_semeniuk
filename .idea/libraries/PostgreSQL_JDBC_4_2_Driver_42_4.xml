@@ -4,7 +4,9 @@
       <root url="file://$PROJECT_DIR$/../../../../Program Files (x86)/PROGRAMS/JAVA/libs/PostgreSQL_JDBC_4.2_Driver_42.4.0" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ideaLibSources/postgresql-42.4.0-sources.jar!/" />
+    </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/../../../../Program Files (x86)/PROGRAMS/JAVA/libs/PostgreSQL_JDBC_4.2_Driver_42.4.0" recursive="false" />
   </library>
 </component>
