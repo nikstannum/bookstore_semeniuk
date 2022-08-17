@@ -1,7 +1,9 @@
-package main.java.com.belhard.controller;
+package com.belhard.controller;
 
-import main.java.com.belhard.service.BookService;
-import main.java.com.belhard.service.dto.BookDto;
+import com.belhard.service.BookService;
+import com.belhard.service.dto.BookDto;
+import com.belhard.service.dto.BookDto.BookCoverDto;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class UserInteraction {
@@ -27,6 +29,7 @@ public class UserInteraction {
     private static final String messageForIsbn = "insert isbn of book: ";
     private static final String messageForPages = "insert number of pages: ";
     private static final String messageForPrice = "insert price : ";
+    private static final String messageForCover = "insert cover of book : ";
 
     private BookService bookService;
 
@@ -54,7 +57,7 @@ public class UserInteraction {
             System.out.print(MESSAGE3);
             String resultAction = scanner.nextLine();
             if (resultAction.toLowerCase().equals("v")) {
-                System.out.println(bookService.get(id));
+                System.out.println(bookService.getById(id));
             } else if (resultAction.toLowerCase().equals("d")) {
                 bookService.delete(id);
             } else if (resultAction.toLowerCase().equals("u")) {
@@ -73,7 +76,7 @@ public class UserInteraction {
         }
     }
 
-    private static BookDto createBookDto(Scanner scanner) {
+    private BookDto createBookDto(Scanner scanner) {
         BookDto bookDto = new BookDto();
         System.out.print(messageForTitle);
         bookDto.setTitle(scanner.nextLine());
@@ -82,9 +85,11 @@ public class UserInteraction {
         System.out.print(messageForIsbn);
         bookDto.setIsbn(scanner.nextLine());
         System.out.print(messageForPages);
-        bookDto.setPages(scanner.nextInt());
+        bookDto.setPages(Integer.valueOf(scanner.nextLine()));
         System.out.print(messageForPrice);
-        bookDto.setPrice(scanner.nextBigDecimal());
+        bookDto.setPrice(BigDecimal.valueOf(Double.parseDouble(scanner.nextLine())));
+        System.out.println(messageForCover);
+        bookDto.setCoverDto(BookCoverDto.valueOf(scanner.nextLine()));
         return bookDto;
     }
 }

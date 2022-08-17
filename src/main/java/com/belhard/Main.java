@@ -1,15 +1,11 @@
-package main.java.com.belhard;
+package com.belhard;
 
-import java.math.BigDecimal;
-import main.java.com.belhard.controller.UserInteraction;
-import main.java.com.belhard.dao.BookDao;
-import main.java.com.belhard.dao.UserDao;
-import main.java.com.belhard.dao.connection.DataSource;
-import main.java.com.belhard.dao.impl.BookDaoImpl;
-import main.java.com.belhard.dao.impl.UserDaoImpl;
-import main.java.com.belhard.service.BookService;
-import main.java.com.belhard.service.impl.BookServiceImpl;
-import main.java.com.belhard.service.impl.UserServiceImpl;
+import com.belhard.controller.UserInteraction;
+import com.belhard.dao.BookDao;
+import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.impl.BookDaoImpl;
+import com.belhard.service.BookService;
+import com.belhard.service.impl.BookServiceImpl;
 
 public class Main {
 
@@ -20,16 +16,6 @@ public class Main {
             BookService bookService = new BookServiceImpl(bookDao);
             UserInteraction userInteraction = new UserInteraction(bookService);
             userInteraction.userInteract();
-
-            UserDao ud = new UserDaoImpl(dataSource);
-            UserServiceImpl us = new UserServiceImpl(ud);
-            System.out.println(us.validate("electricity@gmail.com", "induction"));
-
-            BigDecimal cost = bookService.totalCostAllBooksOfAuthor("Daniel Defoe");
-            System.out.println(cost);
-
-            int count = bookService.countAllBooks();
-            System.out.println(count);
         }
     }
 }

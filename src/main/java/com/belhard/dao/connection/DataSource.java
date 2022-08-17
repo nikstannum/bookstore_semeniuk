@@ -1,4 +1,4 @@
-package main.java.com.belhard.dao.connection;
+package com.belhard.dao.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,8 +1,6 @@
-package main.java.com.belhard.service.dto;
+package com.belhard.service.dto;
 
-import main.java.com.belhard.dao.entity.Book;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 public class BookDto {
     private Long id;
@@ -11,7 +9,19 @@ public class BookDto {
     private String isbn;
     private Integer pages;
     private BigDecimal price;
+    private BookCoverDto coverDto;
 
+    public enum BookCoverDto {
+        SOFT, HARD, SPECIAL
+    }
+
+    public BookCoverDto getCoverDto() {
+        return coverDto;
+    }
+
+    public void setCoverDto(BookCoverDto coverDto) {
+        this.coverDto = coverDto;
+    }
 
     public Long getId() {
         return id;
@@ -62,26 +72,9 @@ public class BookDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Book)) return false;
-        BookDto bookDto = (BookDto) o;
-        return id.equals(bookDto.id) && isbn.equals(bookDto.isbn);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, isbn);
-    }
-
-    @Override
     public String toString() {
-        return "Book { " +
-                "id = " + id +
-                ", title = " + title + ", author = " + author +
-                ", isbn = " + isbn +
-                ", pages = " + pages +
-                ", price = " + price +
-                " }";
+        return "BookDto{" + "id=" + id + ", title='" + title + '\'' +
+                ", author='" + author + '\'' + ", isbn='" + isbn + '\'' +
+                ", pages=" + pages + ", price=" + price + ", cover=" + coverDto + '}';
     }
 }

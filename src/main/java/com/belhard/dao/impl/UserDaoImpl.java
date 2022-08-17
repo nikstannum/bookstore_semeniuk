@@ -1,8 +1,9 @@
-package main.java.com.belhard.dao.impl;
+package com.belhard.dao.impl;
 
-import main.java.com.belhard.dao.UserDao;
-import main.java.com.belhard.dao.connection.DataSource;
-import main.java.com.belhard.dao.entity.User;
+import com.belhard.dao.UserDao;
+import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.entity.User;
+import com.belhard.dao.entity.User.UserRole;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,13 +14,17 @@ import java.util.List;
 public class UserDaoImpl implements UserDao {
 
     public static final String INSERT = "INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)";
-    public static final String GET_BY_ID = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password from users u WHERE u.user_id = ?";
-    public static final String GET_ALL = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password from users u";
-    public static final String GET_BY_EMAIL = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password from users u WHERE u.email = ?";
-    public static final String GET_BY_LASTNAME = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password from users u WHERE u.lastName = ?";
-    public static final String GET_COUNT_ALL_USERS = "SELECT count(u.user_id) AS all_users from users u";
-    public static final String UPDATE = "UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ? WHERE user_id = ?";
-    public static final String DELETE = "DELETE FROM users u WHERE u.user_id = ?";
+    public static final String GET_BY_ID = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
+            "JOIN role r ON u.role_id = r.role_id WHERE u.user_id = ? AND u.deleted = false";
+    public static final String GET_ALL = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
+            "JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false";
+    public static final String GET_BY_EMAIL = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
+            "JOIN role r ON u.role_id = r.role_id WHERE u.email = ? AND u.deleted = false";
+    public static final String GET_BY_LASTNAME = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
+            "JOIN role r ON u.role_id = r.role_id WHERE u.lastName = ? AND u.deleted = false";
+    public static final String GET_COUNT_ALL_USERS = "SELECT count(u.user_id) AS all_users from users u WHERE u.deleted = false";
+    public static final String UPDATE = "UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ? WHERE user_id = ? AND deleted = false";
+    public static final String DELETE = "UPDATE users SET deleted = true WHERE u.user_id = ?";
 
     private final DataSource dataSource;
 
@@ -62,15 +67,7 @@ public class UserDaoImpl implements UserDao {
         return null;
     }
 
-    private User processUser(ResultSet result) throws SQLException {
-        User user = new User();
-        user.setId(result.getLong("user_id"));
-        user.setFirstName(result.getString("firstName"));
-        user.setLastName(result.getString("lastName"));
-        user.setEmail(result.getString("email"));
-        user.setPassword(result.getString("password"));
-        return user;
-    }
+
 
     @Override
     public List<User> getAll() {
@@ -161,5 +158,16 @@ public class UserDaoImpl implements UserDao {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private User processUser(ResultSet result) throws SQLException {
+        User user = new User();
+        user.setId(result.getLong("user_id"));
+        user.setFirstName(result.getString("firstName"));
+        user.setLastName(result.getString("lastName"));
+        user.setEmail(result.getString("email"));
+        user.setPassword(result.getString("password"));
+        user.setRole(UserRole.valueOf(result.getString("user_id")));
+        return user;
     }
 }

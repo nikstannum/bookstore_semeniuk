@@ -1,13 +1,13 @@
-package main.java.com.belhard.service;
+package com.belhard.service;
 
-import main.java.com.belhard.service.dto.BookDto;
+import com.belhard.service.dto.BookDto;
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface BookService {
     BookDto create(BookDto bookDto);
 
-    BookDto get(long id);
+    BookDto getById(long id);
 
     List<BookDto> getAll();
 

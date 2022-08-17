@@ -1,4 +1,4 @@
-package main.java.com.belhard.dao.entity;
+package com.belhard.dao.entity;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -11,6 +11,10 @@ public class Book {
     private Integer pages;
     private BigDecimal price;
     private BookCover cover;
+
+    public enum BookCover {
+        SOFT, HARD, SPECIAL
+    }
 
     public BookCover getCover() {
         return cover;
@@ -90,7 +94,7 @@ public class Book {
                 ", isbn='" + isbn + '\'' +
                 ", pages=" + pages +
                 ", price=" + price +
-                ", cover=" + cover.getCover() +
+                ", cover=" + cover +
                 '}';
     }
 }

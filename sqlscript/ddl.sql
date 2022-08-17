@@ -1,29 +1,50 @@
-CREATE database bookstore;
---DROP database bookstore
+/*
+CREATE DATABASE bookstore;
+DROP DATABASE bookstore
+*/
 
 
-CREATE TABLE if NOT EXISTS books
-(book_id BIGSERIAL PRIMARY KEY,
-title VARCHAR (75),
-author VARCHAR (35),
-isbn VARCHAR (30) UNIQUE,
-pages INT2,
-price NUMERIC(6,2) CHECK (price > 0));
---DROP TABLE if EXISTS books;
+--DROP TABLE IF EXISTS books;
+--DROP TABLE IF EXISTS "covers";
 
 
-CREATE TABLE if NOT EXISTS users
-(user_id BIGSERIAL PRIMARY KEY,
-firstName VARCHAR (30),
-lastName VARCHAR (30),
-email VARCHAR (40) UNIQUE NOT NULL,
-"password" VARCHAR (40) NOT NULL);
---DROP TABLE if EXISTS users;
+--DROP TABLE IF EXISTS users;
+--DROP TABLE IF EXISTS role;
 
 
-CREATE type covers AS enum ('hard', 'soft', 'special');
+CREATE TABLE IF NOT EXISTS "covers" (
+	cover_id BIGSERIAL PRIMARY KEY,
+	"name" VARCHAR (10) UNIQUE NOT NULL
+);
 
-CREATE TABLE if NOT EXISTS book_cover
-(book_id BIGINT REFERENCES books (book_id),
-cover covers);
---DROP TABLE if EXISTS book_cover;
+CREATE TABLE IF NOT EXISTS books (
+    book_id BIGSERIAL PRIMARY KEY,
+    title VARCHAR (75) NOT NULL,
+    author VARCHAR (35) NOT NULL,
+    isbn VARCHAR (30) NOT NULL,
+    pages INT2 CHECK (pages > 0),
+    price NUMERIC(6,2) CHECK (price > 0),
+    cover_id BIGINT NOT NULL REFERENCES "covers",
+    deleted BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+
+
+CREATE TABLE IF NOT EXISTS role (
+	role_id BIGSERIAL PRIMARY KEY,
+	"name" VARCHAR (10) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id BIGSERIAL PRIMARY KEY,
+    firstName VARCHAR (30),
+    lastName VARCHAR (30),
+    email VARCHAR (40) UNIQUE NOT NULL,
+    "password" VARCHAR (40) NOT NULL,
+    role_id BIGINT NOT NULL REFERENCES ROLE,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+
+
+

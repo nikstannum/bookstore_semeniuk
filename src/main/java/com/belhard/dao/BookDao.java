@@ -1,6 +1,6 @@
-package main.java.com.belhard.dao;
+package com.belhard.dao;
 
-import main.java.com.belhard.dao.entity.Book;
+import com.belhard.dao.entity.Book;
 import java.util.List;
 
 public interface BookDao {

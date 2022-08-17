@@ -1,12 +1,12 @@
-package main.java.com.belhard.service;
+package com.belhard.service;
 
-import main.java.com.belhard.service.dto.UserDto;
+import com.belhard.service.dto.UserDto;
 import java.util.List;
 
 public interface UserService {
     UserDto create(UserDto userDto);
 
-    UserDto get(long id);
+    UserDto getById(long id);
 
     List<UserDto> getAll();
 

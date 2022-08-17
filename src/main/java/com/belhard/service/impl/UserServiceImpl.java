@@ -1,10 +1,12 @@
-package main.java.com.belhard.service.impl;
+package com.belhard.service.impl;
 
-import main.java.com.belhard.dao.UserDao;
-import main.java.com.belhard.dao.entity.User;
-import main.java.com.belhard.service.dto.UserDto;
+import com.belhard.dao.UserDao;
+import com.belhard.dao.entity.User;
+import com.belhard.dao.entity.User.UserRole;
+import com.belhard.service.dto.UserDto;
+import com.belhard.service.dto.UserDto.UserRoleDto;
 import java.util.List;
-import main.java.com.belhard.service.UserService;
+import com.belhard.service.UserService;
 
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
@@ -15,6 +17,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
+        User existing = userDao.getUserByEmail(userDto.getEmail());
+        if (existing != null) {
+            throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
+        }
         User user = toEntity(userDto);
         return toDto(userDao.create(user));
     }
@@ -26,11 +32,12 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
+        user.setRole(UserRole.valueOf(userDto.getUserRoleDto().toString()));
         return user;
     }
 
     @Override
-    public UserDto get(long id) {
+    public UserDto getById(long id) {
         User user = userDao.get(id);
         return toDto(user);
     }
@@ -42,6 +49,7 @@ public class UserServiceImpl implements UserService {
         userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());
         userDto.setPassword(user.getPassword());
+        userDto.setUserRoleDto(UserRoleDto.valueOf(user.getRole().toString()));
         return userDto;
     }
 
@@ -68,6 +76,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(UserDto userDto) {
+        User existing = userDao.getUserByEmail(userDto.getEmail());
+        if (existing != null && existing.getId() != userDto.getId()) {
+            throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
+        }
         User user = toEntity(userDto);
         return toDto(userDao.update(user));
     }

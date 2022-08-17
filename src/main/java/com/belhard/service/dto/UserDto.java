@@ -1,7 +1,4 @@
-package main.java.com.belhard.service.dto;
-
-import main.java.com.belhard.dao.entity.User;
-import java.util.Objects;
+package com.belhard.service.dto;
 
 public class UserDto {
     private Long id;
@@ -9,6 +6,19 @@ public class UserDto {
     private String lastName;
     private String email;
     private String password;
+    private UserRoleDto userRoleDto;
+
+    public enum UserRoleDto {
+        ADMIN, MANAGER, USER
+    }
+
+    public UserRoleDto getUserRoleDto() {
+        return userRoleDto;
+    }
+
+    public void setUserRoleDto(UserRoleDto userRoleDto) {
+        this.userRoleDto = userRoleDto;
+    }
 
     public Long getId() {
         return id;
@@ -51,26 +61,14 @@ public class UserDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        UserDto userDto = (UserDto) o;
-        return id.equals(userDto.id) && email.equals(userDto.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email);
-    }
-
-    @Override
     public String toString() {
-        return "User{" +
+        return "UserDto{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", userRoleDto=" + userRoleDto +
                 '}';
     }
 }

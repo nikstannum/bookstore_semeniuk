@@ -1,8 +1,9 @@
-package main.java.com.belhard.dao.impl;
+package com.belhard.dao.impl;
 
-import main.java.com.belhard.dao.BookDao;
-import main.java.com.belhard.dao.connection.DataSource;
-import main.java.com.belhard.dao.entity.Book;
+import com.belhard.dao.BookDao;
+import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.entity.Book;
+import com.belhard.dao.entity.Book.BookCover;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,14 +13,21 @@ import java.util.List;
 
 public class BookDaoImpl implements BookDao {
 
-    public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price) VALUES (?, ?, ?, ?, ?)";
-    public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price from books b WHERE b.book_id = ?";
-    public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price FROM books b";
-    public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price FROM books b WHERE b.isbn = ?";
-    public static final String GET_BY_AUTHOR = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price FROM books b WHERE b.author = ?";
-    public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) AS total from books b";
-    public static final String UPDATE = "UPDATE books SET title = ?, author = ?, isbn = ?, pages = ?, price = ? WHERE book_id = ?";
-    public static final String DELETE = "DELETE FROM books b WHERE b.book_id = ?";
+    public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price, cover_id) " +
+            "VALUES (?, ?, ?, ?, ?, (SELECT c.cover_id FROM covers c WHERE c.name = ?))";
+    public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover FROM books b " +
+            "JOIN covers c ON b.cover_id = c.cover_id WHERE b.book_id = ? AND b.deleted = false";
+    public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover FROM books b " +
+            "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false";
+    public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover FROM books b " +
+            "JOIN covers c ON b.cover_id = c.cover_id WHERE b.isbn = ? AND b.deleted = false";
+    public static final String GET_BY_AUTHOR = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover FROM books b " +
+            "JOIN covers c ON b.cover_id = c.cover_id WHERE b.author = ? AND b.deleted = false";
+    public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) AS total from books b WHERE b.deleted = false";
+    public static final String UPDATE = "UPDATE books SET title = ?, author = ?, isbn = ?, pages = ?, price = ?, " +
+            "cover_id = (SELECT c.cover_id FROM covers c WHERE c.name = ?) " +
+            "WHERE book_id = ? AND deleted = false";
+    public static final String DELETE = "UPDATE books SET deleted = true WHERE book_id = ?";
 
     private final DataSource dataSource;
 
@@ -36,8 +44,9 @@ public class BookDaoImpl implements BookDao {
             statement.setString(3, book.getIsbn());
             statement.setInt(4, book.getPages());
             statement.setBigDecimal(5, book.getPrice());
-            statement.executeUpdate();
+            statement.setString(6, book.getCover().toString());
 
+            statement.executeUpdate();
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
                 long id = keys.getLong("book_id");
@@ -121,7 +130,10 @@ public class BookDaoImpl implements BookDao {
             statement.setString(3, book.getIsbn());
             statement.setInt(4, book.getPages());
             statement.setBigDecimal(5, book.getPrice());
-            statement.setLong(6, book.getId());
+
+            statement.setString(6, book.getCover().toString());
+
+            statement.setLong(7, book.getId());
             statement.executeUpdate();
 
             return get(book.getId());
@@ -167,6 +179,7 @@ public class BookDaoImpl implements BookDao {
         book.setIsbn(resultSet.getString("isbn"));
         book.setPages(resultSet.getInt("pages"));
         book.setPrice(resultSet.getBigDecimal("price"));
+        book.setCover(BookCover.valueOf(resultSet.getString("cover")));
         return book;
     }
 }

@@ -1,9 +1,11 @@
-package main.java.com.belhard.service.impl;
+package com.belhard.service.impl;
 
-import main.java.com.belhard.dao.BookDao;
-import main.java.com.belhard.dao.entity.Book;
-import main.java.com.belhard.service.BookService;
-import main.java.com.belhard.service.dto.BookDto;
+import com.belhard.dao.BookDao;
+import com.belhard.dao.entity.Book;
+import com.belhard.dao.entity.Book.BookCover;
+import com.belhard.service.BookService;
+import com.belhard.service.dto.BookDto;
+import com.belhard.service.dto.BookDto.BookCoverDto;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -16,6 +18,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto create(BookDto bookDto) {
+        Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
+        if (existing != null) {
+            throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
+        }
         Book book = toEntity(bookDto);
         return toDto(bookDao.create(book));
     }
@@ -28,11 +34,12 @@ public class BookServiceImpl implements BookService {
         book.setIsbn(bookDto.getIsbn());
         book.setPages(bookDto.getPages());
         book.setPrice(bookDto.getPrice());
+        book.setCover(BookCover.valueOf(bookDto.getCoverDto().toString()));
         return book;
     }
 
     @Override
-    public BookDto get(long id) {
+    public BookDto getById(long id) {
         Book book = bookDao.get(id);
         return toDto(book);
     }
@@ -45,6 +52,7 @@ public class BookServiceImpl implements BookService {
         bookDto.setIsbn(book.getIsbn());
         bookDto.setPages(book.getPages());
         bookDto.setPrice(book.getPrice());
+        bookDto.setCoverDto(BookCoverDto.valueOf(book.getCover().toString()));
         return bookDto;
     }
 
@@ -69,6 +77,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto update(BookDto bookDto) {
+        Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
+        if (existing != null && existing.getId() != bookDto.getId()) {
+            throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
+        }
         Book book = toEntity(bookDto);
         return toDto(bookDao.update(book));
     }

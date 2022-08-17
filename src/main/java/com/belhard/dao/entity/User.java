@@ -1,4 +1,4 @@
-package main.java.com.belhard.dao.entity;
+package com.belhard.dao.entity;
 
 import java.util.Objects;
 
@@ -8,6 +8,19 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    private UserRole userRole;
+
+    public enum UserRole {
+        ADMIN, MANAGER, USER
+    }
+
+    public UserRole getRole() {
+        return userRole;
+    }
+
+    public void setRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
 
     public Long getId() {
         return id;
@@ -70,6 +83,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", userRole=" + userRole +
                 '}';
     }
 }

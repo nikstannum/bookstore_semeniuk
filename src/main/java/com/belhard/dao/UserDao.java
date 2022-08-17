@@ -1,6 +1,6 @@
-package main.java.com.belhard.dao;
+package com.belhard.dao;
 
-import main.java.com.belhard.dao.entity.User;
+import com.belhard.dao.entity.User;
 import java.util.List;
 
 public interface UserDao {

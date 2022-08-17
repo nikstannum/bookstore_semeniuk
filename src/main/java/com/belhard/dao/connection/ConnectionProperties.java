@@ -1,4 +1,4 @@
-package main.java.com.belhard.dao.connection;
+package com.belhard.dao.connection;
 
 import java.io.FileInputStream;
 import java.io.IOException;
