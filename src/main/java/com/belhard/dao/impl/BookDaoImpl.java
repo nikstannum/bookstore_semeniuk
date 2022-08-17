@@ -130,13 +130,14 @@ public class BookDaoImpl implements BookDao {
             statement.setString(3, book.getIsbn());
             statement.setInt(4, book.getPages());
             statement.setBigDecimal(5, book.getPrice());
-
             statement.setString(6, book.getCover().toString());
-
             statement.setLong(7, book.getId());
             statement.executeUpdate();
-
-            return get(book.getId());
+            ResultSet keys = statement.getGeneratedKeys();
+            if (keys.next()) {
+                long id = keys.getLong("book_id");
+                return get(id);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

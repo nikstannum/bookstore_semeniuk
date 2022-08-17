@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS users (
     user_id BIGSERIAL PRIMARY KEY,
     firstName VARCHAR (30),
     lastName VARCHAR (30),
-    email VARCHAR (40) UNIQUE NOT NULL,
+    email VARCHAR (40) NOT NULL,
     "password" VARCHAR (40) NOT NULL,
     role_id BIGINT NOT NULL REFERENCES ROLE,
     deleted BOOLEAN NOT NULL DEFAULT FALSE

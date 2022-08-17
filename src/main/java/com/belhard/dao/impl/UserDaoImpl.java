@@ -13,7 +13,8 @@ import java.util.List;
 
 public class UserDaoImpl implements UserDao {
 
-    public static final String INSERT = "INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)";
+    public static final String INSERT = "INSERT INTO users (firstName, lastName, email, password, role_id) " +
+            "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
     public static final String GET_BY_ID = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
             "JOIN role r ON u.role_id = r.role_id WHERE u.user_id = ? AND u.deleted = false";
     public static final String GET_ALL = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
@@ -23,7 +24,8 @@ public class UserDaoImpl implements UserDao {
     public static final String GET_BY_LASTNAME = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
             "JOIN role r ON u.role_id = r.role_id WHERE u.lastName = ? AND u.deleted = false";
     public static final String GET_COUNT_ALL_USERS = "SELECT count(u.user_id) AS all_users from users u WHERE u.deleted = false";
-    public static final String UPDATE = "UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ? WHERE user_id = ? AND deleted = false";
+    public static final String UPDATE = "UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ?, " +
+            "role_id = (SELECT r.role_id FROM role r WHERE r.name = ?) WHERE user_id = ? AND deleted = false";
     public static final String DELETE = "UPDATE users SET deleted = true WHERE u.user_id = ?";
 
     private final DataSource dataSource;
@@ -40,6 +42,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(2, user.getLastName());
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getPassword());
+            statement.setString(5, user.getRole().toString());
             statement.executeUpdate();
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
@@ -134,13 +137,19 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User update(User user) {
         try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(UPDATE);
+            PreparedStatement statement = dataSource.getConnection().prepareStatement(UPDATE, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getPassword());
-            statement.setLong(5, user.getId());
-            return get(user.getId());
+            statement.setString(5, user.getRole().toString());
+            statement.setLong(6, user.getId());
+            statement.executeUpdate();
+            ResultSet keys = statement.getGeneratedKeys();
+            if (keys.next()) {
+                long id = keys.getLong("user_id");
+                return get(id);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -167,7 +176,7 @@ public class UserDaoImpl implements UserDao {
         user.setLastName(result.getString("lastName"));
         user.setEmail(result.getString("email"));
         user.setPassword(result.getString("password"));
-        user.setRole(UserRole.valueOf(result.getString("user_id")));
+        user.setRole(UserRole.valueOf(result.getString("role")));
         return user;
     }
 }
