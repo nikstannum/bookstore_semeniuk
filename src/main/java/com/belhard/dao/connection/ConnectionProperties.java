@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConnectionProperties {
     private final String url;
@@ -11,12 +13,14 @@ public class ConnectionProperties {
     private final String user;
 
     public static final String propsFile = "resources/application.properties";
+    private static Logger logger = LogManager.getLogger();
 
     public ConnectionProperties() {
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream(propsFile)) {
             properties.load(input);
         } catch (IOException e) {
+            logger.error(e);
             throw new RuntimeException(e);
         }
         url = properties.getProperty("url");

@@ -8,9 +8,13 @@ import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
+    private static Logger logger = LogManager.getLogger();
 
     public BookServiceImpl(BookDao bookDao) {
         this.bookDao = bookDao;
@@ -18,6 +22,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto create(BookDto bookDto) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
         if (existing != null) {
             throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
@@ -40,6 +45,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getById(long id) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         Book book = bookDao.get(id);
         return toDto(book);
     }
@@ -58,6 +64,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAll() {
+        logger.log(Level.DEBUG, "Service method called successfully");
         return bookDao.getAll().stream()
                 .map(this::toDto)
                 .toList();
@@ -65,18 +72,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getBookDtoByIsbn(String isbn) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         Book book = bookDao.getBookByIsbn(isbn);
         return toDto(book);
     }
 
     @Override
     public List<BookDto> getBooksByAuthor(String author) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         return bookDao.getBooksByAuthor(author).stream().map(this::toDto).toList();
     }
 
 
     @Override
     public BookDto update(BookDto bookDto) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
         if (existing != null && existing.getId() != bookDto.getId()) {
             throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
@@ -87,16 +97,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean delete(long id) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         return bookDao.delete(id);
     }
 
     @Override
     public int countAllBooks() {
+        logger.log(Level.DEBUG, "Service method called successfully");
         return bookDao.countAllBooks();
     }
 
     @Override
     public BigDecimal totalCostAllBooksOfAuthor(String author) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         List<BookDto> dtos = getBooksByAuthor(author);
         BigDecimal totalCost = BigDecimal.valueOf(0);
         for (BookDto dto : dtos) {

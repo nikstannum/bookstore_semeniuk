@@ -7,8 +7,13 @@ import com.belhard.service.dto.UserDto;
 import com.belhard.service.dto.UserDto.UserRoleDto;
 import java.util.List;
 import com.belhard.service.UserService;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserServiceImpl implements UserService {
+
+    private static Logger logger = LogManager.getLogger();
     private final UserDao userDao;
 
     public UserServiceImpl(UserDao userDao) {
@@ -17,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         User existing = userDao.getUserByEmail(userDto.getEmail());
         if (existing != null) {
             throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
@@ -38,6 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(long id) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         User user = userDao.get(id);
         return toDto(user);
     }
@@ -55,27 +62,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAll() {
+        logger.log(Level.DEBUG, "Service method called successfully");
         return userDao.getAll().stream().map(this::toDto).toList();
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         User user = userDao.getUserByEmail(email);
         return toDto(user);
     }
 
     @Override
     public List<UserDto> getUsersByLastName(String lastName) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         return userDao.getUsersByLastName(lastName).stream().map(this::toDto).toList();
     }
 
     @Override
     public int countAllUsers() {
+        logger.log(Level.DEBUG, "Service method called successfully");
         return userDao.countAllUsers();
     }
 
     @Override
     public UserDto update(UserDto userDto) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         User existing = userDao.getUserByEmail(userDto.getEmail());
         if (existing != null && existing.getId() != userDto.getId()) {
             throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
@@ -86,11 +98,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean delete(long id) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         return userDao.delete(id);
     }
 
     @Override
     public boolean validate(String email, String password) {
+        logger.log(Level.DEBUG, "Service method called successfully");
         User user = userDao.getUserByEmail(email);
         String userPassword = user.getPassword();
         return userPassword.equals(password);
