@@ -10,13 +10,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class BookDaoImpl implements BookDao {
 
-    private static Logger logger = LogManager.getLogger();
+    private static Logger logger = LogManager.getLogger(BookDaoImpl.class);
 
     public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price, cover_id) " +
             "VALUES (?, ?, ?, ?, ?, (SELECT c.cover_id FROM covers c WHERE c.name = ?))";
@@ -53,7 +52,7 @@ public class BookDaoImpl implements BookDao {
 
             statement.executeUpdate();
 
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
 
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
@@ -72,7 +71,7 @@ public class BookDaoImpl implements BookDao {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ID);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             if (resultSet.next()) {
                 return processBook(resultSet);
             }
@@ -88,7 +87,7 @@ public class BookDaoImpl implements BookDao {
         try {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_ALL);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             while (resultSet.next()) {
                 list.add(processBook(resultSet));
             }
@@ -105,7 +104,7 @@ public class BookDaoImpl implements BookDao {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ISBN);
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             if (resultSet.next()) {
                 return processBook(resultSet);
             }
@@ -122,7 +121,7 @@ public class BookDaoImpl implements BookDao {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_AUTHOR);
             statement.setString(1, author);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             while (resultSet.next()) {
                 list.add(processBook(resultSet));
             }
@@ -145,7 +144,7 @@ public class BookDaoImpl implements BookDao {
             statement.setString(6, book.getCover().toString());
             statement.setLong(7, book.getId());
             statement.executeUpdate();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
                 long id = keys.getLong("book_id");
@@ -164,7 +163,7 @@ public class BookDaoImpl implements BookDao {
             statement = dataSource.getConnection().prepareStatement(DELETE);
             statement.setLong(1, id);
             int rowsDelete = statement.executeUpdate();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             return rowsDelete == 1;
         } catch (SQLException e) {
             logger.error(e);
@@ -177,7 +176,7 @@ public class BookDaoImpl implements BookDao {
         try {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_COUNT_ALL_BOOKS);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             if (resultSet.next()) {
                 return resultSet.getInt("total");
             }

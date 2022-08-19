@@ -10,13 +10,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class UserDaoImpl implements UserDao {
 
-    private static Logger logger = LogManager.getLogger();
+    private static Logger logger = LogManager.getLogger(UserDaoImpl.class);
 
     public static final String INSERT = "INSERT INTO users (firstName, lastName, email, password, role_id) " +
             "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
@@ -50,7 +49,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(5, user.getRole().toString());
             statement.executeUpdate();
             ResultSet keys = statement.getGeneratedKeys();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             if (keys.next()) {
                 Long id = keys.getLong("user_id");
                 return get(id);
@@ -67,7 +66,7 @@ public class UserDaoImpl implements UserDao {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ID);
             statement.setLong(1, id);
             ResultSet result = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             if (result.next()) {
                 return processUser(result);
             }
@@ -85,7 +84,7 @@ public class UserDaoImpl implements UserDao {
         try {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_ALL);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             while (resultSet.next()) {
                 users.add(processUser(resultSet));
             }
@@ -102,7 +101,7 @@ public class UserDaoImpl implements UserDao {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_EMAIL);
             statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             if (resultSet.next()) {
                 return processUser(resultSet);
             }
@@ -119,7 +118,7 @@ public class UserDaoImpl implements UserDao {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_LASTNAME);
             statement.setString(1, lastName);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             while (resultSet.next()) {
                 users.add(processUser(resultSet));
             }
@@ -134,7 +133,7 @@ public class UserDaoImpl implements UserDao {
         try {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_COUNT_ALL_USERS);
             ResultSet resultSet = statement.executeQuery();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             if (resultSet.next()) {
                 int allUsers = resultSet.getInt("all_users");
                 return allUsers;
@@ -156,7 +155,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(5, user.getRole().toString());
             statement.setLong(6, user.getId());
             statement.executeUpdate();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
                 long id = keys.getLong("user_id");
@@ -174,7 +173,7 @@ public class UserDaoImpl implements UserDao {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(DELETE);
             statement.setLong(1, id);
             int rowsDelete = statement.executeUpdate();
-            logger.log(Level.DEBUG, "database access completed successfully");
+            logger.debug("database access completed successfully");
             return rowsDelete == 1;
         } catch (SQLException e) {
             logger.error(e);
