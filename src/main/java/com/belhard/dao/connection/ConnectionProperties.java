@@ -13,7 +13,7 @@ public class ConnectionProperties {
     private final String user;
 
     public static final String propsFile = "resources/application.properties";
-    private static Logger logger = LogManager.getLogger(ConnectionProperties.class);
+    private static final Logger logger = LogManager.getLogger(ConnectionProperties.class);
 
     public ConnectionProperties() {
         Properties properties = new Properties();

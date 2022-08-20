@@ -2,10 +2,10 @@
 <Configuration status="ERROR" monitorInterval="3600">
     <Properties>
         <property name="pattern_file">
-            %d{dd-MM-yyyy HH:mm:ss} [%t] %-5level %logger{3} - %msg%n
+            %d{dd-MM-yyyy HH:mm:ss} [%t] %-5level %logger{3} - %msg method %M%n
         </property>
         <property name="pattern_console">
-            %r [%t] %5level %logger{1} - %msg%n
+            %r [%t] %5level %logger{1} - %msg method %M%n
         </property>
     </Properties>
     <Appenders>
