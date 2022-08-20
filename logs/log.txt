@@ -1,2 +1,0 @@
-18-08-2022 18:51:20 [main] INFO  dao.connection.DataSource - connection to database completed
-19-08-2022 10:17:03 [main] INFO  dao.connection.DataSource - connection to database completed
