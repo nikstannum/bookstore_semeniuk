@@ -38,7 +38,7 @@ VALUES ('ADMIN'),
 		('MANAGER'),
 		('USER');
 
-INSERT INTO users (firstname, lastname, email, "password", role_id)
+INSERT INTO users (first_name, last_name, email, "password", role_id)
 VALUES ('Nick', 'Biden', 'biden@gmail.us', 'qwerty', (SELECT r.role_id FROM "role" r WHERE r."name" = 'ADMIN')),
 		('Mike', 'Scholz', 'scholz@gmail.de', 'password', (SELECT r.role_id FROM "role" r WHERE r."name" = 'MANAGER')),
 		('Joseph', 'Black', 'black@yandex.ru', 'hardpassword', (SELECT r.role_id FROM "role" r WHERE r."name" = 'MANAGER')),

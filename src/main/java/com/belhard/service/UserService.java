@@ -14,11 +14,11 @@ public interface UserService {
 
     List<UserDto> getUsersByLastName(String lastName);
 
-    int countAllUsers();
+    int countAll();
 
     UserDto update(UserDto userDto);
 
-    boolean delete(long id);
+    boolean delete(long id);//FIXME - void - service last place where you should decide what to do
 
     boolean validate(String email, String password);
 }

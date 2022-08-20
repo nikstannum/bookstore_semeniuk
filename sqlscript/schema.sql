@@ -3,14 +3,12 @@ CREATE DATABASE bookstore;
 DROP DATABASE bookstore
 */
 
-
---DROP TABLE IF EXISTS books;
---DROP TABLE IF EXISTS "covers";
-
-
---DROP TABLE IF EXISTS users;
---DROP TABLE IF EXISTS role;
-
+/*
+DROP TABLE IF EXISTS books;
+DROP TABLE IF EXISTS "covers";
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS role;
+*/
 
 CREATE TABLE IF NOT EXISTS "covers" (
 	cover_id BIGSERIAL PRIMARY KEY,
@@ -22,23 +20,21 @@ CREATE TABLE IF NOT EXISTS books (
     title VARCHAR (75) NOT NULL,
     author VARCHAR (35) NOT NULL,
     isbn VARCHAR (30) NOT NULL,
-    pages INT2 CHECK (pages > 0),
-    price NUMERIC(6,2) CHECK (price > 0),
+    pages INT2,
+    price NUMERIC(6,2),
     cover_id BIGINT NOT NULL REFERENCES "covers",
     deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-
-
-CREATE TABLE IF NOT EXISTS role (
+CREATE TABLE IF NOT EXISTS "role" (
 	role_id BIGSERIAL PRIMARY KEY,
 	"name" VARCHAR (10) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users (
     user_id BIGSERIAL PRIMARY KEY,
-    firstName VARCHAR (30),
-    lastName VARCHAR (30),
+    first_name VARCHAR (30),
+    last_name VARCHAR (30),
     email VARCHAR (40) NOT NULL,
     "password" VARCHAR (40) NOT NULL,
     role_id BIGINT NOT NULL REFERENCES ROLE,

@@ -79,16 +79,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int countAllUsers() {
+    public int countAll() {
         logger.debug("Service method called successfully");
-        return userDao.countAllUsers();
+        return userDao.countAll();
     }
 
     @Override
     public UserDto update(UserDto userDto) {
         logger.debug("Service method called successfully");
         User existing = userDao.getUserByEmail(userDto.getEmail());
-        if (existing != null && existing.getId() != userDto.getId()) {
+        if (existing != null && existing.getId() != userDto.getId()) {//FIXME equals
+            /*
+            Integer a = 128;
+            Integer b = 128;
+            System.out.println(a == b);
+             */
             throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
         }
         User user = toEntity(userDto);

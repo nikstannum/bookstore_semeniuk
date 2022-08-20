@@ -4,7 +4,7 @@ import com.belhard.service.dto.BookDto;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface BookService {
+public interface BookService {//FIXME extract AbstractService
     BookDto create(BookDto bookDto);
 
     BookDto getById(long id);
@@ -17,9 +17,9 @@ public interface BookService {
 
     BookDto update(BookDto bookDto);
 
-    boolean delete(long id);
+    void delete(long id);
 
-    int countAllBooks();
+    int countAll();
 
     BigDecimal totalCostAllBooksOfAuthor(String author);
 }

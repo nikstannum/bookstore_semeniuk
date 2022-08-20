@@ -1,22 +1,11 @@
 package com.belhard.dao;
 
 import com.belhard.dao.entity.User;
+
 import java.util.List;
 
-public interface UserDao {
-    User create(User user);
-
-    User get(long id);
-
-    List<User> getAll();
-
+public interface UserDao extends CrudDao<Long, User> {
     User getUserByEmail(String email);
 
     List<User> getUsersByLastName(String lastName);
-
-    int countAllUsers();
-
-    User update(User user);
-
-    boolean delete(long id);
 }

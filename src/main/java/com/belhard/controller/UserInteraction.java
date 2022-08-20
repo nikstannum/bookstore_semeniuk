@@ -34,7 +34,7 @@ public class UserInteraction {
             if you want to delete the book insert 'd' and press ENTER: 
             """;
 
-    private static final String messageForTitle = "insert title of book: ";
+    private static final String messageForTitle = "insert title of book: ";//FIXME SNAKE_CASE for const names
     private static final String messageForAuthor = "insert author of book: ";
     private static final String messageForIsbn = "insert isbn of book: ";
     private static final String messageForPages = "insert number of pages: ";
@@ -107,10 +107,10 @@ public class UserInteraction {
         Scanner scanner = new Scanner(System.in);
         System.out.print(MESSAGE1_FOR_BOOK);
         String result = scanner.nextLine();
-        if (result.toLowerCase().equals("all")) {
+        if (result.equalsIgnoreCase("all")) {
             bookService.getAll().forEach(b -> System.out.printf
                     ("Book: id = %d, title = %s, author = %s\n", b.getId(), b.getTitle(), b.getAuthor()));
-        } else if (result.toLowerCase().equals("exit")) {
+        } else if (result.equalsIgnoreCase("exit")) {
             System.out.println("Good bye");
             return;
         } else {
@@ -119,10 +119,10 @@ public class UserInteraction {
         System.out.print(MESSAGE2_FOR_BOOK);
         String resultHelp = scanner.nextLine();
         try {
-            Long id = Long.parseLong(resultHelp);
+            long id = Long.parseLong(resultHelp);
             System.out.print(MESSAGE3_FOR_BOOK);
             String resultAction = scanner.nextLine();
-            if (resultAction.toLowerCase().equals("v")) {
+            if (resultAction.toLowerCase().equals("v")) {//FIXME equalsIgnoreCase
                 System.out.println(bookService.getById(id));
             } else if (resultAction.toLowerCase().equals("d")) {
                 bookService.delete(id);
@@ -134,7 +134,7 @@ public class UserInteraction {
                 throw new RuntimeException("you entered an invalid value");
             }
         } catch (NumberFormatException e) {
-            switch (resultHelp.toLowerCase()) {
+            switch (resultHelp.toLowerCase()) {//FIXME tye to be consistent - use either SWITCH or IF-ELSE-IF
                 case "create" -> bookService.create(createBookDto(scanner));
                 case "exit" -> System.out.println("Good bye");
                 default -> throw new RuntimeException("you entered an invalid value");

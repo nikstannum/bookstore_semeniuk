@@ -22,12 +22,34 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto create(BookDto bookDto) {
         logger.debug("Service method called successfully");
+        validateCreate(bookDto);
+        Book book = toEntity(bookDto);
+        return toDto(bookDao.create(book));
+    }
+
+    private void validateCreate(BookDto bookDto) {
         Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
         if (existing != null) {
             throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
         }
-        Book book = toEntity(bookDto);
-        return toDto(bookDao.create(book));
+        validate(bookDto);
+    }
+
+    private static void validate(BookDto bookDto) {
+        if (bookDto.getPages() == null) {
+            throw new RuntimeException("Pages couldn't be null");
+        }
+        if (bookDto.getPages() <= 0) {
+            throw new RuntimeException("Pages must be greater than 0");
+        }
+    }
+
+    private void validateUpdate(BookDto bookDto) {
+        Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
+        if (existing != null && existing.getId().equals(bookDto.getId())) {
+            throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
+        }
+        validate(bookDto);
     }
 
     private Book toEntity(BookDto bookDto) {
@@ -46,6 +68,9 @@ public class BookServiceImpl implements BookService {
     public BookDto getById(long id) {
         logger.debug("Service method called successfully");
         Book book = bookDao.get(id);
+        if (book == null) {
+            throw new RuntimeException("Couldn't find book with id: " + id);
+        }
         return toDto(book);
     }
 
@@ -73,6 +98,9 @@ public class BookServiceImpl implements BookService {
     public BookDto getBookDtoByIsbn(String isbn) {
         logger.debug("Service method called successfully");
         Book book = bookDao.getBookByIsbn(isbn);
+        if (book == null) {
+            throw new RuntimeException("Couldn't find book with isbn: " + isbn);
+        }
         return toDto(book);
     }
 
@@ -86,24 +114,23 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto update(BookDto bookDto) {
         logger.debug("Service method called successfully");
-        Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
-        if (existing != null && existing.getId() != bookDto.getId()) {
-            throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
-        }
+        validateUpdate(bookDto);
         Book book = toEntity(bookDto);
         return toDto(bookDao.update(book));
     }
 
     @Override
-    public boolean delete(long id) {
+    public void delete(long id) {
         logger.debug("Service method called successfully");
-        return bookDao.delete(id);
+        if (!bookDao.delete(id)) {
+            throw new RuntimeException("Couldn't delete object with id = " + id);
+        }
     }
 
     @Override
-    public int countAllBooks() {
+    public int countAll() {
         logger.debug("Service method called successfully");
-        return bookDao.countAllBooks();
+        return bookDao.countAll();
     }
 
     @Override

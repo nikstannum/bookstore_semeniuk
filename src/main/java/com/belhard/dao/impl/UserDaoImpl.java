@@ -15,22 +15,22 @@ import org.apache.logging.log4j.Logger;
 
 public class UserDaoImpl implements UserDao {
 
-    private static Logger logger = LogManager.getLogger(UserDaoImpl.class);
+    private static Logger logger = LogManager.getLogger(UserDaoImpl.class);//FIXME final, rename to 'log'
 
-    public static final String INSERT = "INSERT INTO users (firstName, lastName, email, password, role_id) " +
+    public static final String INSERT = "INSERT INTO users (first_name, last_name, email, password, role_id) " +
             "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
-    public static final String GET_BY_ID = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
+    public static final String GET_BY_ID = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role from users u " +
             "JOIN role r ON u.role_id = r.role_id WHERE u.user_id = ? AND u.deleted = false";
-    public static final String GET_ALL = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
+    public static final String GET_ALL = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role from users u " +
             "JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false";
-    public static final String GET_BY_EMAIL = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
+    public static final String GET_BY_EMAIL = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role from users u " +
             "JOIN role r ON u.role_id = r.role_id WHERE u.email = ? AND u.deleted = false";
-    public static final String GET_BY_LASTNAME = "SELECT u.user_id, u.firstName, u.lastName, u.email, u.password, r.name AS role from users u " +
-            "JOIN role r ON u.role_id = r.role_id WHERE u.lastName = ? AND u.deleted = false";
+    public static final String GET_BY_LASTNAME = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role from users u " +
+            "JOIN role r ON u.role_id = r.role_id WHERE u.last_name = ? AND u.deleted = false";
     public static final String GET_COUNT_ALL_USERS = "SELECT count(u.user_id) AS all_users from users u WHERE u.deleted = false";
-    public static final String UPDATE = "UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ?, " +
+    public static final String UPDATE = "UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ?, " +
             "role_id = (SELECT r.role_id FROM role r WHERE r.name = ?) WHERE user_id = ? AND deleted = false";
-    public static final String DELETE = "UPDATE users SET deleted = true WHERE u.user_id = ?";
+    public static final String DELETE = "UPDATE users SET deleted = true WHERE user_id = ?";
 
     private final DataSource dataSource;
 
@@ -61,7 +61,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User get(long id) {
+    public User get(Long id) {
         try {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ID);
             statement.setLong(1, id);
@@ -129,7 +129,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public int countAllUsers() {
+    public int countAll() {
         try {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_COUNT_ALL_USERS);
             ResultSet resultSet = statement.executeQuery();
@@ -168,7 +168,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean delete(long id) {
+    public boolean delete(Long id) {
         try {
             PreparedStatement statement = dataSource.getConnection().prepareStatement(DELETE);
             statement.setLong(1, id);
@@ -184,8 +184,8 @@ public class UserDaoImpl implements UserDao {
     private User processUser(ResultSet result) throws SQLException {
         User user = new User();
         user.setId(result.getLong("user_id"));
-        user.setFirstName(result.getString("firstName"));
-        user.setLastName(result.getString("lastName"));
+        user.setFirstName(result.getString("first_name"));
+        user.setLastName(result.getString("last_name"));
         user.setEmail(result.getString("email"));
         user.setPassword(result.getString("password"));
         user.setRole(UserRole.valueOf(result.getString("role")));

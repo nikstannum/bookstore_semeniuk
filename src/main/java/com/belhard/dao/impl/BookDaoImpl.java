@@ -4,30 +4,37 @@ import com.belhard.dao.BookDao;
 import com.belhard.dao.connection.DataSource;
 import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class BookDaoImpl implements BookDao {
 
-    private static Logger logger = LogManager.getLogger(BookDaoImpl.class);
+    private static Logger log = LogManager.getLogger(BookDaoImpl.class);
 
     public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price, cover_id) " +
             "VALUES (?, ?, ?, ?, ?, (SELECT c.cover_id FROM covers c WHERE c.name = ?))";
-    public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover FROM books b " +
+    public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
+            + "cover FROM books b " +
             "JOIN covers c ON b.cover_id = c.cover_id WHERE b.book_id = ? AND b.deleted = false";
-    public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover FROM books b " +
+    public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
+            + "cover FROM books b " +
             "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false";
-    public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover FROM books b " +
+    public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name "
+            + "AS cover FROM books b " +
             "JOIN covers c ON b.cover_id = c.cover_id WHERE b.isbn = ? AND b.deleted = false";
-    public static final String GET_BY_AUTHOR = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover FROM books b " +
+    public static final String GET_BY_AUTHOR = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name"
+            + " AS cover FROM books b " +
             "JOIN covers c ON b.cover_id = c.cover_id WHERE b.author = ? AND b.deleted = false";
-    public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) AS total from books b WHERE b.deleted = false";
+    public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) AS total from books b WHERE b.deleted ="
+            + " false";
     public static final String UPDATE = "UPDATE books SET title = ?, author = ?, isbn = ?, pages = ?, price = ?, " +
             "cover_id = (SELECT c.cover_id FROM covers c WHERE c.name = ?) " +
             "WHERE book_id = ? AND deleted = false";
@@ -41,8 +48,8 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book create(Book book) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, book.getTitle());
             statement.setString(2, book.getAuthor());
             statement.setString(3, book.getIsbn());
@@ -52,7 +59,7 @@ public class BookDaoImpl implements BookDao {
 
             statement.executeUpdate();
 
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
 
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
@@ -60,23 +67,23 @@ public class BookDaoImpl implements BookDao {
                 return get(id);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
 
     @Override
-    public Book get(long id) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ID);
+    public Book get(Long id) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(GET_BY_ID);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             if (resultSet.next()) {
                 return processBook(resultSet);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -84,32 +91,32 @@ public class BookDaoImpl implements BookDao {
     @Override
     public List<Book> getAll() {
         List<Book> list = new ArrayList<>();
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_ALL);
-            ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+        try (Connection connection = dataSource.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(GET_ALL);
+            log.debug("database access completed successfully");
             while (resultSet.next()) {
                 list.add(processBook(resultSet));
             }
             return list;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return list;
     }
 
     @Override
     public Book getBookByIsbn(String isbn) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ISBN);
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_BY_ISBN)) {
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             if (resultSet.next()) {
                 return processBook(resultSet);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -117,25 +124,25 @@ public class BookDaoImpl implements BookDao {
     @Override
     public List<Book> getBooksByAuthor(String author) {
         List<Book> list = new ArrayList<>();
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_AUTHOR);
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(GET_BY_AUTHOR);//FIXME close
             statement.setString(1, author);
             ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             while (resultSet.next()) {
                 list.add(processBook(resultSet));
             }
             return list;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return list;
     }
 
     @Override
     public Book update(Book book) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(UPDATE, Statement.RETURN_GENERATED_KEYS);
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(UPDATE);
             statement.setString(1, book.getTitle());
             statement.setString(2, book.getAuthor());
             statement.setString(3, book.getIsbn());
@@ -144,44 +151,39 @@ public class BookDaoImpl implements BookDao {
             statement.setString(6, book.getCover().toString());
             statement.setLong(7, book.getId());
             statement.executeUpdate();
-            logger.debug("database access completed successfully");
-            ResultSet keys = statement.getGeneratedKeys();
-            if (keys.next()) {
-                long id = keys.getLong("book_id");
-                return get(id);
-            }
+            log.debug("database access completed successfully");
+            return get(book.getId());
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
 
     @Override
-    public boolean delete(long id) {
-        PreparedStatement statement = null;
-        try {
-            statement = dataSource.getConnection().prepareStatement(DELETE);
+    public boolean delete(Long id) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(DELETE);
             statement.setLong(1, id);
             int rowsDelete = statement.executeUpdate();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             return rowsDelete == 1;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return false;
     }
 
     @Override
-    public int countAllBooks() {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_COUNT_ALL_BOOKS);
-            ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+    public int countAll() {
+        try (Connection connection = dataSource.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_BOOKS);
+            log.debug("database access completed successfully");
             if (resultSet.next()) {
                 return resultSet.getInt("total");
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         throw new RuntimeException("ERROR: count of books not definition");
     }

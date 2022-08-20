@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 public class DataSource implements AutoCloseable {
 
-    private Connection connection;
-    private static Logger logger = LogManager.getLogger(DataSource.class);
+    private ProxyConnection connection;
+    private static final Logger logger = LogManager.getLogger(DataSource.class);
 
     public Connection getConnection() {
         if (connection == null) {
@@ -21,7 +21,8 @@ public class DataSource implements AutoCloseable {
     private void init() {
         ConnectionProperties props = new ConnectionProperties();
         try {
-            connection = DriverManager.getConnection(props.getUrl(), props.getUser(), props.getPassword());
+            Connection realConnection = DriverManager.getConnection(props.getUrl(), props.getUser(), props.getPassword());
+            this.connection = new ProxyConnection(realConnection);
             logger.info("connection to database completed");
         } catch (SQLException e) {
             logger.error("connection to database didn't complete");
@@ -33,7 +34,8 @@ public class DataSource implements AutoCloseable {
     public void close() {
         if (connection != null) {
             try {
-                connection.close();
+                connection.reallyClose();
+                logger.info("connection really closed");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
