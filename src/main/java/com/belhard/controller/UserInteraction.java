@@ -123,7 +123,7 @@ public class UserInteraction {
             System.out.print(MESSAGE3_FOR_BOOK);
             String resultAction = scanner.nextLine();
             if (resultAction.toLowerCase().equals("v")) {//FIXME equalsIgnoreCase
-                System.out.println(bookService.getById(id));
+                System.out.println(bookService.get(id));
             } else if (resultAction.toLowerCase().equals("d")) {
                 bookService.delete(id);
             } else if (resultAction.toLowerCase().equals("u")) {
@@ -181,7 +181,7 @@ public class UserInteraction {
             System.out.print(MESSAGE3_FOR_USER);
             String resultAction = scanner.nextLine();
             if (resultAction.toLowerCase().equals("v")) {
-                System.out.println(userService.getById(id));
+                System.out.println(userService.get(id));
             } else if (resultAction.toLowerCase().equals("d")) {
                 userService.delete(id);
             } else if (resultAction.toLowerCase().equals("u")) {

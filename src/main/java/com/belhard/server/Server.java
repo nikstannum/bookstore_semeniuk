@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Server {
 
-    public static final String propsFile = "resources/application.properties";
+    public static final String propsFile = "src/main/resources/application.properties";
     private static final Logger logger = LogManager.getLogger(Server.class);
     private final int port;
     private final Controller controller;

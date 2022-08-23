@@ -46,7 +46,7 @@ public class UserControllerForServer implements Controller {
         String isbn = params.get("isbn");
         String author = params.get("author"); // FIXME author has firstName and lastName through space
         if (id != null) { // TODO if id = -1? What do me do?
-            BookDto bookDto = bookService.getById(Integer.parseInt(id));
+            BookDto bookDto = bookService.get(Long.parseLong(id));
             response.append(bookDto);
             res.setBody(response.toString());
             res.setStatus(Status.OK);

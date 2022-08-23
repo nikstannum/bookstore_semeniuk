@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 public class UserServiceImpl implements UserService {
 
-    private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
     private final UserDao userDao;
 
     public UserServiceImpl(UserDao userDao) {
@@ -41,8 +41,9 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+
     @Override
-    public UserDto getById(long id) {
+    public UserDto get(Long id) {
         logger.debug("Service method called successfully");
         User user = userDao.get(id);
         return toDto(user);
@@ -88,22 +89,18 @@ public class UserServiceImpl implements UserService {
     public UserDto update(UserDto userDto) {
         logger.debug("Service method called successfully");
         User existing = userDao.getUserByEmail(userDto.getEmail());
-        if (existing != null && existing.getId() != userDto.getId()) {//FIXME equals
-            /*
-            Integer a = 128;
-            Integer b = 128;
-            System.out.println(a == b);
-             */
+        if (existing != null && existing.getId().equals(userDto.getId())) {
             throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
         }
         User user = toEntity(userDto);
         return toDto(userDao.update(user));
     }
 
+
     @Override
-    public boolean delete(long id) {
+    public void delete(Long id) {
         logger.debug("Service method called successfully");
-        return userDao.delete(id);
+//        userDao.delete(id);
     }
 
     @Override

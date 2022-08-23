@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
-    private static Logger logger = LogManager.getLogger(BookServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(BookServiceImpl.class);
 
     public BookServiceImpl(BookDao bookDao) {
         this.bookDao = bookDao;
@@ -64,15 +64,15 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+
     @Override
-    public BookDto getById(long id) {
+    public BookDto get(Long id) {
         logger.debug("Service method called successfully");
         Book book = bookDao.get(id);
         if (book == null) {
             throw new RuntimeException("Couldn't find book with id: " + id);
         }
-        return toDto(book);
-    }
+        return toDto(book);    }
 
     private BookDto toDto(Book book) {
         BookDto bookDto = new BookDto();
@@ -120,7 +120,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(Long id) {
         logger.debug("Service method called successfully");
         if (!bookDao.delete(id)) {
             throw new RuntimeException("Couldn't delete object with id = " + id);
