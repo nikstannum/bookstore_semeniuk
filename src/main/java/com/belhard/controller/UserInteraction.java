@@ -34,12 +34,12 @@ public class UserInteraction {
             if you want to delete the book insert 'd' and press ENTER: 
             """;
 
-    private static final String messageForTitle = "insert title of book: ";//FIXME SNAKE_CASE for const names
-    private static final String messageForAuthor = "insert author of book: ";
-    private static final String messageForIsbn = "insert isbn of book: ";
-    private static final String messageForPages = "insert number of pages: ";
-    private static final String messageForPrice = "insert price : ";
-    private static final String messageForCover = "insert cover of book : ";
+    private static final String MESSAGE_FOR_TITLE = "insert title of book: ";
+    private static final String MESSAGE_FOR_AUTHOR = "insert author of book: ";
+    private static final String MESSAGE_FOR_ISBN = "insert isbn of book: ";
+    private static final String MESSAGE_FOR_PAGES = "insert number of pages: ";
+    private static final String MESSAGE_FOR_PRICE = "insert price : ";
+    private static final String MESSAGE_FOR_COVER = "insert cover of book : ";
 
 
     private static final String MESSAGE1_FOR_USER = """
@@ -82,19 +82,23 @@ public class UserInteraction {
         String answer = scanner.nextLine();
         switch (answer) {
             case "books" -> {
-                try (DataSource dataSource = new DataSource()) {
+                try (DataSource dataSource = DataSource.INSTANCE) {
                     BookDao bookDao = new BookDaoImpl(dataSource);
                     BookService bookService = new BookServiceImpl(bookDao);
                     UserInteraction userInteraction = new UserInteraction(bookService);
                     userInteraction.userInteractForBook();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             case "users" -> {
-                try (DataSource dataSource = new DataSource()) {
+                try (DataSource dataSource = DataSource.INSTANCE) {
                     UserDao userDao = new UserDaoImpl(dataSource);
                     UserService userService = new UserServiceImpl(userDao);
                     UserInteraction userInteraction = new UserInteraction(userService);
                     userInteraction.userInteractForUser();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             default -> {
@@ -122,11 +126,11 @@ public class UserInteraction {
             long id = Long.parseLong(resultHelp);
             System.out.print(MESSAGE3_FOR_BOOK);
             String resultAction = scanner.nextLine();
-            if (resultAction.toLowerCase().equals("v")) {//FIXME equalsIgnoreCase
+            if (resultAction.equalsIgnoreCase("v")) {
                 System.out.println(bookService.get(id));
-            } else if (resultAction.toLowerCase().equals("d")) {
+            } else if (resultAction.equalsIgnoreCase("d")) {
                 bookService.delete(id);
-            } else if (resultAction.toLowerCase().equals("u")) {
+            } else if (resultAction.equalsIgnoreCase("u")) {
                 BookDto bookDto = createBookDto(scanner);
                 bookDto.setId(id);
                 bookService.update(bookDto);
@@ -134,10 +138,12 @@ public class UserInteraction {
                 throw new RuntimeException("you entered an invalid value");
             }
         } catch (NumberFormatException e) {
-            switch (resultHelp.toLowerCase()) {//FIXME tye to be consistent - use either SWITCH or IF-ELSE-IF
-                case "create" -> bookService.create(createBookDto(scanner));
-                case "exit" -> System.out.println("Good bye");
-                default -> throw new RuntimeException("you entered an invalid value");
+            if (resultHelp.equalsIgnoreCase("create")) {
+                bookService.create(createBookDto(scanner));
+            } else if (resultHelp.equalsIgnoreCase("exit")) {
+                System.out.println("Good bye");
+            } else {
+                throw new RuntimeException("you entered an invalid value");
             }
         }
         scanner.close();
@@ -145,17 +151,17 @@ public class UserInteraction {
 
     private BookDto createBookDto(Scanner scanner) {
         BookDto bookDto = new BookDto();
-        System.out.print(messageForTitle);
+        System.out.print(MESSAGE_FOR_TITLE);
         bookDto.setTitle(scanner.nextLine());
-        System.out.print(messageForAuthor);
+        System.out.print(MESSAGE_FOR_AUTHOR);
         bookDto.setAuthor(scanner.nextLine());
-        System.out.print(messageForIsbn);
+        System.out.print(MESSAGE_FOR_ISBN);
         bookDto.setIsbn(scanner.nextLine());
-        System.out.print(messageForPages);
+        System.out.print(MESSAGE_FOR_PAGES);
         bookDto.setPages(Integer.valueOf(scanner.nextLine()));
-        System.out.print(messageForPrice);
+        System.out.print(MESSAGE_FOR_PRICE);
         bookDto.setPrice(BigDecimal.valueOf(Double.parseDouble(scanner.nextLine())));
-        System.out.println(messageForCover);
+        System.out.println(MESSAGE_FOR_COVER);
         bookDto.setCoverDto(BookCoverDto.valueOf(scanner.nextLine()));
         return bookDto;
     }

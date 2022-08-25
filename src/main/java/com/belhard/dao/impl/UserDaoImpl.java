@@ -4,6 +4,7 @@ import com.belhard.dao.UserDao;
 import com.belhard.dao.connection.DataSource;
 import com.belhard.dao.entity.User;
 import com.belhard.dao.entity.User.UserRole;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 public class UserDaoImpl implements UserDao {
 
-    private static Logger logger = LogManager.getLogger(UserDaoImpl.class);//FIXME final, rename to 'log'
+    private static final Logger log = LogManager.getLogger(UserDaoImpl.class);
 
     public static final String INSERT = "INSERT INTO users (first_name, last_name, email, password, role_id) " +
             "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
@@ -40,8 +41,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User create(User user) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+        try (Connection connection = dataSource.getFreeConnections();
+             PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
             statement.setString(3, user.getEmail());
@@ -49,64 +50,63 @@ public class UserDaoImpl implements UserDao {
             statement.setString(5, user.getRole().toString());
             statement.executeUpdate();
             ResultSet keys = statement.getGeneratedKeys();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             if (keys.next()) {
                 Long id = keys.getLong("user_id");
                 return get(id);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
 
     @Override
     public User get(Long id) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_ID);
+        try (Connection connection = dataSource.getFreeConnections();
+             PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
             statement.setLong(1, id);
             ResultSet result = statement.executeQuery();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             if (result.next()) {
                 return processUser(result);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
 
 
-
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_ALL);
-            ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+        try (Connection connection = dataSource.getFreeConnections();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(GET_ALL);
+            log.debug("database access completed successfully");
             while (resultSet.next()) {
                 users.add(processUser(resultSet));
             }
             return users;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return users;
     }
 
     @Override
     public User getUserByEmail(String email) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_EMAIL);
+        try (Connection connection = dataSource.getFreeConnections();
+             PreparedStatement statement = connection.prepareStatement(GET_BY_EMAIL)) {
             statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             if (resultSet.next()) {
                 return processUser(resultSet);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -114,40 +114,39 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getUsersByLastName(String lastName) {
         List<User> users = new ArrayList<>();
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_BY_LASTNAME);
+        try (Connection connection = dataSource.getFreeConnections();
+             PreparedStatement statement = connection.prepareStatement(GET_BY_LASTNAME)) {
             statement.setString(1, lastName);
             ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             while (resultSet.next()) {
                 users.add(processUser(resultSet));
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return users;
     }
 
     @Override
     public int countAll() {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(GET_COUNT_ALL_USERS);
-            ResultSet resultSet = statement.executeQuery();
-            logger.debug("database access completed successfully");
+        try (Connection connection = dataSource.getFreeConnections();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_USERS);
+            log.debug("database access completed successfully");
             if (resultSet.next()) {
-                int allUsers = resultSet.getInt("all_users");
-                return allUsers;
+                return resultSet.getInt("all_users");
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         throw new RuntimeException("ERROR: count of users not definition");
     }
 
     @Override
     public User update(User user) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(UPDATE, Statement.RETURN_GENERATED_KEYS);
+        try (Connection connection = dataSource.getFreeConnections();
+             PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
             statement.setString(3, user.getEmail());
@@ -155,28 +154,24 @@ public class UserDaoImpl implements UserDao {
             statement.setString(5, user.getRole().toString());
             statement.setLong(6, user.getId());
             statement.executeUpdate();
-            logger.debug("database access completed successfully");
-            ResultSet keys = statement.getGeneratedKeys();
-            if (keys.next()) {
-                long id = keys.getLong("user_id");
-                return get(id);
-            }
+            log.debug("database access completed successfully");
+            return get(user.getId());
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
 
     @Override
     public boolean delete(Long id) {
-        try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(DELETE);
+        try (Connection connection = dataSource.getFreeConnections();
+             PreparedStatement statement = connection.prepareStatement(DELETE)) {
             statement.setLong(1, id);
             int rowsDelete = statement.executeUpdate();
-            logger.debug("database access completed successfully");
+            log.debug("database access completed successfully");
             return rowsDelete == 1;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return false;
     }

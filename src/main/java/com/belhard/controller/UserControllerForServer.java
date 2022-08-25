@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 public class UserControllerForServer implements Controller {
     private BookService bookService;
     private UserService userService;
-    private static final Logger logger = LogManager.getLogger(UserControllerForServer.class);
+    private static final Logger log = LogManager.getLogger(UserControllerForServer.class);
 
     public UserControllerForServer(BookService bookService, UserService userService) {
         this.bookService = bookService;
@@ -25,7 +25,7 @@ public class UserControllerForServer implements Controller {
 
     @Override
     public void process(HTTPRequest req, HTTPResponse res) {
-        logger.debug("start");
+        log.debug("start");
         StringBuilder strBuilderResponse = new StringBuilder();
         String url = req.getUrl();
         switch (url) {
@@ -58,7 +58,7 @@ public class UserControllerForServer implements Controller {
         } else if (author != null) {
             List<BookDto> bookDto = bookService.getBooksByAuthor(author);
             for (BookDto bookElm : bookDto) {
-                response.append(bookElm).append('\n'); // TODO: IF userElm is last should me add '\n'?
+                response.append(bookElm).append('\n');
             }
             res.setStatus(Status.OK);
             res.setBody(response.toString());
@@ -75,7 +75,7 @@ public class UserControllerForServer implements Controller {
     private void getAllUsers(HTTPResponse res, StringBuilder response) {
         List<UserDto> userDtoList = userService.getAll();
         for (UserDto userElm : userDtoList) {
-            response.append(userElm).append('\n'); // TODO: IF userElm is last should me add '\n'?
+            response.append(userElm).append('\n');
         }
         res.setStatus(Status.OK);
         res.setBody(response.toString());
@@ -84,7 +84,7 @@ public class UserControllerForServer implements Controller {
     private void getAllBooks(HTTPResponse res, StringBuilder response) {
         List<BookDto> bookDtoList = bookService.getAll();
         for (BookDto bookElm : bookDtoList) {
-            response.append(bookElm).append('\n'); // TODO: IF userElm is last should me add '\n'?
+            response.append(bookElm).append('\n');
         }
         res.setStatus(Status.OK);
         res.setBody(response.toString());

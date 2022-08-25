@@ -13,14 +13,14 @@ public class ConnectionProperties {
     private final String user;
 
     public static final String propsFile = "src/main/resources/application.properties";
-    private static final Logger logger = LogManager.getLogger(ConnectionProperties.class);
+    private static final Logger log = LogManager.getLogger(ConnectionProperties.class);
 
     public ConnectionProperties() {
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream(propsFile)) {
             properties.load(input);
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
             throw new RuntimeException(e);
         }
         url = properties.getProperty("url");

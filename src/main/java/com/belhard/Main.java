@@ -18,9 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 
-//        UserInteraction.userInteract();
-
-        DataSource dataSource = new DataSource();
+        DataSource dataSource = DataSource.INSTANCE;
         BookDao bookDao = new BookDaoImpl(dataSource);
         UserDao userDao = new UserDaoImpl(dataSource);
 
@@ -30,6 +28,5 @@ public class Main {
         Controller controller = new UserControllerForServer(bookService, userService);
         Server server = new Server(controller);
         server.run();
-
     }
 }

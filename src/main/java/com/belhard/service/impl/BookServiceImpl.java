@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
-    private static final Logger logger = LogManager.getLogger(BookServiceImpl.class);
+    private static final Logger log = LogManager.getLogger(BookServiceImpl.class);
 
     public BookServiceImpl(BookDao bookDao) {
         this.bookDao = bookDao;
@@ -21,7 +21,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto create(BookDto bookDto) {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         validateCreate(bookDto);
         Book book = toEntity(bookDto);
         return toDto(bookDao.create(book));
@@ -67,7 +67,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto get(Long id) {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         Book book = bookDao.get(id);
         if (book == null) {
             throw new RuntimeException("Couldn't find book with id: " + id);
@@ -88,7 +88,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAll() {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         return bookDao.getAll().stream()
                 .map(this::toDto)
                 .toList();
@@ -96,7 +96,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getBookDtoByIsbn(String isbn) {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         Book book = bookDao.getBookByIsbn(isbn);
         if (book == null) {
             throw new RuntimeException("Couldn't find book with isbn: " + isbn);
@@ -106,14 +106,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getBooksByAuthor(String author) {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         return bookDao.getBooksByAuthor(author).stream().map(this::toDto).toList();
     }
 
 
     @Override
     public BookDto update(BookDto bookDto) {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         validateUpdate(bookDto);
         Book book = toEntity(bookDto);
         return toDto(bookDao.update(book));
@@ -121,7 +121,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Long id) {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         if (!bookDao.delete(id)) {
             throw new RuntimeException("Couldn't delete object with id = " + id);
         }
@@ -129,13 +129,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public int countAll() {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         return bookDao.countAll();
     }
 
     @Override
     public BigDecimal totalCostAllBooksOfAuthor(String author) {
-        logger.debug("Service method called successfully");
+        log.debug("Service method called successfully");
         List<BookDto> dtos = getBooksByAuthor(author);
         BigDecimal totalCost = BigDecimal.valueOf(0);
         for (BookDto dto : dtos) {

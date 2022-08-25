@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 public class Server {
 
     public static final String propsFile = "src/main/resources/application.properties";
-    private static final Logger logger = LogManager.getLogger(Server.class);
+    private static final Logger log = LogManager.getLogger(Server.class);
     private final int port;
     private final Controller controller;
 
@@ -21,9 +21,9 @@ public class Server {
         Properties properties = new Properties();
         try (InputStream in = new FileInputStream(propsFile)) {
             properties.load(in);
-            logger.debug("connection to input stream completed");
+            log.debug("connection to input stream completed");
         } catch (IOException e) {
-            logger.error("no connection to input stream");
+            log.error("no connection to input stream");
         }
         this.port = Integer.parseInt(properties.getProperty("port"));
     }
@@ -34,7 +34,7 @@ public class Server {
 
     public void run() {
         try (ServerSocket server = new ServerSocket(port)) {
-            logger.debug("server created with port = {}", port);
+            log.debug("server created with port = {}", port);
             while (true) {
                 try (Socket socket = server.accept()) {
                     String content = getRequestContent(socket);
@@ -48,12 +48,12 @@ public class Server {
                 }
             }
         } catch (IOException e) {
-            logger.error("server didn't create at the port = {}", port);
+            log.error("server didn't create at the port = {}", port);
         }
     }
 
     private HTTPRequest processRequestContent(String request) {
-        logger.debug("start");
+        log.debug("start");
         int endOfLine = request.indexOf("\r\n");
         String firstLine = request.substring(0, endOfLine);
         String[] elements = firstLine.split(" ");
@@ -78,8 +78,8 @@ public class Server {
 
     private String getRequestContent(Socket socket) throws IOException {
         StringBuilder content = new StringBuilder();
-        InputStream inputStream = socket.getInputStream(); // TODO Closing the returned InputStream will close the associated socket.
-        logger.debug("start");
+        InputStream inputStream = socket.getInputStream();
+        log.debug("start");
         int read;
         int previous = 0;
         while ((read = inputStream.read()) != -1) {
@@ -95,8 +95,8 @@ public class Server {
 
     private void sendResponse(Socket socket, HTTPResponse response) {
         try {
-            PrintWriter out = new PrintWriter(socket.getOutputStream()); // TODO Closing the returned OutputStream will close the associated socket.
-            logger.debug("open PrintWriter in ");
+            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            log.debug("open PrintWriter in ");
             Status status = response.getStatus();
             out.println("HTTP/1.1 " + status.getCode() + " " + status.getMessage());
             out.println();
@@ -105,7 +105,7 @@ public class Server {
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error("didn't open PrintWriter");
+            log.error("didn't open PrintWriter");
         }
     }
 }

@@ -26,19 +26,24 @@ public class ProxyConnection implements Connection {
     private static final Logger log = LogManager.getLogger(ProxyConnection.class);
     private final Connection realConnection;
 
-    public ProxyConnection(Connection realConnection) {
+    ProxyConnection(Connection realConnection) {
         this.realConnection = realConnection;
     }
 
-    void reallyClose() throws SQLException {
-        realConnection.close();
-        log.info("ProxyConnection was really closed");
+    void reallyClose() {
+        try {
+            realConnection.close();
+            log.info("ProxyConnection is closed");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            log.error("ProxyConnection not closed");
+        }
     }
 
     @Override
     public void close() throws SQLException {
-        log.info("Smb attempted to close ProxyConnection");
-        //ignore
+        DataSource.INSTANCE.releaseConnection(this);
+        log.info("ProxyConnection returned in the pool");
     }
 
     @Override
