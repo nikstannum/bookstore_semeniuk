@@ -17,7 +17,6 @@ public class Main {
 
 
     public static void main(String[] args) throws InterruptedException {
-
         DataSource dataSource = DataSource.INSTANCE;
         BookDao bookDao = new BookDaoImpl(dataSource);
         UserDao userDao = new UserDaoImpl(dataSource);
