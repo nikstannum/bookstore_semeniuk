@@ -1,6 +1,6 @@
 package com.belhard.controller;
 
-import com.belhard.server.Controller;
+import com.belhard.server.Servlet;
 import com.belhard.server.HTTPRequest;
 import com.belhard.server.HTTPResponse;
 import com.belhard.server.Status;
@@ -13,12 +13,12 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserControllerForServer implements Controller {
+public class UserServletForServer implements Servlet {
     private BookService bookService;
     private UserService userService;
-    private static final Logger log = LogManager.getLogger(UserControllerForServer.class);
+    private static final Logger log = LogManager.getLogger(UserServletForServer.class);
 
-    public UserControllerForServer(BookService bookService, UserService userService) {
+    public UserServletForServer(BookService bookService, UserService userService) {
         this.bookService = bookService;
         this.userService = userService;
     }
@@ -84,7 +84,7 @@ public class UserControllerForServer implements Controller {
     private void getAllBooks(HTTPResponse res, StringBuilder response) {
         List<BookDto> bookDtoList = bookService.getAll();
         for (BookDto bookElm : bookDtoList) {
-            response.append(bookElm).append('\n');
+            response.append(bookElm).append("\n");
         }
         res.setStatus(Status.OK);
         res.setBody(response.toString());

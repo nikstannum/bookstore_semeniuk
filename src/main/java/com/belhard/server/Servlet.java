@@ -1,6 +1,6 @@
 package com.belhard.server;
 
-public interface Controller {
+public interface Servlet {
 
     public void process(HTTPRequest request, HTTPResponse response);
 

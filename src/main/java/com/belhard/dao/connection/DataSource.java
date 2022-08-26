@@ -13,10 +13,10 @@ import org.apache.logging.log4j.Logger;
 public enum DataSource implements AutoCloseable {
     INSTANCE;
 
-    private final Logger log = LogManager.getLogger(DataSource.class); // TODO why Logger must be nonstatic?
     private BlockingQueue<ProxyConnection> freeConnections;
     private Queue<ProxyConnection> givenAwayConnections;
     public static final int DEFAULT_POOL_SIZE = 2;
+    private final Logger log = LogManager.getLogger(DataSource.class); // TODO why Logger must be nonstatic?
 
     DataSource() {
         freeConnections = new LinkedBlockingDeque<>(DEFAULT_POOL_SIZE);

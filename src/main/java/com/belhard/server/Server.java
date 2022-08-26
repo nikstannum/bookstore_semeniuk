@@ -15,7 +15,7 @@ public class Server {
     public static final String propsFile = "src/main/resources/application.properties";
     private static final Logger log = LogManager.getLogger(Server.class);
     private final int port;
-    private final Controller controller;
+    private final Servlet servlet;
 
     {
         Properties properties = new Properties();
@@ -28,8 +28,8 @@ public class Server {
         this.port = Integer.parseInt(properties.getProperty("port"));
     }
 
-    public Server(Controller controller) {
-        this.controller = controller;
+    public Server(Servlet servlet) {
+        this.servlet = servlet;
     }
 
     public void run() {
@@ -43,7 +43,7 @@ public class Server {
                     }
                     HTTPRequest request = processRequestContent(content);
                     HTTPResponse response = new HTTPResponse(Status.OK);
-                    controller.process(request, response);
+                    servlet.process(request, response);
                     sendResponse(socket, response);
                 }
             }
