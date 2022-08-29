@@ -16,7 +16,7 @@ public enum DataSource implements AutoCloseable {
     private BlockingQueue<ProxyConnection> freeConnections;
     private Queue<ProxyConnection> givenAwayConnections;
     public static final int DEFAULT_POOL_SIZE = 2;
-    private final Logger log = LogManager.getLogger(DataSource.class); // TODO why Logger must be nonstatic?
+    private final Logger log = LogManager.getLogger(DataSource.class);
 
     DataSource() {
         freeConnections = new LinkedBlockingDeque<>(DEFAULT_POOL_SIZE);
@@ -41,6 +41,7 @@ public enum DataSource implements AutoCloseable {
     private void init() {
         ConnectionProperties props = new ConnectionProperties();
         try {
+            Class.forName("org.postgresql.Driver"); // TODO: At first it worked fine without Class.forName.
             Connection realConnection = DriverManager.getConnection(props.getUrl(), props.getUser(), props.getPassword());
             for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
                 freeConnections.add(new ProxyConnection(realConnection));
@@ -48,6 +49,8 @@ public enum DataSource implements AutoCloseable {
             log.info("connection to database completed");
         } catch (SQLException e) {
             log.error("connection to database didn't complete");
+        } catch (ClassNotFoundException e) {
+            log.error(e);
         }
     }
 
