@@ -69,10 +69,10 @@
               <a class="nav-link" aria-current="page" href="/bookstore_semeniuk/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="#">All books</a>
+              <a class="nav-link" href="books">All books</a>
             </li>
               <li class="nav-item">
-                                          <a class="nav-link" href="users">All users</a>
+                                          <a class="nav-link active" href="users">All users</a>
                                         </li>
           </ul>
         </div>
@@ -89,21 +89,25 @@
       </style>
     </head>
     <body>
-      <h2>Our books:</h2>
+      <h2>Our users:</h2>
 
       <table style="width: 100%">
         <tr>
           <th>#</th>
-          <th>title</th>
-          <th>author</th>
+          <th>first name</th>
+          <th>last name</th>
+          <th>email</th>
         </tr>
-        <c:forEach items="${books}" var="book" varStatus="counter">
+        <c:forEach items="${users}" var="user" varStatus="counter">
         <tr>
           <td>${counter.count}</td>
-          <td><a href="book?id=${book.id}">${book.title}</a></td>
+          <td><a href="user?id=${user.id}">${user.firstName}</a></td>
           <td>
-            ${book.author}
+            ${user.lastName}
           </td>
+                    <td>
+                                ${user.email}
+                              </td>
         </tr>
         </c:forEach>
       </table>

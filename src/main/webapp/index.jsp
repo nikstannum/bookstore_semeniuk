@@ -71,6 +71,9 @@
             <li class="nav-item">
               <a class="nav-link" href="books">All books</a>
             </li>
+              <li class="nav-item">
+                                          <a class="nav-link" href="users">All users</a>
+                                        </li>
           </ul>
         </div>
       </div>
