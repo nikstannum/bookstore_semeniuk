@@ -60,14 +60,14 @@ public enum DataSource implements AutoCloseable {
     }
 
     private void destroyPoll() {
-        for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
-            try {
+        try {
+            for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
                 freeConnections.take().reallyClose();
-                log.info("Poll successfully destroyed");
-            } catch (InterruptedException e) {
-                log.error("Poll not destroyed");
-                e.printStackTrace();
             }
+            log.info("Poll successfully destroyed");
+        } catch (InterruptedException e) {
+            log.error("Poll not destroyed");
+            e.printStackTrace();
         }
     }
 
