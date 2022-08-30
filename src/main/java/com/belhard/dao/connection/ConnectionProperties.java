@@ -12,7 +12,6 @@ public class ConnectionProperties {
     private final String password;
     private final String user;
 
-//    public static final String propsFile = "src/main/resources/application.properties"; // TODO
     public static final String propsFile = System.getenv("TOMCAT_HOME") + "\\webapps\\bookstore_semeniuk\\WEB-INF\\classes" +
         "\\application.properties";
     private static final Logger log = LogManager.getLogger(ConnectionProperties.class);
@@ -20,7 +19,6 @@ public class ConnectionProperties {
     public ConnectionProperties() {
         Properties properties = new Properties();
         try (InputStream input =  new FileInputStream(propsFile)) {
-            //FIXME: input == null if to use getClass().getResourceAsStream("path_to_file")
             properties.load(input);
         } catch (IOException e) {
             log.error(e);

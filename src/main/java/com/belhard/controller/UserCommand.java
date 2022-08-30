@@ -11,9 +11,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @WebServlet("/user")
 public class UserCommand extends HttpServlet {
-    private final UserService service = new UserServiceImpl(new UserDaoImpl(DataSource.INSTANCE));
+    private final DataSource dataSource = DataSource.INSTANCE;
+    private final UserService service = new UserServiceImpl(new UserDaoImpl(dataSource));
+    private static final Logger log = LogManager.getLogger(UserCommand.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,6 +34,15 @@ public class UserCommand extends HttpServlet {
         } catch (RuntimeException e) {
             resp.setStatus(400);
             resp.getWriter().write("not exist user with id=" + idStr);
+        }
+    }
+    @Override
+    public void destroy() {
+        try {
+            dataSource.close();
+            log.info("dataSource successfully destroyed");
+        } catch (Exception e) {
+            log.error(e + " dataSource didn't destroy");
         }
     }
 }

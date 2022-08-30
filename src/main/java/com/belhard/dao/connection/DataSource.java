@@ -15,7 +15,7 @@ public enum DataSource implements AutoCloseable {
 
     private BlockingQueue<ProxyConnection> freeConnections;
     private Queue<ProxyConnection> givenAwayConnections;
-    public static final int DEFAULT_POOL_SIZE = 2;
+    public static final int DEFAULT_POOL_SIZE = 20;
     private final Logger log = LogManager.getLogger(DataSource.class);
 
     DataSource() {
@@ -59,7 +59,7 @@ public enum DataSource implements AutoCloseable {
         freeConnections.offer(connection);
     }
 
-    public void destroyPoll() {
+    private void destroyPoll() {
         for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
             try {
                 freeConnections.take().reallyClose();

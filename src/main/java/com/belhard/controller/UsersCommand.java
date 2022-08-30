@@ -12,15 +12,29 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet("/users")
 public class UsersCommand extends HttpServlet {
-    private final UserService service = new UserServiceImpl(new UserDaoImpl(DataSource.INSTANCE));
+    private final DataSource dataSource = DataSource.INSTANCE;
+    private final UserService service = new UserServiceImpl(new UserDaoImpl(dataSource));
+    private static final Logger log = LogManager.getLogger(UsersCommand.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<UserDto> users = service.getAll();
         req.setAttribute("users", users);
         req.getRequestDispatcher("jsp/users.jsp").forward(req, resp);
+    }
+
+    @Override
+    public void destroy() {
+        try {
+            dataSource.close();
+            log.info("dataSource successfully destroyed");
+        } catch (Exception e) {
+            log.error(e + " dataSource didn't destroy");
+        }
     }
 }
