@@ -39,7 +39,7 @@ public enum DataSource implements AutoCloseable {
     }
 
     private void init() {
-        ConnectionProperties props = new ConnectionProperties();
+        ConfigurationManager props = new ConfigurationManager();
         try {
             Class.forName("org.postgresql.Driver"); // TODO: At first it worked fine without Class.forName.
             Connection realConnection = DriverManager.getConnection(props.getUrl(), props.getUser(), props.getPassword());

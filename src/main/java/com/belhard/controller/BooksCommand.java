@@ -17,24 +17,25 @@ import org.apache.logging.log4j.Logger;
 
 @WebServlet("/books")
 public class BooksCommand extends HttpServlet {
-    private static final Logger log = LogManager.getLogger(BooksCommand.class);
-    private final DataSource dataSource =DataSource.INSTANCE;
-    private final BookService service = new BookServiceImpl(new BookDaoImpl(dataSource));
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<BookDto> books = service.getAll();
-        req.setAttribute("books", books);
-        req.getRequestDispatcher("jsp/books.jsp").forward(req, resp);
-    }
+	private static final Logger log = LogManager.getLogger(BooksCommand.class);
+	private final DataSource dataSource = DataSource.INSTANCE;
+	private final BookService service = new BookServiceImpl(new BookDaoImpl(dataSource));
 
-    @Override
-    public void destroy() {
-        super.destroy();
-        try {
-            dataSource.close();
-            log.info("dataSource successfully destroyed");
-        } catch (Exception e) {
-            log.error(e + " dataSource didn't destroy");
-        }
-    }
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		List<BookDto> books = service.getAll();
+		req.setAttribute("books", books);
+		req.getRequestDispatcher("jsp/books.jsp").forward(req, resp);
+	}
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		try {
+			dataSource.close();
+			log.info("dataSource successfully destroyed");
+		} catch (Exception e) {
+			log.error(e + " dataSource didn't destroy");
+		}
+	}
 }
