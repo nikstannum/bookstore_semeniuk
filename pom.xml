@@ -11,13 +11,18 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <log4jVersion>2.18.0</log4jVersion>
+        <postgresqlVersion>42.4.1</postgresqlVersion>
+        <servlet-apiVersion>5.0.0</servlet-apiVersion>
+        <servlet.jsp-apiVersion>3.0.0</servlet.jsp-apiVersion>
+        <jsp.jstlVersion>2.0.0</jsp.jstlVersion>
+        <maven-war-pluginVersion>3.3.2</maven-war-pluginVersion>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.4.1</version>
+            <version>${postgresqlVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -32,34 +37,27 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>5.0.0</version>
+            <version>${servlet-apiVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet.jsp</groupId>
             <artifactId>jakarta.servlet.jsp-api</artifactId>
-            <version>3.0.0</version> <!-- maybe 3.1.0 -->
+            <version>${servlet.jsp-apiVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-            <version>2.0.0</version> <!-- maybe 3.0.0 then-->
+            <version>${jsp.jstlVersion}</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>jakarta.servlet.jsp.jstl</groupId>
-            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-            <version>3.0.0</version>
-        </dependency>
--->
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>${maven-war-pluginVersion}</version>
                 <configuration>
                     <warName>bookstore_semeniuk</warName>
                     <outputDirectory>${env.TOMCAT_HOME}/webapps</outputDirectory>
