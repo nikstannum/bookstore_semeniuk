@@ -38,8 +38,7 @@ public class BookCommand extends HttpServlet {
     }
 
     @Override
-    public void destroy() { // FIXME: do me need this method?
-        super.destroy();
+    public void destroy() {
         try {
             dataSource.close();
             log.info("dataSource successfully destroyed");
