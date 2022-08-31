@@ -15,6 +15,8 @@ public class ConfigurationManager {
 	private final String url;
 	private final String password;
 	private final String user;
+	private final String dbDriver;
+	private final int dbPoolSize;
 	public static final String propsFile = "/application.properties";
 	private static final Logger log = LogManager.getLogger(ConfigurationManager.class);
 	
@@ -27,9 +29,11 @@ public class ConfigurationManager {
 			log.error(e);
 			throw new RuntimeException(e);
 		}
-		url = properties.getProperty("url");
-		password = properties.getProperty("password");
-		user = properties.getProperty("user");
+		url = properties.getProperty("db.url");
+		password = properties.getProperty("db.password");
+		user = properties.getProperty("db.user");
+		dbDriver = properties.getProperty("db.driver");
+		dbPoolSize = Integer.parseInt(properties.getProperty("db.pool_size"));
 	}
 
 	public String getUrl() {
@@ -43,4 +47,13 @@ public class ConfigurationManager {
 	public String getUser() {
 		return user;
 	}
+
+	public String getDbDriver() {
+		return dbDriver;
+	}
+
+	public int getDbPoolSize() {
+		return dbPoolSize;
+	}
+	
 }

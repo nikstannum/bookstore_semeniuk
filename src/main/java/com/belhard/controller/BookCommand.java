@@ -16,34 +16,47 @@ import org.apache.logging.log4j.Logger;
 
 @WebServlet("/book")
 public class BookCommand extends HttpServlet {
-    private static final Logger log = LogManager.getLogger(BookCommand.class);
-    private final DataSource dataSource = DataSource.INSTANCE;
-    private final BookService service = new BookServiceImpl(new BookDaoImpl(dataSource));
+	private static final Logger log = LogManager.getLogger(BookCommand.class);
+	private final BookService service = new BookServiceImpl(new BookDaoImpl(DataSource.INSTANCE));
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String idStr = req.getParameter("id");
-        try {
-            Long id = Long.parseLong(idStr);
-            BookDto dto = service.get(id);
-            req.setAttribute("book", dto);
-            req.getRequestDispatcher("jsp/book.jsp").forward(req, resp);
-        } catch (NumberFormatException e) {
-            resp.setStatus(404);
-            resp.getWriter().write("invalid value");
-        } catch (RuntimeException e) {
-            resp.setStatus(400);
-            resp.getWriter().write("Not exists book with id=" + idStr);
-        }
-    }
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Long id = getId(req, resp);
+		if (id == null) {
+			return;
+		}
+		BookDto dto;
+		try {
+			dto = service.get(id);
+		} catch (Exception e) {
+			resp.setStatus(500);
+			resp.getWriter().write("Not exists book with id=" + id);
+			return;
+		}
+		req.setAttribute("book", dto);
+		req.getRequestDispatcher("jsp/book.jsp").forward(req, resp);
+	}
 
-    @Override
-    public void destroy() {
-        try {
-            dataSource.close();
-            log.info("dataSource successfully destroyed");
-        } catch (Exception e) {
-            log.error(e + " dataSource didn't destroy");
-        }
-    }
+	private Long getId(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		String idStr = req.getParameter("id");
+		long id;
+		try {
+			id = Long.parseLong(idStr);
+		} catch (NumberFormatException e) {
+			resp.setStatus(404);
+			resp.getWriter().write("invalid value");
+			return null;
+		}
+		return id;
+	}
+
+	@Override
+	public void destroy() {
+		try {
+			DataSource.INSTANCE.close();
+			log.info("dataSource successfully destroyed");
+		} catch (Exception e) {
+			log.error(e + " dataSource didn't destroy");
+		}
+	}
 }
