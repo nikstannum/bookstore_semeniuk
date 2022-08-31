@@ -30,7 +30,6 @@ public class BooksCommand extends HttpServlet {
 
 	@Override
 	public void destroy() {
-		super.destroy();
 		try {
 			dataSource.close();
 			log.info("dataSource successfully destroyed");
