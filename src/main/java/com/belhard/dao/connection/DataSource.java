@@ -15,7 +15,7 @@ public enum DataSource implements AutoCloseable {
 
 	private BlockingQueue<ProxyConnection> freeConnections;
 	private Queue<ProxyConnection> givenAwayConnections;
-	public final int poolSize = ConfigurationManager.INSTANCE.getDbPoolSize();
+	public final int poolSize = Integer.parseInt(ConfigurationManager.INSTANCE.getProperty("db.pool_size"));
 	private final Logger log = LogManager.getLogger(DataSource.class);
 
 	DataSource() {
@@ -38,11 +38,11 @@ public enum DataSource implements AutoCloseable {
 	}
 
 	private void init() {
-		ConfigurationManager props = new ConfigurationManager();
+		ConfigurationManager props = ConfigurationManager.INSTANCE;
 		try {
-			Class.forName("org.postgresql.Driver");
-			Connection realConnection = DriverManager.getConnection(props.getUrl(), props.getUser(),
-					props.getPassword());
+			Class.forName(props.getProperty("db.driver"));
+			Connection realConnection = DriverManager.getConnection(props.getProperty("db.url"), props.getProperty("db.user"),
+					props.getProperty("db.password"));
 			for (int i = 0; i < poolSize; i++) {
 				freeConnections.add(new ProxyConnection(realConnection));
 			}
