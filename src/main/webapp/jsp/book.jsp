@@ -31,9 +31,9 @@ table, th, td {
 				<ul class="navbar-nav">
 					<li class="nav-item"><a class="nav-link" aria-current="page"
 						href="/bookstore_semeniuk/">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="books">All
+					<li class="nav-item"><a class="nav-link" href="controller?command=books">All
 							books</a></li>
-					<li class="nav-item"><a class="nav-link" href="users">All
+					<li class="nav-item"><a class="nav-link" href="controller?command=users">All
 							users</a></li>
 				</ul>
 			</div>

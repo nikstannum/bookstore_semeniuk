@@ -51,7 +51,7 @@
 						href="/bookstore_semeniuk/">Home</a></li>
 					<li class="nav-item"><a class="nav-link active" href="#">All
 							books</a></li>
-					<li class="nav-item"><a class="nav-link" href="users">All
+					<li class="nav-item"><a class="nav-link" href="controller?command=users">All
 							users</a></li>
 				</ul>
 			</div>
@@ -77,7 +77,7 @@ table, th, td {
 		<c:forEach items="${books}" var="book" varStatus="counter">
 			<tr>
 				<td>${counter.count}</td>
-				<td><a href="book?id=${book.id}">${book.title}</a></td>
+				<td><a href="controller?command=book&id=${book.id}">${book.title}</a></td>
 				<td>${book.author}</td>
 			</tr>
 		</c:forEach>

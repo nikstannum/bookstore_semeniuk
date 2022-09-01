@@ -49,9 +49,9 @@
 				<ul class="navbar-nav">
 					<li class="nav-item"><a class="nav-link" aria-current="page"
 						href="/bookstore_semeniuk/">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="books">All
+					<li class="nav-item"><a class="nav-link" href="controller?command=books">All
 							books</a></li>
-					<li class="nav-item"><a class="nav-link active" href="users">All
+					<li class="nav-item"><a class="nav-link active" href="#">All
 							users</a></li>
 				</ul>
 			</div>
@@ -77,7 +77,7 @@ table, th, td {
 		<c:forEach items="${users}" var="user" varStatus="counter">
 			<tr>
 				<td>${counter.count}</td>
-				<td><a href="user?id=${user.id}">${user.firstName}</a></td>
+				<td><a href="controller?command=user&id=${user.id}">${user.firstName}</a></td>
 				<td>${user.lastName}</td>
 				<td>${user.email}</td>
 			</tr>
