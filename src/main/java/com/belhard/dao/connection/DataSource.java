@@ -7,20 +7,16 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import com.belhard.service.BookService;
-import com.belhard.service.CrudService;
-import com.belhard.service.impl.BookServiceImpl;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public enum DataSource implements AutoCloseable {
 	INSTANCE;
 
 	private BlockingQueue<ProxyConnection> freeConnections;
 	private Queue<ProxyConnection> givenAwayConnections;
 	public final int poolSize = Integer.parseInt(ConfigurationManager.INSTANCE.getProperty("db.pool_size"));
-	private final Logger log = LogManager.getLogger(DataSource.class);
 
 	DataSource() {
 		freeConnections = new LinkedBlockingDeque<>(poolSize);
@@ -50,7 +46,7 @@ public enum DataSource implements AutoCloseable {
 			for (int i = 0; i < poolSize; i++) {
 				freeConnections.add(new ProxyConnection(realConnection));
 			}
-			log.info("connection to database completed");
+//			log.info("connection to database completed");
 		} catch (SQLException e) {
 			log.error("connection to database didn't complete");
 		} catch (ClassNotFoundException e) {
@@ -78,5 +74,13 @@ public enum DataSource implements AutoCloseable {
 	@Override
 	public void close() throws Exception {
 		destroyPoll();
+		DriverManager.getDrivers().asIterator().forEachRemaining(driver -> {
+			try {
+				DriverManager.deregisterDriver(driver);
+				log.info("Driver {} deregistered", driver);
+			} catch (SQLException e) {
+				log.error("Driver wasn't deregister", e);
+			}
+		});
 	}
 }

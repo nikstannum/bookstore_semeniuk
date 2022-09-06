@@ -34,6 +34,7 @@
 }
 </style>
 </head>
+
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container">
@@ -49,14 +50,24 @@
 				<ul class="navbar-nav">
 					<li class="nav-item"><a class="nav-link active"
 						aria-current="page" href="#">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=books">All
-							books</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=users">All
-							users</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=books">All books</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=users">All users</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=orders">All orders</a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
+<div>
+<h4>
+	<ul>
+		<li><a href="controller?command=create_user_form">Sign up</a></li>
+	</ul>
+</h4>
+</div>
+
 
 	<div class="container text-center my-5">
 		<div class="row">

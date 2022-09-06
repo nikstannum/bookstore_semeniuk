@@ -31,11 +31,11 @@ table, th, td {
 				<ul class="navbar-nav">
 					<li class="nav-item"><a class="nav-link" aria-current="page"
 						href="/bookstore_semeniuk/">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=books">All
-							books</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=users">All
-							users</a></li>
-							<li class="nav-item"><a class="nav-link"
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=books">All books</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=users">All users</a></li>
+					<li class="nav-item"><a class="nav-link"
 						href="controller?command=orders">All orders</a></li>
 				</ul>
 			</div>
@@ -45,18 +45,23 @@ table, th, td {
 
 	<table style="width: 100%">
 		<tr>
-			<th>id</th>
-			<th>firstName</th>
-			<th>lastName</th>
-			<th>email</th>
-			<th>role</th>
+			<th>order id</th>
+			<th>user</th>
+			<th>Items</th>
+			<th>status</th>
 		</tr>
 		<tr>
-			<td>${user.id}</td>
-			<td>${user.firstName}</td>
-			<td>${user.lastName}</td>
-			<td>${user.email}</td>
-			<td>${user.userRoleDto}</td>
+			<td>${order.id}</td>
+			<td>${order.user.email}</td>
+			<td>
+				<ul>
+					<c:forEach items="${order.details}" var="info">
+						<li><a href="controller?command=book&id=${info.book.id}">${info.book.title}</a> ($${info.bookPrice}) x ${info.bookQuantity}</li>
+					</c:forEach>
+				</ul>
+				TOTAL PRICE = ${order.totalCost}
+			</td>
+			<td>${order.status}</td>
 		</tr>
 	</table>
 

@@ -1,12 +1,5 @@
 package com.belhard.dao.impl;
 
-import com.belhard.dao.BookDao;
-import com.belhard.dao.connection.DataSource;
-import com.belhard.dao.entity.Book;
-import com.belhard.dao.entity.Book.BookCover;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,23 +8,36 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.belhard.dao.BookDao;
+import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.entity.Book;
+import com.belhard.dao.entity.Book.BookCover;
+
 public class BookDaoImpl implements BookDao {
 
 	private static final Logger log = LogManager.getLogger(BookDaoImpl.class);
 
 	public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price, cover_id) "
 			+ "VALUES (?, ?, ?, ?, ?, (SELECT c.cover_id FROM covers c WHERE c.name = ?))";
-	public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS " + "cover FROM books b "
+	public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
+			+ "cover FROM books b "
 			+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.book_id = ? AND b.deleted = false";
-	public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS " + "cover FROM books b "
-			+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false";
-	public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name " + "AS cover FROM books b "
+	public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
+			+ "cover FROM books b " + "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false";
+	public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name "
+			+ "AS cover FROM books b "
 			+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.isbn = ? AND b.deleted = false";
-	public static final String GET_BY_AUTHOR = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name" + " AS cover FROM books b "
+	public static final String GET_BY_AUTHOR = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name"
+			+ " AS cover FROM books b "
 			+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.author = ? AND b.deleted = false";
-	public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) AS total from books b WHERE b.deleted =" + " false";
+	public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) AS total from books b WHERE b.deleted ="
+			+ " false";
 	public static final String UPDATE = "UPDATE books SET title = ?, author = ?, isbn = ?, pages = ?, price = ?, "
-			+ "cover_id = (SELECT c.cover_id FROM covers c WHERE c.name = ?) " + "WHERE book_id = ? AND deleted = false";
+			+ "cover_id = (SELECT c.cover_id FROM covers c WHERE c.name = ?) "
+			+ "WHERE book_id = ? AND deleted = false";
 	public static final String DELETE = "UPDATE books SET deleted = true WHERE book_id = ?";
 
 	private final DataSource dataSource;
@@ -68,7 +74,8 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public Book get(Long id) {
-		try (Connection connection = dataSource.getFreeConnections(); PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
+		try (Connection connection = dataSource.getFreeConnections();
+				PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			log.debug("database access completed successfully");
@@ -84,7 +91,8 @@ public class BookDaoImpl implements BookDao {
 	@Override
 	public List<Book> getAll() {
 		List<Book> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections();
+				Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(GET_ALL);
 			log.debug("database access completed successfully");
 			while (resultSet.next()) {
@@ -99,7 +107,8 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public Book getBookByIsbn(String isbn) {
-		try (Connection connection = dataSource.getFreeConnections(); PreparedStatement statement = connection.prepareStatement(GET_BY_ISBN)) {
+		try (Connection connection = dataSource.getFreeConnections();
+				PreparedStatement statement = connection.prepareStatement(GET_BY_ISBN)) {
 			statement.setString(1, isbn);
 			ResultSet resultSet = statement.executeQuery();
 			log.debug("database access completed successfully");
@@ -115,7 +124,8 @@ public class BookDaoImpl implements BookDao {
 	@Override
 	public List<Book> getBooksByAuthor(String author) {
 		List<Book> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections(); PreparedStatement statement = connection.prepareStatement(GET_BY_AUTHOR)) {
+		try (Connection connection = dataSource.getFreeConnections();
+				PreparedStatement statement = connection.prepareStatement(GET_BY_AUTHOR)) {
 			statement.setString(1, author);
 			ResultSet resultSet = statement.executeQuery();
 			log.debug("database access completed successfully");
@@ -131,7 +141,8 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public Book update(Book book) {
-		try (Connection connection = dataSource.getFreeConnections(); PreparedStatement statement = connection.prepareStatement(UPDATE)) {
+		try (Connection connection = dataSource.getFreeConnections();
+				PreparedStatement statement = connection.prepareStatement(UPDATE)) {
 			statement.setString(1, book.getTitle());
 			statement.setString(2, book.getAuthor());
 			statement.setString(3, book.getIsbn());
@@ -150,7 +161,8 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public boolean delete(Long id) {
-		try (Connection connection = dataSource.getFreeConnections(); PreparedStatement statement = connection.prepareStatement(DELETE)) {
+		try (Connection connection = dataSource.getFreeConnections();
+				PreparedStatement statement = connection.prepareStatement(DELETE)) {
 			statement.setLong(1, id);
 			int rowsDelete = statement.executeUpdate();
 			log.debug("database access completed successfully");
@@ -163,7 +175,8 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public int countAll() {
-		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections();
+				Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_BOOKS);
 			log.debug("database access completed successfully");
 			if (resultSet.next()) {

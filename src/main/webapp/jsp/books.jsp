@@ -51,13 +51,14 @@
 						href="/bookstore_semeniuk/">Home</a></li>
 					<li class="nav-item"><a class="nav-link active" href="#">All
 							books</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=users">All
-							users</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=users">All users</a></li>
+						<li class="nav-item"><a class="nav-link"
+						href="controller?command=orders">All orders</a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
-
 	<style>
 table, th, td {
 	border: 1px solid black;

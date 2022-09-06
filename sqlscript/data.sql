@@ -3,12 +3,16 @@ TRUNCATE TABLE books CASCADE;
 TRUNCATE TABLE "covers" CASCADE;
 TRUNCATE TABLE role CASCADE;
 TRUNCATE TABLE users CASCADE;
+TRUNCATE TABLE status CASCADE;
+TRUNCATE TABLE orders CASCADE;
+TRUNCATE TABLE order_infos CASCADE;
 */
 
 INSERT INTO "covers" ("name")
 VALUES ('SOFT'),
 		('HARD'),
 		('SPECIAL');
+	
 
 INSERT INTO books (title, author, isbn, pages, price, cover_id)
 VALUES ('The Pilgrim’s Progress', 'John Bunyan', '978-985-581-391-1', 365, 56.35, (SELECT c.cover_id FROM "covers" c WHERE "name" = 'SOFT')),
@@ -60,5 +64,15 @@ VALUES ('Nick', 'Biden', 'biden@gmail.us', 'qwerty', (SELECT r.role_id FROM "rol
 		('Yuri', 'Gagarin', 'space@gmail.com', 'poehali', (SELECT r.role_id FROM "role" r WHERE r."name" = 'USER')),
 		('Elon', 'Mask', 'tesla@gmail.com', 'spaceX', (SELECT r.role_id FROM "role" r WHERE r."name" = 'USER')),
 		('Nikolo', 'Tesla', 'electricity@gmail.com', 'induction', (SELECT r.role_id FROM "role" r WHERE r."name" = 'USER'));
+
+	
+INSERT INTO status ("name")
+VALUES ('PENDING'),
+	('PAID'),
+	('DELIVERED'),
+	('CANCELED');
+
+INSERT INTO orders (user_id, status_id, total_cost)
+VALUES ((SELECT u.user_id FROM users u WHERE u.first_name = 'Nikolo'), (SELECT s.status_id FROM status s WHERE s."name" = 'PAID'), 123.11);
 
 

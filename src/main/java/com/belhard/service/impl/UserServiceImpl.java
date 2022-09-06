@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         log.debug("Service method called successfully");
-//        userDao.delete(id);
+        userDao.delete(id);
     }
 
     @Override
