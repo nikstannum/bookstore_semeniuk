@@ -67,19 +67,25 @@ table, th, td {
 </style>
 </head>
 <body>
-	<h2>Our books:</h2>
+<h5>
+		<a href="controller?command=create_book_form">Create new book</a>
+</h5>
+</div>
+	<h5>Our books:</h5>
 
 	<table style="width: 100%">
 		<tr>
 			<th>#</th>
 			<th>title</th>
 			<th>author</th>
+			<th>action</th>
 		</tr>
 		<c:forEach items="${books}" var="book" varStatus="counter">
 			<tr>
 				<td>${counter.count}</td>
 				<td><a href="controller?command=book&id=${book.id}">${book.title}</a></td>
 				<td>${book.author}</td>
+			<td><a href="controller?command=update_book_form&id=${book.id}"><input type ="submit" value="UPDATE"/></a></td>
 			</tr>
 		</c:forEach>
 	</table>

@@ -41,7 +41,12 @@ table, th, td {
 			</div>
 		</div>
 	</nav>
-	<h2>result of search:</h2>
+	
+	<h4>
+	${requestScope.messageCreated}
+	${requestScope.messageUpdated}
+	</h4>
+	<p>Personal info:</p>
 
 	<table style="width: 100%">
 		<tr>

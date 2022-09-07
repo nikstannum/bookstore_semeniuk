@@ -75,6 +75,7 @@ table, th, td {
 			<th>first name</th>
 			<th>last name</th>
 			<th>email</th>
+			<th>action</th>
 		</tr>
 		<c:forEach items="${users}" var="user" varStatus="counter">
 			<tr>
@@ -82,6 +83,7 @@ table, th, td {
 				<td><a href="controller?command=user&id=${user.id}">${user.firstName}</a></td>
 				<td>${user.lastName}</td>
 				<td>${user.email}</td>
+				<td><a href="controller?command=update_user_form&id=${user.id}"><input type ="submit" value="UPDATE"/></a></td>
 			</tr>
 		</c:forEach>
 	</table>

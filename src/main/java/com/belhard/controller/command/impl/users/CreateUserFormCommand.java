@@ -1,4 +1,4 @@
-package com.belhard.controller.command.impl;
+package com.belhard.controller.command.impl.users;
 
 import com.belhard.controller.command.Command;
 

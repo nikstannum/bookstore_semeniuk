@@ -75,4 +75,7 @@ VALUES ('PENDING'),
 INSERT INTO orders (user_id, status_id, total_cost)
 VALUES ((SELECT u.user_id FROM users u WHERE u.first_name = 'Nikolo'), (SELECT s.status_id FROM status s WHERE s."name" = 'PAID'), 123.11);
 
+INSERT INTO order_infos (book_id, order_id, book_quantity, book_price)
+VALUES (1, 8, 3, 3.3),
+(2, 8, 2, 18);
 

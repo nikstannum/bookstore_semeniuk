@@ -29,9 +29,8 @@ public class Controller extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		process(req, resp);
 	}
-	
-	private void process(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+
+	private void process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String command = req.getParameter("command");
 		CommandFactory factory = CommandFactory.getINSTANCE();
 		Command commandInstance = factory.getCommand(command);

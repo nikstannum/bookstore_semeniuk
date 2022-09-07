@@ -1,4 +1,4 @@
-package com.belhard.controller.command.impl;
+package com.belhard.controller.command.impl.books;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +24,7 @@ public class BookCommand implements Command {
 		BookDto dto = service.get(id);
 		req.setAttribute("book", dto);
 		log.info("return page jsp/book.jsp");
+		req.setAttribute("searchMessage", "result of search:");
 		return "jsp/book.jsp";
 	}
 

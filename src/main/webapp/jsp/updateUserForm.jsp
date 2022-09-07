@@ -5,12 +5,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Register new user</title>
+<title>Update existing user</title>
 </head>
 <body>
-	<h1>Register new user</h1>
+	<h1>Update existing user</h1>
 	<form method="post" action="controller">
-		<input name="command" type="hidden" value="create_user"/>
+		<input name="command" type="hidden" value="update_user"/>
+		<input name="id" type="hidden" value="${requestScope.id}"/>
 		<label for="first-name-input">First name: </label>
 		<input id="first-name-input" name="firstName" type="text" minlength="1"/>
 		<br/>
@@ -30,7 +31,7 @@
 		<label for="role-input-admin">Admin</label>
 		<input id="role-input-admin" name="role" type="radio" value="ADMIN"/>
 		<br/>
-		<input type ="submit" value="REGISTER"/>
+		<input type ="submit" value="UPDATE"/>
 
 	</form>
 
