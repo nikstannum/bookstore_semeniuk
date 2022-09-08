@@ -37,11 +37,11 @@ public class CommandFactory {
 		commands.put("orders", new OrdersCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("create_user_form", new CreateUserFormCommand());
 		commands.put("create_user", new CreateUserCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
-		commands.put("update_user_form", new UpdateUserFormCommand());
+		commands.put("update_user_form", new UpdateUserFormCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
 		commands.put("update_user", new UpdateUserCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
 		commands.put("create_book_form", new CreateBookFormCommand());
 		commands.put("create_book", new CreateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
-		commands.put("update_book_form", new UpdateBookFormCommand());
+		commands.put("update_book_form", new UpdateBookFormCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("update_book", new UpdateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("error", new ErrorCommand());
 	}

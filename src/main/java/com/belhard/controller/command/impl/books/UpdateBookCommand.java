@@ -20,8 +20,7 @@ public class UpdateBookCommand implements Command {
 	
 	@Override
 	public String execute(HttpServletRequest req) {
-		String idStr = req.getParameter("id");
-		Long id = Long.parseLong(idStr);
+		Long id = Long.parseLong(req.getParameter("id"));
 		String title = req.getParameter("title");
 		String author = req.getParameter("author");
 		String isbn = req.getParameter("isbn");
