@@ -43,8 +43,7 @@ table, th, td {
 	</nav>
 	
 	<h4>
-	${requestScope.messageCreated}
-	${requestScope.messageUpdated}
+	${requestScope.message}
 	</h4>
 	<p>Personal info:</p>
 

@@ -64,6 +64,8 @@
 <h4>
 	<ul>
 		<li><a href="controller?command=create_user_form">Sign up</a></li>
+		<br/>
+		<li><a href="controller?command=login_form">Sign in</a></li>
 	</ul>
 </h4>
 </div>

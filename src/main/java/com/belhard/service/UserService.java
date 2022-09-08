@@ -10,4 +10,6 @@ public interface UserService extends CrudService<Long, UserDto> {
     List<UserDto> getUsersByLastName(String lastName);
 
     boolean validate(String email, String password);
+    
+    UserDto login(String email, String password);
 }

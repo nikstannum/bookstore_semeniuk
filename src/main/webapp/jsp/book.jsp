@@ -42,9 +42,7 @@ table, th, td {
 		</div>
 	</nav>
 	<h5>
-	${requestScope.searchMessage}
-	${requestScope.messageCreated}
-	${requestScope.messageUpdated}
+	${requestScope.message}
 	</h5>
 
 	<table style="width: 100%">

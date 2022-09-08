@@ -32,7 +32,7 @@ public class CreateUserCommand implements Command {
 		UserDto created = service.create(userDto);
 		req.setAttribute("user", created);
 		String message = "User created successfully";
-		req.setAttribute("messageCreated", message);
+		req.setAttribute("message", message);
 		return "jsp/user.jsp";
 	}
 }

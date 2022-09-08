@@ -34,7 +34,7 @@ public class UpdateUserCommand implements Command {
 		UserDto updated = service.update(userDto);
 		req.setAttribute("user", updated);
 		String message = "User updated successfully";
-		req.setAttribute("messageUpdated", message);
+		req.setAttribute("message", message);
 		return "jsp/user.jsp";
 	}
 }

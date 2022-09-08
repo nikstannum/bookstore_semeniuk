@@ -108,4 +108,14 @@ public class UserServiceImpl implements UserService {
 		String userPassword = user.getPassword();
 		return userPassword.equals(password);
 	}
+
+	@Override
+	public UserDto login(String email, String password) {
+		boolean validateResult = validate(email, password);
+		if (validateResult) {
+			return getUserByEmail(email);
+		} else {
+			throw new RuntimeException();
+		}
+	}
 }

@@ -35,7 +35,7 @@ public class CreateBookCommand implements Command {
 		BookDto created = service.create(bookDto);
 		req.setAttribute("book", created);
 		String message = "book created successfully";
-		req.setAttribute("messageCreated", message);
+		req.setAttribute("message", message);
 		return "jsp/book.jsp";
 	}
 }

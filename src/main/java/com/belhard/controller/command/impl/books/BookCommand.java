@@ -24,7 +24,7 @@ public class BookCommand implements Command {
 		BookDto dto = service.get(id);
 		req.setAttribute("book", dto);
 		log.info("return page jsp/book.jsp");
-		req.setAttribute("searchMessage", "result of search:");
+		req.setAttribute("message", "result of search:");
 		return "jsp/book.jsp";
 	}
 

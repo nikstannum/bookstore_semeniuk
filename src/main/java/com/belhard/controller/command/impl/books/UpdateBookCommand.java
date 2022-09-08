@@ -37,7 +37,7 @@ public class UpdateBookCommand implements Command {
 		bookDto.setCoverDto(BookCoverDto.valueOf(cover));
 		BookDto updated = service.update(bookDto);
 		req.setAttribute("book", updated);
-		req.setAttribute("messageUpdated", "book updated successfully");
+		req.setAttribute("message", "book updated successfully");
 		return "jsp/book.jsp";
 	}
 
