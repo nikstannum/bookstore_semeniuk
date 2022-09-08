@@ -78,13 +78,21 @@ table, th, td {
 			<th>#</th>
 			<th>title</th>
 			<th>author</th>
-			<th>action</th>
+			<th>add to cart<th/>
+			<th>action update</th>
 		</tr>
 		<c:forEach items="${books}" var="book" varStatus="counter">
 			<tr>
 				<td>${counter.count}</td>
 				<td><a href="controller?command=book&id=${book.id}">${book.title}</a></td>
 				<td>${book.author}</td>
+				<td>
+					<form method="post" action="controller">
+						<input type="hidden" name="command" value="add_to_cart"/>
+						<input type="hidden" name="bookId" value="${book.id}"/>
+						<input type="submit" value="Add to cart"/>
+					</form>
+				</td>
 			<td><a href="controller?command=update_book_form&id=${book.id}"><input type ="submit" value="UPDATE"/></a></td>
 			</tr>
 		</c:forEach>

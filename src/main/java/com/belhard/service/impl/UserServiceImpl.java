@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
 		if (validateResult) {
 			return getUserByEmail(email);
 		} else {
-			throw new RuntimeException();
+			throw new RuntimeException("Wrong email or password");
 		}
 	}
 }
