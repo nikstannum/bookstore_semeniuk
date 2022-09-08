@@ -35,8 +35,7 @@ public class ProxyConnection implements Connection {
             realConnection.close();
             log.info("ProxyConnection is closed");
         } catch (SQLException e) {
-            e.printStackTrace();
-            log.error("ProxyConnection not closed");
+            log.error("ProxyConnection not closed", e);
         }
     }
 

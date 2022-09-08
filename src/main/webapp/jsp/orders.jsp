@@ -51,9 +51,9 @@
 						href="/bookstore_semeniuk/">Home</a></li>
 					<li class="nav-item"><a class="nav-link" href="controller?command=books">All
 							books</a></li>
-					<li class="nav-item"><a class="nav-link active" href="#">All
+					<li class="nav-item"><a class="nav-link" href="controller?command=users">All
 							users</a></li>
-							<li class="nav-item"><a class="nav-link" href="controller?command=orders">All
+							<li class="nav-item"><a class="nav-link active" href="#">All
 							orders</a></li>
 				</ul>
 			</div>
@@ -68,22 +68,22 @@ table, th, td {
 </style>
 </head>
 <body>
-	<h2>Our users:</h2>
+	<h2>Orders:</h2>
 	<table style="width: 100%">
 		<tr>
 			<th>#</th>
-			<th>first name</th>
-			<th>last name</th>
-			<th>email</th>
-			<th>action</th>
+			<th>order id</th>
+			<th>user email</th>
+			<th>status</th>
+			<th>total cost</th>
 		</tr>
-		<c:forEach items="${users}" var="user" varStatus="counter">
+		<c:forEach items="${orders}" var="order" varStatus="counter">
 			<tr>
 				<td>${counter.count}</td>
-				<td><a href="controller?command=user&id=${user.id}">${user.firstName}</a></td>
-				<td>${user.lastName}</td>
-				<td>${user.email}</td>
-				<td><a href="controller?command=update_user_form&id=${user.id}"><input type ="submit" value="UPDATE"/></a></td>
+				<td><a href="controller?command=order&id=${order.id}">${order.id}</a></td>
+				<td>${order.user.email}</td>
+				<td>${order.status}</td>
+				<td>${order.totalCost}</td>
 			</tr>
 		</c:forEach>
 	</table>

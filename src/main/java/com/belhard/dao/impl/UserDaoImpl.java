@@ -4,6 +4,9 @@ import com.belhard.dao.UserDao;
 import com.belhard.dao.connection.DataSource;
 import com.belhard.dao.entity.User;
 import com.belhard.dao.entity.User.UserRole;
+
+import lombok.extern.log4j.Log4j2;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,9 +17,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@Log4j2
 public class UserDaoImpl implements UserDao {
-
-    private static final Logger log = LogManager.getLogger(UserDaoImpl.class);
 
     public static final String INSERT = "INSERT INTO users (first_name, last_name, email, password, role_id) " +
             "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
@@ -56,7 +58,7 @@ public class UserDaoImpl implements UserDao {
                 return get(id);
             }
         } catch (SQLException e) {
-            log.error(e);
+            log.error("database access completed unsuccessfully", e);
         }
         return null;
     }
@@ -72,7 +74,7 @@ public class UserDaoImpl implements UserDao {
                 return processUser(result);
             }
         } catch (SQLException e) {
-            log.error(e);
+            log.error("database access completed unsuccessfully", e);
         }
         return null;
     }
@@ -90,7 +92,7 @@ public class UserDaoImpl implements UserDao {
             }
             return users;
         } catch (SQLException e) {
-            log.error(e);
+            log.error("database access completed unsuccessfully", e);
         }
         return users;
     }
@@ -106,7 +108,7 @@ public class UserDaoImpl implements UserDao {
                 return processUser(resultSet);
             }
         } catch (SQLException e) {
-            log.error(e);
+            log.error("database access completed unsuccessfully", e);
         }
         return null;
     }
@@ -123,7 +125,7 @@ public class UserDaoImpl implements UserDao {
                 users.add(processUser(resultSet));
             }
         } catch (SQLException e) {
-            log.error(e);
+            log.error("database access completed unsuccessfully", e);
         }
         return users;
     }
@@ -138,7 +140,7 @@ public class UserDaoImpl implements UserDao {
                 return resultSet.getInt("all_users");
             }
         } catch (SQLException e) {
-            log.error(e);
+            log.error("database access completed unsuccessfully", e);
         }
         throw new RuntimeException("ERROR: count of users not definition");
     }
@@ -157,7 +159,7 @@ public class UserDaoImpl implements UserDao {
             log.debug("database access completed successfully");
             return get(user.getId());
         } catch (SQLException e) {
-            log.error(e);
+            log.error("database access completed unsuccessfully", e);
         }
         return null;
     }
@@ -171,7 +173,7 @@ public class UserDaoImpl implements UserDao {
             log.debug("database access completed successfully");
             return rowsDelete == 1;
         } catch (SQLException e) {
-            log.error(e);
+            log.error("database access completed unsuccessfully", e);
         }
         return false;
     }

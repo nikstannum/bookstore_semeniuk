@@ -31,40 +31,37 @@ table, th, td {
 				<ul class="navbar-nav">
 					<li class="nav-item"><a class="nav-link" aria-current="page"
 						href="/bookstore_semeniuk/">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=books">All
-							books</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=users">All
-							users</a></li>
-							<li class="nav-item"><a class="nav-link"
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=books">All books</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=users">All users</a></li>
+					<li class="nav-item"><a class="nav-link"
 						href="controller?command=orders">All orders</a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
-	<h5>
-	${requestScope.searchMessage}
-	${requestScope.messageCreated}
-	${requestScope.messageUpdated}
-	</h5>
+	<h2>result of search:</h2>
 
 	<table style="width: 100%">
 		<tr>
-			<th>id</th>
-			<th>title</th>
-			<th>author</th>
-			<th>isbn</th>
-			<th>pages</th>
-			<th>price</th>
-			<th>cover</th>
+			<th>order id</th>
+			<th>user</th>
+			<th>Items</th>
+			<th>status</th>
 		</tr>
 		<tr>
-			<td>${book.id}</td>
-			<td>${book.title}</td>
-			<td>${book.author}</td>
-			<td>${book.isbn}</td>
-			<td>${book.pages}</td>
-			<td>${book.price}</td>
-			<td>${book.coverDto}</td>
+			<td>${order.id}</td>
+			<td>${order.user.email}</td>
+			<td>
+				<ul>
+					<c:forEach items="${order.details}" var="info">
+						<li><a href="controller?command=book&id=${info.book.id}">${info.book.title}</a> ($${info.bookPrice}) x ${info.bookQuantity}</li>
+					</c:forEach>
+				</ul>
+				TOTAL PRICE = ${order.totalCost}
+			</td>
+			<td>${order.status}</td>
 		</tr>
 	</table>
 
@@ -98,7 +95,7 @@ table, th, td {
 <div class="container text-center my-5">
 	<div class="row">
 		<div class="col-lg-10 col-md-4 mx-auto">
-			<img class="rounded-img" src="images/smartDog.jpg" alt="smartDog" />
+			<img class="rounded-img" src="images/pes.jpg" alt="smartDog" />
 		</div>
 	</div>
 </div>
