@@ -1,14 +1,15 @@
 package com.belhard.service.impl;
 
-import com.belhard.dao.UserDao;
-import com.belhard.dao.entity.User;
-import com.belhard.dao.entity.User.UserRole;
-import com.belhard.service.UserService;
-import com.belhard.service.dto.UserDto;
-import com.belhard.service.dto.UserDto.UserRoleDto;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.belhard.dao.UserDao;
+import com.belhard.dao.entity.User;
+import com.belhard.service.UserService;
+import com.belhard.service.dto.UserDto;
+import com.belhard.util.Mapper;
 
 public class UserServiceImpl implements UserService {
 
@@ -31,13 +32,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private User toEntity(UserDto userDto) {
-		User user = new User();
-		user.setId(userDto.getId());
-		user.setFirstName(userDto.getFirstName());
-		user.setLastName(userDto.getLastName());
-		user.setEmail(userDto.getEmail());
-		user.setPassword(userDto.getPassword());
-		user.setRole(UserRole.valueOf(userDto.getUserRoleDto().toString()));
+		User user = Mapper.INSTANCE.userToEntity(userDto);
 		return user;
 	}
 
@@ -49,13 +44,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private UserDto toDto(User user) {
-		UserDto userDto = new UserDto();
-		userDto.setId(user.getId());
-		userDto.setFirstName(user.getFirstName());
-		userDto.setLastName(user.getLastName());
-		userDto.setEmail(user.getEmail());
-		userDto.setPassword(user.getPassword());
-		userDto.setUserRoleDto(UserRoleDto.valueOf(user.getRole().toString()));
+		UserDto userDto = Mapper.INSTANCE.userToDto(user);
 		return userDto;
 	}
 
@@ -102,20 +91,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean validate(String email, String password) {
+	public UserDto validate(String email, String password) {
 		log.debug("Service method called successfully");
 		User user = userDao.getUserByEmail(email);
 		String userPassword = user.getPassword();
-		return userPassword.equals(password);
-	}
-
-	@Override
-	public UserDto login(String email, String password) {
-		boolean validateResult = validate(email, password);
-		if (validateResult) {
+		if (userPassword.equals(password)) {
 			return getUserByEmail(email);
-		} else {
-			throw new RuntimeException("Wrong email or password");
 		}
+		throw new RuntimeException("Wrong email or password");
 	}
 }

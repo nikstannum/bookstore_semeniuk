@@ -11,10 +11,10 @@ import lombok.Data;
 @Data
 public class OrderDto {
 	private Long id;
-	private User user;
+	private UserDto userDto;
 	private BigDecimal totalCost;
-	private StatusDto status;
-	private List<OrderInfo> details;
+	private StatusDto statusDto;
+	private List<OrderInfoDto> detailsDto;
 
 	public enum StatusDto {
 		PENDING, PAID, DELIVERED, CANCELED

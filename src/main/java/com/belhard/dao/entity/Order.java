@@ -3,6 +3,8 @@ package com.belhard.dao.entity;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.belhard.service.dto.UserDto;
+
 import lombok.Data;
 
 @Data

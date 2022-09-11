@@ -23,7 +23,7 @@ public class ServiceFactory {
 		map = new HashMap<>();
 		map.put(BookService.class, new BookServiceImpl(DaoFactory.INSTANCE.getDao(BookDao.class)));
 		map.put(UserService.class, new UserServiceImpl(DaoFactory.INSTANCE.getDao(UserDao.class)));
-		map.put(OrderService.class, new OrderServiceImpl(DaoFactory.INSTANCE.getDao(OrderDao.class)));
+		map.put(OrderService.class, new OrderServiceImpl(DaoFactory.INSTANCE.getDao(OrderDao.class), DaoFactory.INSTANCE.getDao(BookDao.class)));
 	}
 
 	public <T> T getService(Class<T> clazz) {

@@ -29,14 +29,11 @@ table, th, td {
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" aria-current="page"
-						href="/bookstore_semeniuk/">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=books">All
-							books</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=users">All
-							users</a></li>
-							<li class="nav-item"><a class="nav-link"
-						href="controller?command=orders">All orders</a></li>
+					<li class="nav-item"><a class="nav-link" aria-current="page" href="/bookstore_semeniuk/">Home</a></li>
+					<li class="nav-item"><a class="nav-link" href="controller?command=books">All books</a></li>
+					<li class="nav-item"><a class="nav-link" href="controller?command=users">All users</a></li>
+					<li class="nav-item"><a class="nav-link" href="controller?command=orders">All orders</a></li>
+					<li class="nav-item"><a class="nav-link" href="controller?command=cart">Cart</a></li>
 				</ul>
 			</div>
 		</div>

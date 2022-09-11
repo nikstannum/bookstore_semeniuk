@@ -56,6 +56,11 @@
 						href="controller?command=users">All users</a></li>
 					<li class="nav-item"><a class="nav-link"
 						href="controller?command=orders">All orders</a></li>
+						
+						<li class="nav-item"><a class="nav-link"
+						href="controller?command=cart">Cart</a></li>
+						
+						
 				</ul>
 			</div>
 		</div>
@@ -66,8 +71,10 @@
 		<li><a href="controller?command=create_user_form">Sign up</a></li>
 		<br/>
 		<li><a href="controller?command=login_form">Sign in</a></li>
+		
 	</ul>
 </h4>
+<h5>${requestScope.message}</h5>
 </div>
 
 

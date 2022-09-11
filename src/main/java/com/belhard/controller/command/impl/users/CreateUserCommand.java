@@ -6,6 +6,7 @@ import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 public class CreateUserCommand implements Command {
 	
@@ -33,6 +34,8 @@ public class CreateUserCommand implements Command {
 		req.setAttribute("user", created);
 		String message = "User created successfully";
 		req.setAttribute("message", message);
+		HttpSession session = req.getSession();
+		session.setAttribute("user", userDto);
 		return "jsp/user.jsp";
 	}
 }

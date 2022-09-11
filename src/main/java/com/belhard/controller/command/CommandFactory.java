@@ -3,6 +3,8 @@ package com.belhard.controller.command;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.belhard.controller.command.impl.LoginCommand;
+import com.belhard.controller.command.impl.LoginFormCommand;
 import com.belhard.controller.command.impl.books.BookCommand;
 import com.belhard.controller.command.impl.books.BooksCommand;
 import com.belhard.controller.command.impl.books.CreateBookCommand;
@@ -10,6 +12,8 @@ import com.belhard.controller.command.impl.books.CreateBookFormCommand;
 import com.belhard.controller.command.impl.books.UpdateBookCommand;
 import com.belhard.controller.command.impl.books.UpdateBookFormCommand;
 import com.belhard.controller.command.impl.errors.ErrorCommand;
+import com.belhard.controller.command.impl.orders.AddToCart;
+import com.belhard.controller.command.impl.orders.CartCommand;
 import com.belhard.controller.command.impl.orders.OrderCommand;
 import com.belhard.controller.command.impl.orders.OrdersCommand;
 import com.belhard.controller.command.impl.users.CreateUserCommand;
@@ -43,6 +47,10 @@ public class CommandFactory {
 		commands.put("create_book", new CreateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("update_book_form", new UpdateBookFormCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("update_book", new UpdateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
+		commands.put("add_to_cart", new AddToCart(ServiceFactory.INSTANCE.getService(BookService.class)));
+		commands.put("cart", new CartCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
+		commands.put("login_form", new LoginFormCommand());
+		commands.put("login", new LoginCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
 		commands.put("error", new ErrorCommand());
 	}
 

@@ -6,6 +6,8 @@ import com.belhard.dao.entity.Book.BookCover;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
+import com.belhard.util.Mapper;
+
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -52,15 +54,8 @@ public class BookServiceImpl implements BookService {
 		validate(bookDto);
 	}
 
-	private Book toEntity(BookDto bookDto) {
-		Book book = new Book();
-		book.setId(bookDto.getId());
-		book.setTitle(bookDto.getTitle());
-		book.setAuthor(bookDto.getAuthor());
-		book.setIsbn(bookDto.getIsbn());
-		book.setPages(bookDto.getPages());
-		book.setPrice(bookDto.getPrice());
-		book.setCover(BookCover.valueOf(bookDto.getCoverDto().toString()));
+	public Book toEntity(BookDto bookDto) {
+		Book book = Mapper.INSTANCE.bookToEntity(bookDto);
 		return book;
 	}
 
@@ -74,15 +69,8 @@ public class BookServiceImpl implements BookService {
 		return toDto(book);
 	}
 
-	private BookDto toDto(Book book) {
-		BookDto bookDto = new BookDto();
-		bookDto.setId(book.getId());
-		bookDto.setTitle(book.getTitle());
-		bookDto.setAuthor(book.getAuthor());
-		bookDto.setIsbn(book.getIsbn());
-		bookDto.setPages(book.getPages());
-		bookDto.setPrice(book.getPrice());
-		bookDto.setCoverDto(BookCoverDto.valueOf(book.getCover().toString()));
+	public BookDto toDto(Book book) {
+		BookDto bookDto = Mapper.INSTANCE.bookToDto(book);
 		return bookDto;
 	}
 

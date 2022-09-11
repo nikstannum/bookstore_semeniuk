@@ -13,6 +13,7 @@ import com.belhard.dao.impl.BookDaoImpl;
 import com.belhard.dao.impl.OrderDaoImpl;
 import com.belhard.dao.impl.OrderInfoDaoImpl;
 import com.belhard.dao.impl.UserDaoImpl;
+import com.belhard.service.BookService;
 
 public class DaoFactory {
 	public static final DaoFactory INSTANCE = new DaoFactory();

@@ -37,6 +37,7 @@ table, th, td {
 						href="controller?command=users">All users</a></li>
 					<li class="nav-item"><a class="nav-link"
 						href="controller?command=orders">All orders</a></li>
+						<li class="nav-item"><a class="nav-link" href="controller?command=cart">Cart</a></li>
 				</ul>
 			</div>
 		</div>
@@ -52,16 +53,16 @@ table, th, td {
 		</tr>
 		<tr>
 			<td>${order.id}</td>
-			<td>${order.user.email}</td>
+			<td>${order.userDto.email}</td>
 			<td>
 				<ul>
-					<c:forEach items="${order.details}" var="info">
-						<li><a href="controller?command=book&id=${info.book.id}">${info.book.title}</a> ($${info.bookPrice}) x ${info.bookQuantity}</li>
+					<c:forEach items="${order.detailsDto}" var="info">
+						<li><a href="controller?command=book&id=${info.bookDto.id}">${info.bookDto.title}</a> ($${info.bookPrice}) x ${info.bookQuantity}</li>
 					</c:forEach>
 				</ul>
 				TOTAL PRICE = ${order.totalCost}
 			</td>
-			<td>${order.status}</td>
+			<td>${order.statusDto}</td>
 		</tr>
 	</table>
 

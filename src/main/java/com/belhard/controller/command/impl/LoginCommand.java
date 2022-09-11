@@ -18,7 +18,7 @@ public class LoginCommand implements Command {
 	public String execute(HttpServletRequest req) {
 		String email = req.getParameter("email");
 		String password = req.getParameter("password");
-		UserDto userDto = userService.login(email, password);
+		UserDto userDto = userService.validate(email, password);
 		HttpSession session = req.getSession();
 		session.setAttribute("user", userDto);
 		req.setAttribute("message", "successfully login");

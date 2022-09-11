@@ -55,6 +55,7 @@
 							users</a></li>
 							<li class="nav-item"><a class="nav-link" href="controller?command=orders">All
 							orders</a></li>
+							<li class="nav-item"><a class="nav-link" href="controller?command=cart">Cart</a></li>
 				</ul>
 			</div>
 		</div>

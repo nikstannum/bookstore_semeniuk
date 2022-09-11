@@ -55,6 +55,7 @@
 							users</a></li>
 							<li class="nav-item"><a class="nav-link active" href="#">All
 							orders</a></li>
+							<li class="nav-item"><a class="nav-link" href="controller?command=cart">Cart</a></li>
 				</ul>
 			</div>
 		</div>
@@ -73,7 +74,7 @@ table, th, td {
 		<tr>
 			<th>#</th>
 			<th>order id</th>
-			<th>user email</th>
+			<th>user id</th>
 			<th>status</th>
 			<th>total cost</th>
 		</tr>
@@ -81,8 +82,8 @@ table, th, td {
 			<tr>
 				<td>${counter.count}</td>
 				<td><a href="controller?command=order&id=${order.id}">${order.id}</a></td>
-				<td>${order.user.email}</td>
-				<td>${order.status}</td>
+				<td>${order.userDto.id}</td>
+				<td>${order.statusDto}</td>
 				<td>${order.totalCost}</td>
 			</tr>
 		</c:forEach>
