@@ -4,8 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Update existing book</title>
+<jsp:include page="navbar.jsp"></jsp:include>
 </head>
 <body>
 	<h1>Update existing book</h1>

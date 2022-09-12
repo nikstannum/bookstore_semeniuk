@@ -4,8 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Register new user</title>
+<jsp:include page="navbar.jsp"></jsp:include>
 </head>
 <body>
 	<h1>Register new user</h1>

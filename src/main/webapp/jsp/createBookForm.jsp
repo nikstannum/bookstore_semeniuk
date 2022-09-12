@@ -4,8 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Add new book</title>
+<jsp:include page="navbar.jsp"></jsp:include>
 </head>
 <body>
 	<h1>Add new book</h1>

@@ -4,44 +4,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" type="image/png" sizes="32x32"
-	href="images/favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="16x16"
-	href="images/favicon-16x16.png" />
-<link rel="manifest" href="images/site.webmanifest" />
-<style>
-table, th, td {
-	border: 1px solid black;
-	border-collapse: collapse;
-}
-</style>
+<jsp:include page="navbar.jsp"></jsp:include>
 </head>
-<body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<div class="container">
-			<a class="navbar-brand p-0" href="images/favicon-32x32.png"><img
-				src="images/favicon-32x32.png" alt="icon" width="40" /></a>
-			<button class="navbar-toggler" type="button"
-				data-bs-toggle="collapse" data-bs-target="#navbarNav"
-				aria-controls="navbarNav" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarNav">
-				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" aria-current="page"
-						href="/bookstore_semeniuk/">Home</a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="controller?command=books">All books</a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="controller?command=users">All users</a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="controller?command=orders">All orders</a></li>
-						<li class="nav-item"><a class="nav-link" href="controller?command=cart">Cart</a></li>
-				</ul>
-			</div>
-		</div>
-	</nav>
 	<h2>result of search:</h2>
 
 	<table style="width: 100%">

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.belhard.controller.command.impl.LoginCommand;
 import com.belhard.controller.command.impl.LoginFormCommand;
+import com.belhard.controller.command.impl.LogoutCommand;
 import com.belhard.controller.command.impl.books.BookCommand;
 import com.belhard.controller.command.impl.books.BooksCommand;
 import com.belhard.controller.command.impl.books.CreateBookCommand;
@@ -53,6 +54,7 @@ public class CommandFactory {
 		commands.put("checkout_order", new CreateOrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("login_form", new LoginFormCommand());
 		commands.put("login", new LoginCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
+		commands.put("logout", new LogoutCommand());
 		commands.put("error", new ErrorCommand());
 	}
 

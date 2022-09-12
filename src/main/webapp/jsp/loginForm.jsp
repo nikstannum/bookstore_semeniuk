@@ -4,8 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Login</title>
+<jsp:include page="navbar.jsp"></jsp:include>
 </head>
 <body>
 	<h1>Login</h1>
