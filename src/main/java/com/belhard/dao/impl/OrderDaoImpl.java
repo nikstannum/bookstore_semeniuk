@@ -20,7 +20,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class OrderDaoImpl implements OrderDao {
 
-	public static final String INSERT = "INSERT INTO orders (user_id, status, total_cost) "
+	public static final String INSERT = "INSERT INTO orders (user_id, status_id, total_cost) "
 			+ "VALUES (?, (SELECT s.status_id FROM status s WHERE s.name = ?), ?)";
 	public static final String GET_BY_ID = "SELECT o.order_id, o.user_id, "
 			+ "(SELECT s.name AS name FROM status s WHERE s.status_id = o.status_id), o.total_cost from orders o WHERE o.order_id = ?";
@@ -45,8 +45,8 @@ public class OrderDaoImpl implements OrderDao {
 	public Order create(Order entity) {
 		try (Connection connection = dataSource.getFreeConnections();
 				PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
-			statement.setLong(1, entity.getId());
-			statement.setString(2, entity.getStatus().toString());
+			statement.setLong(1, entity.getUser().getId());
+			statement.setString(2, Order.Status.PENDING.toString());
 			statement.setBigDecimal(3, entity.getTotalCost());
 			statement.executeUpdate();
 			ResultSet keys = statement.getGeneratedKeys();

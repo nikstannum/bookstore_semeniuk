@@ -14,6 +14,7 @@ import com.belhard.controller.command.impl.books.UpdateBookFormCommand;
 import com.belhard.controller.command.impl.errors.ErrorCommand;
 import com.belhard.controller.command.impl.orders.AddToCart;
 import com.belhard.controller.command.impl.orders.CartCommand;
+import com.belhard.controller.command.impl.orders.CreateOrderCommand;
 import com.belhard.controller.command.impl.orders.OrderCommand;
 import com.belhard.controller.command.impl.orders.OrdersCommand;
 import com.belhard.controller.command.impl.users.CreateUserCommand;
@@ -49,6 +50,7 @@ public class CommandFactory {
 		commands.put("update_book", new UpdateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("add_to_cart", new AddToCart(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("cart", new CartCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
+		commands.put("checkout_order", new CreateOrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("login_form", new LoginFormCommand());
 		commands.put("login", new LoginCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
 		commands.put("error", new ErrorCommand());

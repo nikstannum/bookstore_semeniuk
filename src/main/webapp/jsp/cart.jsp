@@ -98,5 +98,12 @@ table, th, td {
 			</c:forEach>
 	</table>
 	<div>total cost = ${cart.totalCost}</div>
+	<div>
+		<form method="post" action="controller">
+						<input type="hidden" name="command" value="checkout_order" /> <input
+							type="hidden" name="cart" value="${cart}" /> <input
+							type="submit" value="Checkout" />
+					</form>
+	</div>
 </body>
 </html>

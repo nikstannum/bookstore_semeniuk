@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
 	private OrderDto toDto(Order order) {
 		OrderDto orderDto = new OrderDto();
 		orderDto.setId(order.getId());
-		orderDto.setStatusDto(OrderDto.StatusDto.valueOf(order.getStatus().toString()));
+		orderDto.setStatusDto(OrderDto.StatusDto.valueOf(Order.Status.PENDING.toString()));
 		orderDto.setUserDto(Mapper.INSTANCE.userToDto(order.getUser()));
 		orderDto.setTotalCost(order.getTotalCost());
 		orderDto.setDetailsDto(toDetailsDto(order.getDetails()));
@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
 		order.setId(dto.getId());
 		order.setUser(Mapper.INSTANCE.userToEntity(dto.getUserDto()));
 		order.setStatus(Order.Status.valueOf(dto.getStatusDto().toString()));
-		BigDecimal totalCost = BigDecimal.ZERO;
+		BigDecimal totalCost = dto.getTotalCost();
 		dto.getDetailsDto().stream().map(elm -> elm.getBookPrice().multiply(BigDecimal.valueOf(elm.getBookQuantity())))
 				.forEach(totalCost::add);
 		order.setTotalCost(totalCost);
