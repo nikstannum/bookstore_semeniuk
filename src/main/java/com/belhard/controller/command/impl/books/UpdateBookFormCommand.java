@@ -21,7 +21,7 @@ public class UpdateBookFormCommand implements Command {
 		Long id = Long.parseLong(req.getParameter("id"));
 		BookDto book = service.get(id);
 		req.setAttribute("book", book);
-		return "jsp/updateBookForm.jsp";
+		return "jsp/book/updateBookForm.jsp";
 	}
 
 }

@@ -23,9 +23,8 @@ public class BookCommand implements Command {
 		Long id = getId(req);
 		BookDto dto = service.get(id);
 		req.setAttribute("book", dto);
-		log.info("return page jsp/book.jsp");
 		req.setAttribute("message", "result of search:");
-		return "jsp/book.jsp";
+		return "jsp/book/book.jsp";
 	}
 
 	private Long getId(HttpServletRequest req) {

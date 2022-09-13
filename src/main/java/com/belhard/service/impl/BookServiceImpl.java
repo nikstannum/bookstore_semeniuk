@@ -1,12 +1,13 @@
 package com.belhard.service.impl;
 
+import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookDao;
 import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
-import com.belhard.util.Mapper;
+import com.belhard.serviceutil.Mapper;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -81,6 +82,12 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
+	public List<BookDto> getAll(Paging paging) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public BookDto getBookDtoByIsbn(String isbn) {
 		log.debug("Service method called successfully");
 		Book book = bookDao.getBookByIsbn(isbn);
@@ -113,7 +120,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public int countAll() {
+	public long countAll() {
 		log.debug("Service method called successfully");
 		return bookDao.countAll();
 	}

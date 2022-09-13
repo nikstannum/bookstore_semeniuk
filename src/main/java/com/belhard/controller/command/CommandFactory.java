@@ -24,10 +24,12 @@ import com.belhard.controller.command.impl.users.UpdateUserCommand;
 import com.belhard.controller.command.impl.users.UpdateUserFormCommand;
 import com.belhard.controller.command.impl.users.UserCommand;
 import com.belhard.controller.command.impl.users.UsersCommand;
+import com.belhard.controller.util.PagingUtil;
 import com.belhard.service.BookService;
 import com.belhard.service.OrderService;
 import com.belhard.service.UserService;
 import com.belhard.service.factory.ServiceFactory;
+import com.belhard.serviceutil.Mapper;
 
 public class CommandFactory {
 	private Map<String, Command> commands;
@@ -35,26 +37,31 @@ public class CommandFactory {
 
 	private CommandFactory() {
 		commands = new HashMap<>();
+		//book
 		commands.put("books", new BooksCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("book", new BookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
-		commands.put("users", new UsersCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
+		commands.put("update_book_form", new UpdateBookFormCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
+		commands.put("create_book_form", new CreateBookFormCommand());
+		commands.put("create_book", new CreateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
+		commands.put("update_book", new UpdateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
+		//user
+		commands.put("users", new UsersCommand(ServiceFactory.INSTANCE.getService(UserService.class), PagingUtil.INSTANCE));
 		commands.put("user", new UserCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
-		commands.put("order", new OrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
-		commands.put("orders", new OrdersCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("create_user_form", new CreateUserFormCommand());
 		commands.put("create_user", new CreateUserCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
 		commands.put("update_user_form", new UpdateUserFormCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
 		commands.put("update_user", new UpdateUserCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
-		commands.put("create_book_form", new CreateBookFormCommand());
-		commands.put("create_book", new CreateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
-		commands.put("update_book_form", new UpdateBookFormCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
-		commands.put("update_book", new UpdateBookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
-		commands.put("add_to_cart", new AddToCart(ServiceFactory.INSTANCE.getService(BookService.class)));
-		commands.put("cart", new CartCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
+		//order
+		commands.put("order", new OrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
+		commands.put("orders", new OrdersCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("checkout_order", new CreateOrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
+		//login
 		commands.put("login_form", new LoginFormCommand());
 		commands.put("login", new LoginCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
 		commands.put("logout", new LogoutCommand());
+		//other
+		commands.put("add_to_cart", new AddToCart(ServiceFactory.INSTANCE.getService(BookService.class)));
+		commands.put("cart", new CartCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("error", new ErrorCommand());
 	}
 

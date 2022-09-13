@@ -1,11 +1,17 @@
-package com.belhard.util;
+package com.belhard.serviceutil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
+import com.belhard.dao.entity.OrderInfo;
 import com.belhard.dao.entity.User;
 import com.belhard.dao.entity.User.UserRole;
 import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
+import com.belhard.service.dto.OrderDto;
+import com.belhard.service.dto.OrderInfoDto;
 import com.belhard.service.dto.UserDto;
 import com.belhard.service.dto.UserDto.UserRoleDto;
 
@@ -56,6 +62,34 @@ public enum Mapper {
 		bookDto.setPrice(book.getPrice());
 		bookDto.setCoverDto(BookCoverDto.valueOf(book.getCover().toString()));
 		return bookDto;
+	}
+
+	public List<OrderInfo> infosToEntity(List<OrderInfoDto> infosDto, Long orderDtoId) {
+		List<OrderInfo> infosEntity = new ArrayList<>();
+		for (OrderInfoDto elm : infosDto) {
+			OrderInfo entity = new OrderInfo();
+			entity.setBook(bookToEntity(elm.getBookDto()));
+			entity.setBookPrice(elm.getBookPrice());
+			entity.setBookQuantity(elm.getBookQuantity());
+			entity.setOrderId(orderDtoId);
+			infosEntity.add(entity);
+		}
+		return infosEntity;
+	}
+
+	public List<OrderInfoDto> infosToDto(List<OrderInfo> entity) {
+		List<OrderInfoDto> infosDto = new ArrayList<>();
+		for (OrderInfo elm : entity) {
+			OrderInfoDto dto = new OrderInfoDto();
+			dto.setBookDto(bookToDto(elm.getBook()));
+			dto.setBookPrice(elm.getBookPrice());
+			dto.setBookQuantity(elm.getBookQuantity());
+			dto.setOrderDtoId(elm.getOrderId());
+			dto.setId(elm.getId());
+			infosDto.add(dto);
+		}
+		return infosDto;
+
 	}
 
 }

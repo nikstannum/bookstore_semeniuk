@@ -4,28 +4,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="navbar.jsp"></jsp:include>
+<jsp:include page="/jsp/navbar.jsp"></jsp:include>
 </head>
-	
-	<h4>
+<body>
+	<h5>
 	${requestScope.message}
-	</h4>
-	<p>Personal info:</p>
+	</h5>
 
 	<table style="width: 100%">
 		<tr>
 			<th>id</th>
-			<th>firstName</th>
-			<th>lastName</th>
-			<th>email</th>
-			<th>role</th>
+			<th>title</th>
+			<th>author</th>
+			<th>isbn</th>
+			<th>pages</th>
+			<th>price</th>
+			<th>cover</th>
 		</tr>
 		<tr>
-			<td>${user.id}</td>
-			<td>${user.firstName}</td>
-			<td>${user.lastName}</td>
-			<td>${user.email}</td>
-			<td>${user.userRoleDto}</td>
+			<td>${book.id}</td>
+			<td>${book.title}</td>
+			<td>${book.author}</td>
+			<td>${book.isbn}</td>
+			<td>${book.pages}</td>
+			<td>${book.price}</td>
+			<td>${book.coverDto}</td>
 		</tr>
 	</table>
 
@@ -53,13 +56,10 @@
 	margin-bottom: 1em;
 }
 </style>
-</head>
-<body>
-</body>
 <div class="container text-center my-5">
 	<div class="row">
 		<div class="col-lg-10 col-md-4 mx-auto">
-			<img class="rounded-img" src="images/pes.jpg" alt="smartDog" />
+			<img class="rounded-img" src="images/smartDog.jpg" alt="smartDog" />
 		</div>
 	</div>
 </div>

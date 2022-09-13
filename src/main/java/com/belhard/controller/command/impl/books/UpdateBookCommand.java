@@ -38,7 +38,7 @@ public class UpdateBookCommand implements Command {
 		BookDto updated = service.update(bookDto);
 		req.setAttribute("book", updated);
 		req.setAttribute("message", "book updated successfully");
-		return "jsp/book.jsp";
+		return "jsp/book/book.jsp";
 	}
 
 }

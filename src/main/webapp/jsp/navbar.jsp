@@ -50,9 +50,14 @@
 					<li class="nav-item"><a class="nav-link" href="controller?command=users">All users</a></li>
 					<li class="nav-item"><a class="nav-link" href="controller?command=orders">All orders</a></li>
 					<li class="nav-item"><a class="nav-link" href="controller?command=cart">Cart</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=create_user_form">Sign up</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=login_form">Sign in</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=logout">Logout</a></li>
+					<c:if test="${sessionScope.user == null}">
+						<li class="nav-item"><a class="nav-link" href="controller?command=create_user_form">Sign up</a></li>
+						<li class="nav-item"><a class="nav-link" href="controller?command=login_form">Sign in</a></li>
+					</c:if>
+					<c:if test="${sessionScope.user != null}">
+						<li class="nav-item"><a class="nav-link" href="controller?command=logout">Logout</a></li>
+					</c:if>
+					
 				</ul>
 			</div>
 		</div>

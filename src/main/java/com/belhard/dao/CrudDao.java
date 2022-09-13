@@ -9,9 +9,12 @@ public interface CrudDao<K, T> {
 
     List<T> getAll();
 
-    int countAll();
+    long countAll();
 
     T update(T entity);
 
     boolean delete(K id);
+    
+    List<T> getAll(int limit, long offset);
+    
 }

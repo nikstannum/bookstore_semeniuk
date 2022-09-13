@@ -8,6 +8,6 @@ public class CreateBookFormCommand implements Command {
 
 	@Override
 	public String execute(HttpServletRequest req) {
-		return "jsp/createBookForm.jsp";
+		return "jsp/book/createBookForm.jsp";
 	}
 }

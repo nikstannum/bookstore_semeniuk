@@ -22,6 +22,6 @@ public class OrdersCommand implements Command {
 		List<OrderDto> orders = service.getAll();
 		req.setAttribute("orders", orders);
 		log.info("return page jsp/orders.jsp");
-		return "jsp/orders.jsp";
+		return "jsp/order/orders.jsp";
 	}
 }

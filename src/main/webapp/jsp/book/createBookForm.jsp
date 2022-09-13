@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="navbar.jsp"></jsp:include>
+<jsp:include page="/jsp/navbar.jsp"></jsp:include>
 </head>
 <body>
 	<h1>Add new book</h1>

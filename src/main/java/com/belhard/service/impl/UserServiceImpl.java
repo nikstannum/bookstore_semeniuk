@@ -5,13 +5,15 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.UserDao;
 import com.belhard.dao.entity.User;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
-import com.belhard.util.Mapper;
+import com.belhard.serviceutil.Mapper;
 
 public class UserServiceImpl implements UserService {
+
 
 	private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
 	private final UserDao userDao;
@@ -53,6 +55,14 @@ public class UserServiceImpl implements UserService {
 		log.debug("Service method called successfully");
 		return userDao.getAll().stream().map(this::toDto).toList();
 	}
+	
+	@Override
+	public List<UserDto> getAll(Paging paging) {
+		int limit = paging.getLimit();
+		long offset = paging.getOffset();
+		log.debug("Service method called successfully");
+		return userDao.getAll(limit, offset).stream().map(this::toDto).toList();
+	}
 
 	@Override
 	public UserDto getUserByEmail(String email) {
@@ -68,7 +78,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int countAll() {
+	public long countAll() {
 		log.debug("Service method called successfully");
 		return userDao.countAll();
 	}

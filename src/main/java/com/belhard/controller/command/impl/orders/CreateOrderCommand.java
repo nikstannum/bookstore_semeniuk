@@ -21,15 +21,19 @@ public class CreateOrderCommand implements Command {
 	@Override
 	public String execute(HttpServletRequest req) {
 		HttpSession session = req.getSession();
+		UserDto userDto = (UserDto) session.getAttribute("user");
+		if (userDto == null) {
+			req.setAttribute("message", "Please, login");
+			return "jsp/loginForm.jsp";
+		}
 		@SuppressWarnings("unchecked")
 		Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
-		UserDto userDto = (UserDto) session.getAttribute("user");
 		OrderDto orderDto = orderService.processCart(cart, userDto);
 		OrderDto created = orderService.create(orderDto);
 		req.setAttribute("order", created);
 		req.setAttribute("message", "Order created successfully");
 		session.removeAttribute("cart");
-		return "jsp/order.jsp";
+		return "jsp/order/order.jsp";
 	}
 
 }

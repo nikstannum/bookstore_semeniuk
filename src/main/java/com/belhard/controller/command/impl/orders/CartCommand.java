@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 public class CartCommand implements Command {
 	private final OrderService orderService;
-	private final String PAGE = "jsp/cart.jsp";
+	private final String PAGE = "jsp/order/cart.jsp";
 
 	public CartCommand(OrderService orderService) {
 		this.orderService = orderService;

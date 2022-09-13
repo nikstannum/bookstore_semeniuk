@@ -118,15 +118,21 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 		}
 		return list;
 	}
+	
+	@Override
+	public List<OrderInfo> getAll(int limit, long offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
-	public int countAll() {
+	public long countAll() {
 		try (Connection connection = dataSource.getFreeConnections();
 				Statement statement = connection.createStatement()) {
 			ResultSet result = statement.executeQuery(GET_COUNT_ALL_ORDER_INFOS);
 			if (result.next()) {
 				log.debug("database access completed successfully");
-				return result.getInt("total");
+				return result.getLong("total");
 			}
 		} catch (SQLException e) {
 			log.error("database access completed unsuccessfully", e);

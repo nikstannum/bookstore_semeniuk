@@ -23,6 +23,6 @@ public class UserCommand implements Command {
 		req.setAttribute("user", dto);
 		req.getRequestDispatcher("jsp/user.jsp");
 		log.info("return page jsp/user.jsp");
-		return "jsp/user.jsp";
+		return "jsp/user/user.jsp";
 	}
 }

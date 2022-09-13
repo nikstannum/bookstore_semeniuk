@@ -106,6 +106,12 @@ public class BookDaoImpl implements BookDao {
 	}
 
 	@Override
+	public List<Book> getAll(int limit, long offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public Book getBookByIsbn(String isbn) {
 		try (Connection connection = dataSource.getFreeConnections();
 				PreparedStatement statement = connection.prepareStatement(GET_BY_ISBN)) {
@@ -174,13 +180,13 @@ public class BookDaoImpl implements BookDao {
 	}
 
 	@Override
-	public int countAll() {
+	public long countAll() {
 		try (Connection connection = dataSource.getFreeConnections();
 				Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_BOOKS);
 			log.debug("database access completed successfully");
 			if (resultSet.next()) {
-				return resultSet.getInt("total");
+				return resultSet.getLong("total");
 			}
 		} catch (SQLException e) {
 			log.error(e);

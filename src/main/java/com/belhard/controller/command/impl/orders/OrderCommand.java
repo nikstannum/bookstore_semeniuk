@@ -25,6 +25,6 @@ public class OrderCommand implements Command {
 		req.setAttribute("order", dto);
 		req.getRequestDispatcher("jsp/order.jsp");
 		log.info("return page jsp/order.jsp");
-		return "jsp/order.jsp";
+		return "jsp/order/order.jsp";
 	}
 }

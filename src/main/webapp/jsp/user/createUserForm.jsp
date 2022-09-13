@@ -4,21 +4,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="navbar.jsp"></jsp:include>
+<jsp:include page="/jsp/navbar.jsp"></jsp:include>
 </head>
 <body>
-	<h1>Update existing user</h1>
+	<h1>Register new user</h1>
 	<form method="post" action="controller">
-		<input name="command" type="hidden" value="update_user"/>
-		<input name="id" type="hidden" value="${requestScope.user.id}"/>
+		<input name="command" type="hidden" value="create_user"/>
 		<label for="first-name-input">First name: </label>
-		<input id="first-name-input" name="firstName" type="text" minlength="1" required="required" value="${requestScope.user.firstName}"/>
+		<input id="first-name-input" name="firstName" type="text" minlength="1" required="required"/>
 		<br/>
 		<label for="last-name-input">Last name: </label>
-		<input id="last-name-input" name="lastName" type="text" minlength="1" required="required" value="${requestScope.user.lastName}"/>
+		<input id="last-name-input" name="lastName" type="text" minlength="1" required="required"/>
 		<br/>
 		<label for="email-input">Email: </label>
-		<input id="email-input" name="email" type="email" required="required" value="${requestScope.user.email}"/>
+		<input id="email-input" name="email" type="email" required="required"/>
 		<br/>
 		<label for="password-input">Password: </label>
 		<input id="password-input" name="password" type="password" minlength="4" required="required"/>
@@ -26,11 +25,11 @@
 		<label for="role-input-user">User</label>
 		<input id="role-input-user" name="role" type="radio" value="USER" required="required"/>
 		<label for="role-input-manager">Manager</label>
-		<input id="role-input-manager" name="role" type="radio" value="MANAGER" required="required" />
+		<input id="role-input-manager" name="role" type="radio" value="MANAGER" required="required"/>
 		<label for="role-input-admin">Admin</label>
-		<input id="role-input-admin" name="role" type="radio" value="ADMIN" required="required" />
+		<input id="role-input-admin" name="role" type="radio" value="ADMIN" required="required"/>
 		<br/>
-		<input type ="submit" value="UPDATE"/>
+		<input type ="submit" value="REGISTER"/>
 
 	</form>
 

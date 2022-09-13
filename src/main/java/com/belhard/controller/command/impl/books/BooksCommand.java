@@ -23,7 +23,6 @@ public class BooksCommand implements Command {
 	public String execute(HttpServletRequest req) {
 		List<BookDto> books = service.getAll();
 		req.setAttribute("books", books);
-		log.info("return page jsp/books.jsp");
-		return "jsp/books.jsp";
+		return "jsp/book/books.jsp";
 	}
 }

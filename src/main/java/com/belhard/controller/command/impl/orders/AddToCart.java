@@ -37,7 +37,7 @@ public class AddToCart implements Command {
 		req.setAttribute("message", "book added to  cart");
 		List<BookDto> books = service.getAll();
 		req.setAttribute("books", books);
-		return "jsp/books.jsp";
+		return "jsp/book/books.jsp";
 	}
 
 }

@@ -36,6 +36,6 @@ public class CreateBookCommand implements Command {
 		req.setAttribute("book", created);
 		String message = "book created successfully";
 		req.setAttribute("message", message);
-		return "jsp/book.jsp";
+		return "jsp/book/book.jsp";
 	}
 }

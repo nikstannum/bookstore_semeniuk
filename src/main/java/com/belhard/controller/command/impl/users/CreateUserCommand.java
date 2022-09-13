@@ -32,10 +32,9 @@ public class CreateUserCommand implements Command {
 		userDto.setUserRoleDto(UserDto.UserRoleDto.valueOf(role));
 		UserDto created = service.create(userDto);
 		req.setAttribute("user", created);
-		String message = "User created successfully";
-		req.setAttribute("message", message);
+		req.setAttribute("message", "User created successfully");
 		HttpSession session = req.getSession();
-		session.setAttribute("user", userDto);
-		return "jsp/user.jsp";
+		session.setAttribute("user", created);
+		return "jsp/user/user.jsp";
 	}
 }

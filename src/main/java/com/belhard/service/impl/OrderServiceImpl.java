@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookDao;
 import com.belhard.dao.OrderDao;
+import com.belhard.dao.OrderInfoDao;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.OrderInfo;
 import com.belhard.service.BookService;
@@ -15,17 +17,20 @@ import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.OrderDto;
 import com.belhard.service.dto.OrderInfoDto;
 import com.belhard.service.dto.UserDto;
-import com.belhard.util.Mapper;
+import com.belhard.serviceutil.Mapper;
 
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class OrderServiceImpl implements OrderService {
 	private final OrderDao orderDao;
+	private final OrderInfoDao orderInfoDao;
 	private final BookDao bookDao;
 
-	public OrderServiceImpl(OrderDao orderDao, BookDao bookDao) {
+
+	public OrderServiceImpl(OrderDao orderDao, OrderInfoDao orderInfoDao, BookDao bookDao) {
 		this.orderDao = orderDao;
+		this.orderInfoDao = orderInfoDao;
 		this.bookDao = bookDao;
 	}
 
@@ -33,7 +38,14 @@ public class OrderServiceImpl implements OrderService {
 	public OrderDto create(OrderDto dto) {
 		log.debug("Service method called successfully");
 		Order order = toEntity(dto);
-		return toDto(orderDao.create(order));
+		OrderDto orderDto = toDto(orderDao.create(order));
+		Long orderDtoId = orderDto.getId();
+		List<OrderInfoDto> infosDto = dto.getDetailsDto();
+		List<OrderInfo> infosEntity = Mapper.INSTANCE.infosToEntity(infosDto, orderDtoId);
+		infosEntity.stream().map(elm -> orderInfoDao.create(elm)).toList();
+		infosDto = Mapper.INSTANCE.infosToDto(infosEntity);
+		orderDto.setDetailsDto(infosDto);
+		return orderDto;
 	}
 
 	private OrderDto toDto(Order order) {
@@ -48,7 +60,6 @@ public class OrderServiceImpl implements OrderService {
 
 	private Order toEntity(OrderDto dto) {
 		Order order = new Order();
-		order.setId(dto.getId());
 		order.setUser(Mapper.INSTANCE.userToEntity(dto.getUserDto()));
 		order.setStatus(Order.Status.valueOf(dto.getStatusDto().toString()));
 		BigDecimal totalCost = dto.getTotalCost();
@@ -130,7 +141,13 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public int countAll() {
+	public List<OrderDto> getAll(Paging paging) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public long countAll() {
 		log.debug("Service method called successfully");
 		return orderDao.countAll();
 	}

@@ -35,6 +35,6 @@ public class UpdateUserCommand implements Command {
 		req.setAttribute("user", updated);
 		String message = "User updated successfully";
 		req.setAttribute("message", message);
-		return "jsp/user.jsp";
+		return "jsp/user/user.jsp";
 	}
 }

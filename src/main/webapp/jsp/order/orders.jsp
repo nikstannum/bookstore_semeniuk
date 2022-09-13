@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="navbar.jsp"></jsp:include>
+<jsp:include page="/jsp/navbar.jsp"></jsp:include>
 </head>
 <body>
  <style>

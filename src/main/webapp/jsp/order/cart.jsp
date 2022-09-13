@@ -4,11 +4,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="navbar.jsp"></jsp:include>
+<jsp:include page="/jsp/navbar.jsp"></jsp:include>
 </head>
 <body>
-	</div>
-	<h5>${cart.userDto.email}, ${requestScope.message}</h5>
+	<h5>${requestScope.message}</h5>
+	<c:if test="${requestScope.cart != null}">
 	<table style="width: 100%">
 		<tr>
 			<th>#</th>
@@ -44,5 +44,6 @@
 							type="submit" value="Checkout" />
 					</form>
 	</div>
+	</c:if>
 </body>
 </html>
