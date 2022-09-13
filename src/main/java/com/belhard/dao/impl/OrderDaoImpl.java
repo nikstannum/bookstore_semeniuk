@@ -26,6 +26,8 @@ public class OrderDaoImpl implements OrderDao {
 			+ "(SELECT s.name AS name FROM status s WHERE s.status_id = o.status_id), o.total_cost from orders o WHERE o.order_id = ?";
 	public static final String GET_ALL = "SELECT o.order_id, o.user_id, "
 			+ "(SELECT s.name AS name FROM status s WHERE o.status_id = s.status_id), o.total_cost from orders o";
+	public static final String GET_ALL_PAGED = "SELECT o.order_id, o.user_id, (SELECT s.name AS name FROM status s "
+			+ "WHERE o.status_id = s.status_id), o.total_cost from orders o ORDER BY o.order_id LIMIT ? OFFSET ?";
 	public static final String UPDATE = "UPDATE orders SET user_id = ?, status_id = (SELECT s.status_id FROM status s WHERE s.name = ?), "
 			+ "total_cost = ?, WHERE order_id = ?";
 	public static final String DELETE = "UPDATE users SET deleted = true WHERE order_id = ?";
@@ -80,7 +82,8 @@ public class OrderDaoImpl implements OrderDao {
 	@Override
 	public List<Order> getAll() {
 		List<Order> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections();
+				Statement statement = connection.createStatement()) {
 			ResultSet result = statement.executeQuery(GET_ALL);
 			while (result.next()) {
 				list.add(processOrder(result));
@@ -95,8 +98,21 @@ public class OrderDaoImpl implements OrderDao {
 	
 	@Override
 	public List<Order> getAll(int limit, long offset) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Order> list = new ArrayList<>();
+		try (Connection connection = dataSource.getFreeConnections();
+				PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
+			statement.setInt(1, limit);
+			statement.setLong(2, offset);
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				list.add(processOrder(result));
+			}
+			log.debug("database access completed successfully");
+			return list;
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		return list;
 	}
 
 	@Override

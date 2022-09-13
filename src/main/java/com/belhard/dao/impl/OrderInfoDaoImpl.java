@@ -22,6 +22,8 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	private static final String GET_BY_ID = "SELECT i.order_infos_id, i.book_id, i.order_id, i.book_quantity, i.book_price "
 			+ "FROM order_infos i WHERE i.order_infos_id = ?";
 	private static final String GET_ALL = "SELECT i.order_infos_id, i.book_id, i.order_id, i.book_quantity, i.book_price FROM order_infos i";
+	private static final String GET_ALL_PAGED = "SELECT i.order_infos_id, i.book_id, i.order_id, i.book_quantity, i.book_price "
+			+ "FROM order_infos i ORDER BY i.order_infos_id LIMIT ? OFFSET ?";
 	private static final String GET_BY_ORDER_ID = "SELECT i.order_infos_id, i.book_id, i.order_id, i.book_quantity, i.book_price "
 			+ "FROM order_infos i WHERE i.order_id = ?";
 	private static final String UPDATE = "UPDATE order_infos SET book_id = ?, order_id = ?, book_quantity = ?, book_price = ? "
@@ -121,9 +123,23 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	
 	@Override
 	public List<OrderInfo> getAll(int limit, long offset) {
-		// TODO Auto-generated method stub
-		return null;
+		List<OrderInfo> list = new ArrayList<>();
+		try (Connection connection = dataSource.getFreeConnections();
+				PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
+			statement.setInt(1, limit);
+			statement.setLong(2, offset);
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				list.add(process(result));
+			}
+			log.debug("database access completed successfully");
+			return list;
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		return list;
 	}
+	
 
 	@Override
 	public long countAll() {

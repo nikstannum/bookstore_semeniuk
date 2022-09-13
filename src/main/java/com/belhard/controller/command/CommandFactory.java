@@ -38,7 +38,7 @@ public class CommandFactory {
 	private CommandFactory() {
 		commands = new HashMap<>();
 		//book
-		commands.put("books", new BooksCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
+		commands.put("books", new BooksCommand(ServiceFactory.INSTANCE.getService(BookService.class), PagingUtil.INSTANCE));
 		commands.put("book", new BookCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("update_book_form", new UpdateBookFormCommand(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("create_book_form", new CreateBookFormCommand());

@@ -142,8 +142,10 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<OrderDto> getAll(Paging paging) {
-		// TODO Auto-generated method stub
-		return null;
+		int limit = paging.getLimit();
+		long offset = paging.getOffset();
+		log.debug("Service method called successfully");
+		return orderDao.getAll(limit, offset).stream().map(this::toDto).toList();
 	}
 
 	@Override

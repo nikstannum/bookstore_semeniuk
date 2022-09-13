@@ -6,6 +6,7 @@
 <jsp:include page="/jsp/navbar.jsp"></jsp:include>
 
 <body>
+<jsp:include page="/jsp/paging.jsp"/>
 	<div>
 		<h5>
 			<a href="controller?command=create_book_form">Create new book</a>

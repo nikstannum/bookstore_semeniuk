@@ -23,21 +23,20 @@ public class BookDaoImpl implements BookDao {
 	public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price, cover_id) "
 			+ "VALUES (?, ?, ?, ?, ?, (SELECT c.cover_id FROM covers c WHERE c.name = ?))";
 	public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
-			+ "cover FROM books b "
-			+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.book_id = ? AND b.deleted = false";
+			+ "cover FROM books b " + "JOIN covers c ON b.cover_id = c.cover_id WHERE b.book_id = ? AND b.deleted = false";
 	public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
 			+ "cover FROM books b " + "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false";
+	public static final String GET_ALL_PAGED = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
+			+ "cover FROM books b "
+			+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false ORDER BY b.book_id LIMIT ? OFFSET ?";
 	public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name "
-			+ "AS cover FROM books b "
-			+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.isbn = ? AND b.deleted = false";
+			+ "AS cover FROM books b " + "JOIN covers c ON b.cover_id = c.cover_id WHERE b.isbn = ? AND b.deleted = false";
 	public static final String GET_BY_AUTHOR = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name"
-			+ " AS cover FROM books b "
-			+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.author = ? AND b.deleted = false";
+			+ " AS cover FROM books b " + "JOIN covers c ON b.cover_id = c.cover_id WHERE b.author = ? AND b.deleted = false";
 	public static final String GET_COUNT_ALL_BOOKS = "SELECT count(b.book_id) AS total from books b WHERE b.deleted ="
 			+ " false";
 	public static final String UPDATE = "UPDATE books SET title = ?, author = ?, isbn = ?, pages = ?, price = ?, "
-			+ "cover_id = (SELECT c.cover_id FROM covers c WHERE c.name = ?) "
-			+ "WHERE book_id = ? AND deleted = false";
+			+ "cover_id = (SELECT c.cover_id FROM covers c WHERE c.name = ?) " + "WHERE book_id = ? AND deleted = false";
 	public static final String DELETE = "UPDATE books SET deleted = true WHERE book_id = ?";
 
 	private final DataSource dataSource;
@@ -91,8 +90,7 @@ public class BookDaoImpl implements BookDao {
 	@Override
 	public List<Book> getAll() {
 		List<Book> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections();
-				Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(GET_ALL);
 			log.debug("database access completed successfully");
 			while (resultSet.next()) {
@@ -107,8 +105,21 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public List<Book> getAll(int limit, long offset) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Book> list = new ArrayList<>();
+		try (Connection connection = dataSource.getFreeConnections();
+				PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
+			statement.setInt(1, limit);
+			statement.setLong(2, offset);
+			ResultSet resultSet = statement.executeQuery();
+			log.debug("database access completed successfully");
+			while (resultSet.next()) {
+				list.add(processBook(resultSet));
+			}
+			return list;
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		return list;
 	}
 
 	@Override
@@ -181,8 +192,7 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public long countAll() {
-		try (Connection connection = dataSource.getFreeConnections();
-				Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_BOOKS);
 			log.debug("database access completed successfully");
 			if (resultSet.next()) {

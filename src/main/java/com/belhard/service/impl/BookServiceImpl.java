@@ -83,8 +83,9 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<BookDto> getAll(Paging paging) {
-		// TODO Auto-generated method stub
-		return null;
+		int limit = paging.getLimit();
+		long offset = paging.getOffset();
+		return bookDao.getAll(limit, offset).stream().map(this::toDto).toList();
 	}
 
 	@Override

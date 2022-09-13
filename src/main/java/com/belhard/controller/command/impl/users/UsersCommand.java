@@ -15,14 +15,12 @@ import com.belhard.service.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class UsersCommand implements Command {
 
 	private final UserService service;
 	private final PagingUtil pagingUtil;
 
 	public UsersCommand(UserService service, PagingUtil pagingUtil) {
-		super();
 		this.service = service;
 		this.pagingUtil = pagingUtil;
 	}
@@ -36,7 +34,6 @@ public class UsersCommand implements Command {
 		req.setAttribute("users", users);
 		req.setAttribute("currentPage", paging.getPage());
 		req.setAttribute("totalPages", totalPages);
-		log.info("return page jsp/users.jsp");
 		return "jsp/user/users.jsp";
 	}
 }

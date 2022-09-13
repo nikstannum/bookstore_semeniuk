@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 @Log4j2
 public class UserDaoImpl implements UserDao {
 
-	private static final String FIND_ALL_PAGED = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role "
+	private static final String GET_ALL_PAGED = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role "
 			+ "FROM users u JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false ORDER BY u.user_id LIMIT ? OFFSET ?";
 	public static final String INSERT = "INSERT INTO users (first_name, last_name, email, password, role_id) "
 			+ "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
@@ -101,7 +101,7 @@ public class UserDaoImpl implements UserDao {
 	public List<User> getAll(int limit, long offset) {
 		List<User> users = new ArrayList<>();
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(FIND_ALL_PAGED)) {
+				PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
 			statement.setInt(1, limit);
 			statement.setLong(2, offset);
 			ResultSet resultSet = statement.executeQuery();
