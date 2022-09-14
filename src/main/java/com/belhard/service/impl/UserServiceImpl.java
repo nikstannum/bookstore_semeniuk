@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.UserDao;
 import com.belhard.dao.entity.User;
+import com.belhard.service.DigestUtil;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
 import com.belhard.serviceutil.Mapper;
@@ -24,13 +25,22 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto create(UserDto userDto) {
-		log.debug("Service method called successfully");
+		validatePassword(userDto);
+		String hashedPassword = DigestUtil.INSTANCE.hash(userDto.getPassword());
+		userDto.setPassword(hashedPassword);
 		User existing = userDao.getUserByEmail(userDto.getEmail());
 		if (existing != null) {
 			throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
 		}
 		User user = toEntity(userDto);
+		log.debug("Service method called successfully");
 		return toDto(userDao.create(user));
+	}
+
+	private void validatePassword(UserDto userDto) {
+		if (userDto.getPassword().length() < 4) {
+			throw new RuntimeException("Password is too short. Password length have to more than three symbols");
+		}
 	}
 
 	private User toEntity(UserDto userDto) {
@@ -103,9 +113,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto validate(String email, String password) {
 		log.debug("Service method called successfully");
+		String hashedPassword = DigestUtil.INSTANCE.hash(password);
 		User user = userDao.getUserByEmail(email);
 		String userPassword = user.getPassword();
-		if (userPassword.equals(password)) {
+		if (userPassword.equals(hashedPassword)) {
 			return getUserByEmail(email);
 		}
 		throw new RuntimeException("Wrong email or password");

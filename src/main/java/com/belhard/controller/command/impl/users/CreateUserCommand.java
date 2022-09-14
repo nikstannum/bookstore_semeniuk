@@ -19,16 +19,16 @@ public class CreateUserCommand implements Command {
 
 	@Override
 	public String execute(HttpServletRequest req) {
-		String firstName = req.getParameter("firstName");
-		String lastName = req.getParameter("lastName");
-		String email = req.getParameter("email");
-		String password = req.getParameter("password");
-		String role = req.getParameter("role");
 		UserDto userDto = new UserDto();
+		String firstName = req.getParameter("firstName");
 		userDto.setFirstName(firstName);
+		String lastName = req.getParameter("lastName");
 		userDto.setLastName(lastName);
+		String email = req.getParameter("email");
 		userDto.setEmail(email);
+		String password = req.getParameter("password");
 		userDto.setPassword(password);
+		String role = req.getParameter("role");
 		userDto.setUserRoleDto(UserDto.UserRoleDto.valueOf(role));
 		UserDto created = service.create(userDto);
 		req.setAttribute("user", created);

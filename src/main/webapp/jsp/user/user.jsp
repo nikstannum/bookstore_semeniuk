@@ -22,9 +22,9 @@
 		</tr>
 		<tr>
 			<td>${user.id}</td>
-			<td>${user.firstName}</td>
-			<td>${user.lastName}</td>
-			<td>${user.email}</td>
+			<td><c:out value="${user.firstName}"/></td>
+			<td><c:out value="${user.lastName}"/></td>
+			<td><c:out value="${user.email}"/></td>
 			<td>${user.userRoleDto}</td>
 		</tr>
 	</table>
