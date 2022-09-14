@@ -34,10 +34,9 @@ public class AddToCart implements Command {
 			cart.put(bookId, quantuty + 1);
 		}
 		session.setAttribute("cart", cart);
-		req.setAttribute("message", "book added to  cart");
-		List<BookDto> books = service.getAll();
-		req.setAttribute("books", books);
-		return "jsp/book/books.jsp";
+		String currentCommand = req.getParameter("currentCommand");
+		String currentPage = req.getParameter("currentPage");
+		return "redirect:controller?command=" + currentCommand + "&page=" + currentPage;
 	}
 
 }

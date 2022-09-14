@@ -32,6 +32,7 @@ public class UsersCommand implements Command {
 		long totalEntities = service.countAll();
 		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
 		req.setAttribute("users", users);
+		req.setAttribute("currentCommand", "users");
 		req.setAttribute("currentPage", paging.getPage());
 		req.setAttribute("totalPages", totalPages);
 		return "jsp/user/users.jsp";

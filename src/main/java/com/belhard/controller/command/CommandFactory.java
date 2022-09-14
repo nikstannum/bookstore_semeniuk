@@ -53,7 +53,7 @@ public class CommandFactory {
 		commands.put("update_user", new UpdateUserCommand(ServiceFactory.INSTANCE.getService(UserService.class)));
 		//order
 		commands.put("order", new OrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
-		commands.put("orders", new OrdersCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
+		commands.put("orders", new OrdersCommand(ServiceFactory.INSTANCE.getService(OrderService.class), PagingUtil.INSTANCE));
 		commands.put("checkout_order", new CreateOrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		//login
 		commands.put("login_form", new LoginFormCommand());

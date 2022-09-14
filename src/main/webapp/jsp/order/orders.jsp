@@ -4,8 +4,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="/jsp/navbar.jsp"></jsp:include>
+<jsp:include page="/jsp/navbar.jsp"/>
 </head>
+<jsp:include page="/jsp/paging.jsp"/>
 <body>
  <style>
    TABLE {

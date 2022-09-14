@@ -30,6 +30,7 @@ public class BooksCommand implements Command {
 		long totalEntities = service.countAll();
 		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
 		req.setAttribute("books", books);
+		req.setAttribute("currentCommand", "books");
 		req.setAttribute("totalPages", totalPages);
 		req.setAttribute("currentPage", paging.getPage());
 		return "jsp/book/books.jsp";

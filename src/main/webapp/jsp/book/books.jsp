@@ -47,9 +47,11 @@
 				<td>${book.author}</td>
 				<td>
 					<form method="post" action="controller">
-						<input type="hidden" name="command" value="add_to_cart" /> <input
-							type="hidden" name="bookId" value="${book.id}" /> <input
-							type="submit" value="Add to cart" />
+						<input type="hidden" name="command" value="add_to_cart" /> 
+						<input type="hidden" name="bookId" value="${book.id}" />
+						<input type="hidden" name="currentCommand" value="${requestScope.currentCommand}" />
+						<input type="hidden" name="currentPage" value="${requestScope.currentPage}" />
+						<input type="submit" value="Add to cart" />
 					</form>
 				</td>
 				<td><a href="controller?command=update_book_form&id=${book.id}"><input
