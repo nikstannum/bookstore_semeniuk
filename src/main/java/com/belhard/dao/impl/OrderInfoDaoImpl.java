@@ -175,7 +175,7 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	}
 
 	@Override
-	public boolean delete(Long id) {
+	public boolean delete(Long id) { //TODO
 		return false;
 	}
 

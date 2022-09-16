@@ -68,6 +68,7 @@ public enum Mapper {
 		List<OrderInfo> infosEntity = new ArrayList<>();
 		for (OrderInfoDto elm : infosDto) {
 			OrderInfo entity = new OrderInfo();
+			entity.setId(orderDtoId);
 			entity.setBook(bookToEntity(elm.getBookDto()));
 			entity.setBookPrice(elm.getBookPrice());
 			entity.setBookQuantity(elm.getBookQuantity());

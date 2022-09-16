@@ -1,7 +1,7 @@
-SELECT * FROM orders;
-
+SELECT * FROM books;
+SELECT * FROM covers;
 SELECT * FROM order_infos;
-
-TRUNCATE orders ;
-
+SELECT * FROM orders;
+SELECT * FROM "role";
+SELECT * FROM status;
 SELECT * FROM users;

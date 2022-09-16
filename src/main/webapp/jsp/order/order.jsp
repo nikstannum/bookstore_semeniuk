@@ -14,6 +14,7 @@
 			<th>user</th>
 			<th>Items</th>
 			<th>status</th>
+			<th>action</th>
 		</tr>
 		<tr>
 			<td>${order.id}</td>
@@ -27,6 +28,8 @@
 				TOTAL PRICE = ${order.totalCost}
 			</td>
 			<td>${order.statusDto}</td>
+			<td><a href="controller?command=update_order_form&id=${order.id}"><input
+						type="submit" value="UPDATE" /></a></td>
 		</tr>
 	</table>
 

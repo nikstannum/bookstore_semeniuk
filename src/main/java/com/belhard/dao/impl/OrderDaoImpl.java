@@ -23,15 +23,16 @@ public class OrderDaoImpl implements OrderDao {
 	public static final String INSERT = "INSERT INTO orders (user_id, status_id, total_cost) "
 			+ "VALUES (?, (SELECT s.status_id FROM status s WHERE s.name = ?), ?)";
 	public static final String GET_BY_ID = "SELECT o.order_id, o.user_id, "
-			+ "(SELECT s.name AS name FROM status s WHERE s.status_id = o.status_id), o.total_cost from orders o WHERE o.order_id = ?";
+			+ "(SELECT s.name AS name FROM status s WHERE s.status_id = o.status_id), o.total_cost "
+			+ "FROM orders o WHERE o.order_id = ? AND o.deleted = false";
 	public static final String GET_ALL = "SELECT o.order_id, o.user_id, "
-			+ "(SELECT s.name AS name FROM status s WHERE o.status_id = s.status_id), o.total_cost from orders o";
+			+ "(SELECT s.name AS name FROM status s WHERE o.status_id = s.status_id), o.total_cost FROM orders o WHERE o.deleted = false";
 	public static final String GET_ALL_PAGED = "SELECT o.order_id, o.user_id, (SELECT s.name AS name FROM status s "
-			+ "WHERE o.status_id = s.status_id), o.total_cost from orders o ORDER BY o.order_id LIMIT ? OFFSET ?";
+			+ "WHERE o.status_id = s.status_id), o.total_cost FROM orders o WHERE o.deleted = false ORDER BY o.order_id LIMIT ? OFFSET ?";
 	public static final String UPDATE = "UPDATE orders SET user_id = ?, status_id = (SELECT s.status_id FROM status s WHERE s.name = ?), "
-			+ "total_cost = ?, WHERE order_id = ?";
+			+ "total_cost = ? WHERE order_id = ? AND deleted = false";
 	public static final String DELETE = "UPDATE users SET deleted = true WHERE order_id = ?";
-	public static final String GET_COUNT_ALL_ORDERS = "SELECT count(o.order_id) AS all_orders from orders o WHERE o.deleted = false";
+	public static final String GET_COUNT_ALL_ORDERS = "SELECT count(o.order_id) AS all_orders FROM orders o WHERE o.deleted = false";
 
 	private final DataSource dataSource;
 	private final OrderInfoDao orderInfoDao;
@@ -133,7 +134,7 @@ public class OrderDaoImpl implements OrderDao {
 	public Order update(Order entity) {
 		try (Connection connection = dataSource.getFreeConnections();
 				PreparedStatement statement = connection.prepareStatement(UPDATE)) {
-			statement.setLong(1, entity.getId());
+			statement.setLong(1, entity.getUser().getId());
 			statement.setString(2, entity.getStatus().toString());
 			statement.setBigDecimal(3, entity.getTotalCost());
 			statement.setLong(4, entity.getId());
@@ -150,6 +151,7 @@ public class OrderDaoImpl implements OrderDao {
 	public boolean delete(Long id) {
 		try (Connection connection = dataSource.getFreeConnections();
 				PreparedStatement statement = connection.prepareStatement(DELETE)) {
+			statement.setLong(1, id);
 			int rowsDelete = statement.executeUpdate();
 			log.debug("database access completed successfully");
 			return rowsDelete == 1;

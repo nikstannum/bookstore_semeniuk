@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,34 +33,40 @@
 }
 </style>
 
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<div class="container">
-			<a class="navbar-brand p-0" href="images/favicon-32x32.png"><img
-				src="images/favicon-32x32.png" alt="icon" width="40" /></a>
-			<button class="navbar-toggler" type="button"
-				data-bs-toggle="collapse" data-bs-target="#navbarNav"
-				aria-controls="navbarNav" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarNav">
-				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link"	aria-current="page" href="/bookstore_semeniuk/">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=books">All books</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=users">All users</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=orders">All orders</a></li>
-					<li class="nav-item"><a class="nav-link" href="controller?command=cart">Cart</a></li>
-					<c:if test="${sessionScope.user == null}">
-						<li class="nav-item"><a class="nav-link" href="controller?command=create_user_form">Sign up</a></li>
-						<li class="nav-item"><a class="nav-link" href="controller?command=login_form">Sign in</a></li>
-					</c:if>
-					<c:if test="${sessionScope.user != null}">
-						<li class="nav-item"><a class="nav-link" href="controller?command=logout">Logout</a></li>
-					</c:if>
-					
-				</ul>
-			</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container">
+		<a class="navbar-brand p-0" href="images/favicon-32x32.png"><img
+			src="images/favicon-32x32.png" alt="icon" width="40" /></a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+			data-bs-target="#navbarNav" aria-controls="navbarNav"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item"><a class="nav-link" aria-current="page"
+					href="/bookstore_semeniuk/">Home</a></li>
+				<li class="nav-item"><a class="nav-link"
+					href="controller?command=books">All books</a></li>
+				<li class="nav-item"><a class="nav-link"
+					href="controller?command=users">All users</a></li>
+				<li class="nav-item"><a class="nav-link"
+					href="controller?command=orders">All orders</a></li>
+				<li class="nav-item"><a class="nav-link"
+					href="controller?command=cart">Cart</a></li>
+				<c:if test="${sessionScope.user == null}">
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=create_user_form">Sign up</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=login_form">Sign in</a></li>
+				</c:if>
+				<c:if test="${sessionScope.user != null}">
+					<li class="nav-item"><a class="nav-link"
+						href="controller?command=logout">Logout</a></li>
+				</c:if>
+			</ul>
 		</div>
-	</nav>
+	</div>
+</nav>
 </head>
 </html>

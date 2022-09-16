@@ -11,7 +11,6 @@ import com.belhard.dao.OrderDao;
 import com.belhard.dao.OrderInfoDao;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.OrderInfo;
-import com.belhard.service.BookService;
 import com.belhard.service.OrderService;
 import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.OrderDto;
@@ -27,25 +26,10 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderInfoDao orderInfoDao;
 	private final BookDao bookDao;
 
-
 	public OrderServiceImpl(OrderDao orderDao, OrderInfoDao orderInfoDao, BookDao bookDao) {
 		this.orderDao = orderDao;
 		this.orderInfoDao = orderInfoDao;
 		this.bookDao = bookDao;
-	}
-
-	@Override
-	public OrderDto create(OrderDto dto) {
-		log.debug("Service method called successfully");
-		Order order = toEntity(dto);
-		OrderDto orderDto = toDto(orderDao.create(order));
-		Long orderDtoId = orderDto.getId();
-		List<OrderInfoDto> infosDto = dto.getDetailsDto();
-		List<OrderInfo> infosEntity = Mapper.INSTANCE.infosToEntity(infosDto, orderDtoId);
-		infosEntity.stream().map(elm -> orderInfoDao.create(elm)).toList();
-		infosDto = Mapper.INSTANCE.infosToDto(infosEntity);
-		orderDto.setDetailsDto(infosDto);
-		return orderDto;
 	}
 
 	private OrderDto toDto(Order order) {
@@ -60,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
 
 	private Order toEntity(OrderDto dto) {
 		Order order = new Order();
+		order.setId(dto.getId());
 		order.setUser(Mapper.INSTANCE.userToEntity(dto.getUserDto()));
 		order.setStatus(Order.Status.valueOf(dto.getStatusDto().toString()));
 		BigDecimal totalCost = dto.getTotalCost();
@@ -155,18 +140,53 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public OrderDto update(OrderDto dto) { // TODO after realization creation
+	public OrderDto create(OrderDto dto) {
+		log.debug("Service method called successfully");
+		Order order = toEntity(dto);
+		OrderDto orderDto = toDto(orderDao.create(order));
+		Long orderDtoId = orderDto.getId();
+		List<OrderInfoDto> infosDto = dto.getDetailsDto();
+		List<OrderInfo> infosEntity = Mapper.INSTANCE.infosToEntity(infosDto, orderDtoId);
+		infosEntity.stream().map(elm -> orderInfoDao.create(elm)).toList();
+		infosDto = Mapper.INSTANCE.infosToDto(infosEntity);
+		orderDto.setDetailsDto(infosDto);
+		return orderDto;
+	}
+
+	@Override
+	public OrderDto update(OrderDto dto) {
 		log.debug("Service method called successfully");
 		Order existing = orderDao.get(dto.getId());
-		if (existing != null
-				&& existing.getStatus().toString().compareToIgnoreCase(Order.Status.DELIVERED.toString()) == 1) {
+		if (existing == null) {
+			throw new RuntimeException("order wasn't found");
 		}
-		return null;
+		List<OrderInfo> infos = toDetails(dto.getDetailsDto());
+		for (OrderInfo elm : infos)
+			orderInfoDao.update(elm);
+		return toDto(orderDao.update(toEntity(dto)));
+	}
+
+	@Override
+	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId) {
+		for (OrderInfoDto elm : list) {
+			if (elm.getId() == detailsDtoId) {
+				elm.setBookQuantity(elm.getBookQuantity() + 1);
+				BigDecimal bookPriceFromCatalog = bookDao.get(elm.getBookDto().getId()).getPrice();
+				BigDecimal oldCost = orderDto.getTotalCost();
+				BigDecimal updatedCost = oldCost.add(bookPriceFromCatalog);
+				orderDto.setTotalCost(updatedCost);
+			}
+		}
+		orderDto.setDetailsDto(list);
+		return orderDto;
 	}
 
 	@Override
 	public void delete(Long id) {
 		log.debug("Service method called successfully");
-		orderDao.delete(id);
+		boolean result = orderDao.delete(id);
+		if (!result) {
+			throw new RuntimeException("order didn't be deleted");
+		}
 	}
 }
