@@ -11,5 +11,5 @@ public interface OrderService extends CrudService<Long, OrderDto> {
 
 	public OrderDto processCart(Map<Long, Integer> cart, UserDto userDto);
 
-	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId);
+	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId, boolean increaseQuantity);
 }

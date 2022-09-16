@@ -16,6 +16,7 @@ import com.belhard.controller.command.impl.errors.ErrorCommand;
 import com.belhard.controller.command.impl.orders.AddToCart;
 import com.belhard.controller.command.impl.orders.CartCommand;
 import com.belhard.controller.command.impl.orders.CreateOrderCommand;
+import com.belhard.controller.command.impl.orders.DecreaseQuantityCommand;
 import com.belhard.controller.command.impl.orders.OrderCommand;
 import com.belhard.controller.command.impl.orders.OrdersCommand;
 import com.belhard.controller.command.impl.orders.UpdateOrderCommand;
@@ -59,6 +60,7 @@ public class CommandFactory {
 		commands.put("checkout_order", new CreateOrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("update_order_form", new UpdateOrderFormCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("increase_quantity", new IncreaseQuantityCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
+		commands.put("decrease_quantity", new DecreaseQuantityCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("update_order", new UpdateOrderCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		// login
 		commands.put("login_form", new LoginFormCommand());

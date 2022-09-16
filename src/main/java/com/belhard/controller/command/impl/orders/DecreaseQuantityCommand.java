@@ -12,10 +12,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class IncreaseQuantityCommand implements Command {
+public class DecreaseQuantityCommand implements Command {
 	private final OrderService service;
 
-	public IncreaseQuantityCommand(OrderService service) {
+	public DecreaseQuantityCommand(OrderService service) {
 		this.service = service;
 	}
 
@@ -25,7 +25,7 @@ public class IncreaseQuantityCommand implements Command {
 		OrderDto orderDto = (OrderDto) session.getAttribute("order");
 		List<OrderInfoDto> infosDto = orderDto.getDetailsDto();
 		Long detailsDtoId = Long.parseLong(req.getParameter("detailsDtoId"));
-		boolean increase = true;
+		boolean increase = false;
 		OrderDto order = service.preProcessUpdate(orderDto, infosDto, detailsDtoId, increase);
 		session.setAttribute("order", order);
 		return "jsp/order/updateOrderForm.jsp";

@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS order_infos (
 	book_id BIGINT NOT NULL REFERENCES books,
 	order_id BIGINT NOT NULL REFERENCES orders,
 	book_quantity BIGINT,
-	book_price NUMERIC (6,2)
+	book_price NUMERIC (6,2),
+	deleted BOOLEAN NOT NULL DEFAULT false
 );
 

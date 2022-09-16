@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookDao;
@@ -155,27 +156,62 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderDto update(OrderDto dto) {
+		System.out.println("BEFORE UPDATE " + dto);
 		log.debug("Service method called successfully");
 		Order existing = orderDao.get(dto.getId());
 		if (existing == null) {
 			throw new RuntimeException("order wasn't found");
 		}
+		List<OrderInfo> infosFromDB = existing.getDetails();
+		List<Long> listInfoIdFromDB = infosFromDB.stream().map(elm -> elm.getId()).toList();
 		List<OrderInfo> infos = toDetails(dto.getDetailsDto());
-		for (OrderInfo elm : infos)
-			orderInfoDao.update(elm);
-		return toDto(orderDao.update(toEntity(dto)));
+		List<Long> listInfoIdFromRequest = infos.stream().map(elm -> elm.getId()).toList();
+		for (Long elm : listInfoIdFromDB) {
+			if (!listInfoIdFromRequest.contains(elm)) {
+				orderInfoDao.delete(elm);
+			}
+		}
+		List<OrderInfo> infosUpdated = new ArrayList<>();
+		for (OrderInfo elm : infos) {
+			infosUpdated.add(orderInfoDao.update(elm));
+		}
+		List<OrderInfoDto> infosDtoUpdated = toDetailsDto(infosUpdated);
+		OrderDto orderDtoUpdated = toDto(orderDao.update(toEntity(dto)));
+		orderDtoUpdated.setDetailsDto(infosDtoUpdated);
+		System.out.println("AFTER UPDATE " + orderDtoUpdated);
+		return orderDtoUpdated;
 	}
 
 	@Override
-	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId) {
+	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId,
+			boolean increaseQuantity) {
+		boolean subjectToRemoval = false;
+		OrderInfoDto deleteInfoDto = null;
+
+		List<Integer> listOfIndexOfSubjectToRemoval = new ArrayList<>();
 		for (OrderInfoDto elm : list) {
 			if (elm.getId() == detailsDtoId) {
-				elm.setBookQuantity(elm.getBookQuantity() + 1);
-				BigDecimal bookPriceFromCatalog = bookDao.get(elm.getBookDto().getId()).getPrice();
-				BigDecimal oldCost = orderDto.getTotalCost();
-				BigDecimal updatedCost = oldCost.add(bookPriceFromCatalog);
-				orderDto.setTotalCost(updatedCost);
+				if (increaseQuantity) {
+					elm.setBookQuantity(elm.getBookQuantity() + 1);
+					BigDecimal bookPriceFromCatalog = bookDao.get(elm.getBookDto().getId()).getPrice();
+					BigDecimal oldCost = orderDto.getTotalCost();
+					BigDecimal updatedCost = oldCost.add(bookPriceFromCatalog);
+					orderDto.setTotalCost(updatedCost);
+				} else {
+					elm.setBookQuantity(elm.getBookQuantity() - 1);
+					BigDecimal bookPriceFromOrder = elm.getBookPrice();
+					BigDecimal oldCost = orderDto.getTotalCost();
+					BigDecimal updatedCost = oldCost.subtract(bookPriceFromOrder);
+					orderDto.setTotalCost(updatedCost);
+					if (elm.getBookQuantity() == 0) {
+						listOfIndexOfSubjectToRemoval.add(list.indexOf(elm));
+					}
+				}
 			}
+		}
+		for (Integer elm : listOfIndexOfSubjectToRemoval) {
+			int i = elm;
+			list.remove(i);
 		}
 		orderDto.setDetailsDto(list);
 		return orderDto;

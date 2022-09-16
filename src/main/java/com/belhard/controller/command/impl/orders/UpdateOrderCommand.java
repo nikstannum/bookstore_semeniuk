@@ -23,6 +23,7 @@ public class UpdateOrderCommand implements Command {
 		HttpSession session =req.getSession();
 		OrderDto orderDto = (OrderDto) session.getAttribute("order");
 		service.update(orderDto);
+		System.out.println("UPDATED " + orderDto); //FIXME DELETE
 		session.removeAttribute("order");
 		return "redirect:controller?command=orders";
 	}
