@@ -1,10 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="/jsp/navbar.jsp"></jsp:include>
-
+<fmt:setBundle basename="messages"/>
+<c:if test="${sessionScope.language != null}">
+	<fmt:setLocale value="${sessionScope.language}"/>
+</c:if>
 <body>
 <jsp:include page="/jsp/paging.jsp"/>
 	<div>
@@ -14,7 +18,7 @@
 	</div>
 	<div>
 		<h5>
-			${requestScope.message} <br /> Our books:
+			${requestScope.message} <br /> <fmt:message key="book.ourbooks"/>
 		</h5>
 	</div>
 

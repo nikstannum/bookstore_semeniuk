@@ -55,11 +55,8 @@ public class BookDaoImpl implements BookDao {
 			statement.setInt(4, book.getPages());
 			statement.setBigDecimal(5, book.getPrice());
 			statement.setString(6, book.getCover().toString());
-
 			statement.executeUpdate();
-
 			log.debug("database access completed successfully");
-
 			ResultSet keys = statement.getGeneratedKeys();
 			if (keys.next()) {
 				long id = keys.getLong("book_id");

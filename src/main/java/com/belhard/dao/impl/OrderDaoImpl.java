@@ -14,6 +14,7 @@ import com.belhard.dao.UserDao;
 import com.belhard.dao.connection.DataSource;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.Order.Status;
+import com.belhard.dao.entity.OrderInfo;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -46,8 +47,10 @@ public class OrderDaoImpl implements OrderDao {
 
 	@Override
 	public Order create(Order entity) {
-		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+		Connection connection = dataSource.getFreeConnections();
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
 			statement.setLong(1, entity.getUser().getId());
 			statement.setString(2, Order.Status.PENDING.toString());
 			statement.setBigDecimal(3, entity.getTotalCost());
@@ -56,26 +59,61 @@ public class OrderDaoImpl implements OrderDao {
 			log.info("database access completed successfully");
 			if (keys.next()) {
 				Long id = keys.getLong("order_id");
-				return get(id);
+				Order order = get(id);
+				List<OrderInfo> infoDetails = entity.getDetails();
+				List<OrderInfo> createdDetails = new ArrayList<>();
+				for (OrderInfo elm : infoDetails) {
+					elm.setOrderId(id);
+					createdDetails.add(orderInfoDao.create(elm));
+				}
+				order.setDetails(createdDetails);
+				return order;
 			}
+			connection.commit();
 		} catch (SQLException e) {
 			log.error("database access completed unsuccessfully", e);
+			rollback(connection);
+		} finally {
+			close(connection);
 		}
 		return null;
 	}
 
+	private void rollback(Connection connection) {
+		try {
+			connection.rollback();
+		} catch (SQLException e1) {
+			log.error(e1.getMessage());
+		}
+	}
+
+	private void close(Connection connection) {
+		try {
+			connection.setAutoCommit(true);
+			connection.close();
+		} catch (SQLException e) {
+			log.error(e.getMessage());
+		}
+	}
+
 	@Override
 	public Order get(Long id) {
-		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_BY_ID, Statement.RETURN_GENERATED_KEYS)) {
+		Connection connection = dataSource.getFreeConnections();
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection.prepareStatement(GET_BY_ID, Statement.RETURN_GENERATED_KEYS);
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			log.debug("database access completed successfully");
 			if (resultSet.next()) {
 				return processOrder(resultSet);
 			}
+			connection.commit();
 		} catch (SQLException e) {
 			log.error("database access completed unsuccessfully", e);
+			rollback(connection);
+		} finally {
+			close(connection);
 		}
 		return null;
 	}
@@ -83,25 +121,33 @@ public class OrderDaoImpl implements OrderDao {
 	@Override
 	public List<Order> getAll() {
 		List<Order> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections();
-				Statement statement = connection.createStatement()) {
+		Connection connection = dataSource.getFreeConnections();
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(GET_ALL);
 			while (result.next()) {
 				list.add(processOrder(result));
 			}
 			log.debug("database access completed successfully");
+			connection.commit();
 			return list;
 		} catch (SQLException e) {
 			log.error("database access completed unsuccessfully", e);
+			rollback(connection);
+		} finally {
+			close(connection);
 		}
 		return list;
 	}
-	
+
 	@Override
 	public List<Order> getAll(int limit, long offset) {
 		List<Order> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
+		Connection connection = dataSource.getFreeConnections();
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED);
 			statement.setInt(1, limit);
 			statement.setLong(2, offset);
 			ResultSet result = statement.executeQuery();
@@ -109,9 +155,13 @@ public class OrderDaoImpl implements OrderDao {
 				list.add(processOrder(result));
 			}
 			log.debug("database access completed successfully");
+			connection.commit();
 			return list;
 		} catch (SQLException e) {
 			log.error("database access completed unsuccessfully", e);
+			rollback(connection);
+		} finally {
+			close(connection);
 		}
 		return list;
 	}
@@ -132,31 +182,59 @@ public class OrderDaoImpl implements OrderDao {
 
 	@Override
 	public Order update(Order entity) {
-		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(UPDATE)) {
+		Connection connection = dataSource.getFreeConnections();
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection.prepareStatement(UPDATE);
 			statement.setLong(1, entity.getUser().getId());
 			statement.setString(2, entity.getStatus().toString());
 			statement.setBigDecimal(3, entity.getTotalCost());
 			statement.setLong(4, entity.getId());
 			statement.executeUpdate();
+			List<OrderInfo> infos = entity.getDetails();
+			for (OrderInfo elm : infos) {
+				orderInfoDao.update(elm);
+			}
 			log.debug("database access completed successfully");
+			connection.commit();
 			return get(entity.getId());
 		} catch (SQLException e) {
 			log.error("database access completed unsuccessfully", e);
+			rollback(connection);
+		} finally {
+			close(connection);
 		}
 		return null;
 	}
 
 	@Override
+	public boolean removeRedundantDetails(List<Long> listId) {
+		for (Long id : listId) {
+			orderInfoDao.delete(id);
+		}
+		return true;
+	}
+
+	@Override
 	public boolean delete(Long id) {
-		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(DELETE)) {
+		Connection connection = dataSource.getFreeConnections();
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection.prepareStatement(DELETE);
 			statement.setLong(1, id);
+			List<OrderInfo> infos = orderInfoDao.getByOrderId(id);
+			for (OrderInfo elm : infos) {
+				orderInfoDao.delete(elm.getId());
+			}
 			int rowsDelete = statement.executeUpdate();
 			log.debug("database access completed successfully");
+			connection.commit();
 			return rowsDelete == 1;
 		} catch (SQLException e) {
 			log.error("database access completed unsuccessfully", e);
+			rollback(connection);
+		} finally {
+			close(connection);
 		}
 		return false;
 	}

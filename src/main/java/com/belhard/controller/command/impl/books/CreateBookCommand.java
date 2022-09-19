@@ -1,6 +1,7 @@
 package com.belhard.controller.command.impl.books;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import com.belhard.controller.command.Command;
 import com.belhard.service.BookService;
@@ -8,6 +9,7 @@ import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 public class CreateBookCommand implements Command {
 

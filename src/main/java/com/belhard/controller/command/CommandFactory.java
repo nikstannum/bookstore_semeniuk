@@ -3,6 +3,7 @@ package com.belhard.controller.command;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.belhard.controller.command.impl.ChangeLanguageCommand;
 import com.belhard.controller.command.impl.LoginCommand;
 import com.belhard.controller.command.impl.LoginFormCommand;
 import com.belhard.controller.command.impl.LogoutCommand;
@@ -70,6 +71,7 @@ public class CommandFactory {
 		commands.put("add_to_cart", new AddToCart(ServiceFactory.INSTANCE.getService(BookService.class)));
 		commands.put("cart", new CartCommand(ServiceFactory.INSTANCE.getService(OrderService.class)));
 		commands.put("error", new ErrorCommand());
+		commands.put("language", new ChangeLanguageCommand());
 	}
 
 	public Command getCommand(String command) {

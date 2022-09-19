@@ -172,9 +172,9 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 		}
 		return null;
 	}
-
+	
 	@Override
-	public boolean delete(Long id) { // TODO
+	public boolean delete(Long id) {
 		try (Connection connection = dataSource.getFreeConnections();
 				PreparedStatement statement = connection.prepareStatement(DELETE)) {
 			statement.setLong(1, id);

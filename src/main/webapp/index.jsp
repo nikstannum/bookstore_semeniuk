@@ -1,16 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="jsp/navbar.jsp"></jsp:include>
+<fmt:setBundle basename="messages"/>
+<c:if test="${sessionScope.language != null}">
+	<fmt:setLocale value="${sessionScope.language}"/>
+</c:if>
+
 <body>
 	<div>
 		<c:if test="${sessionScope.user != null}">
-		Hello, ${user.firstName}!
+		<fmt:message key="main.welcome"/>, ${user.firstName}!
 		</c:if>
 		<c:if test="${sessionScope.user == null}">
-		Hello, guest!
+		<fmt:message key="main.welcome"/>, guest!
 		</c:if>
 	</div>
 	<div class="container text-center my-5">
@@ -23,7 +29,6 @@
 			</div>
 		</div>
 	</div>
-
 </body>
 </html>
 
