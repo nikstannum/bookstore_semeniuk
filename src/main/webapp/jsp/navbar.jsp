@@ -2,10 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<fmt:setBundle basename="messages"/>
 <c:if test="${sessionScope.language != null}">
 	<fmt:setLocale value="${sessionScope.language}"/>
 </c:if>
+<fmt:setBundle basename="messages"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -69,8 +69,8 @@
 					<li class="nav-item"><a class="nav-link"
 						href="controller?command=logout"><fmt:message key="navbar.logout"/></a></li>
 				</c:if>
-     	 <li class="nav-item"><a class="nav-link" href="controller?command=language&lang=en"><img src="images/langUK.png" alt="English" width="30"/></a></li>
-     	 <li class="nav-item"><a class="nav-link" href="controller?command=language&lang=ru"><img src="images/langRU.jpg" alt="Russian" width="30"/></a></li>
+     	 <li class="nav-item"><a class="nav-link" href="controller?command=change_language&lang=en"><img src="images/langUK.png" alt="English" width="30"/></a></li>
+     	 <li class="nav-item"><a class="nav-link" href="controller?command=change_language&lang=ru"><img src="images/langRU.jpg" alt="Russian" width="30"/></a></li>
 			</ul>
 		</div>
 	</div>

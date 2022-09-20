@@ -138,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
 	private OrderDto toDto(Order order) {
 		OrderDto orderDto = new OrderDto();
 		orderDto.setId(order.getId());
-		orderDto.setStatusDto(OrderDto.StatusDto.valueOf(Order.Status.PENDING.toString()));
+		orderDto.setStatusDto(OrderDto.StatusDto.valueOf(order.getStatus().toString()));
 		orderDto.setUserDto(Mapper.INSTANCE.userToDto(order.getUser()));
 		orderDto.setTotalCost(order.getTotalCost());
 		orderDto.setDetailsDto(toDetailsDto(order.getDetails()));

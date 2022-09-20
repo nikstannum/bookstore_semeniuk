@@ -22,6 +22,7 @@ public class UpdateOrderFormCommand implements Command {
 		Long id = Long.parseLong(req.getParameter("id"));
 		OrderDto order = service.get(id);
 		session.setAttribute("order", order);
+		session.setAttribute("status", order.getStatusDto());
 		return "jsp/order/updateOrderForm.jsp";
 	}
 }

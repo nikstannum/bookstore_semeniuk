@@ -4,19 +4,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="en">
-<jsp:include page="jsp/navbar.jsp"></jsp:include>
-<fmt:setBundle basename="messages"/>
 <c:if test="${sessionScope.language != null}">
 	<fmt:setLocale value="${sessionScope.language}"/>
 </c:if>
+<fmt:setBundle basename="messages"/>
+<jsp:include page="jsp/navbar.jsp"></jsp:include>
 
 <body>
 	<div>
 		<c:if test="${sessionScope.user != null}">
-		<fmt:message key="main.welcome"/>, ${user.firstName}!
+			<fmt:message key="main.welcome"/>, ${user.firstName}!
 		</c:if>
 		<c:if test="${sessionScope.user == null}">
-		<fmt:message key="main.welcome"/>, guest!
+			<fmt:message key="main.welcome"/>, guest!
 		</c:if>
 	</div>
 	<div class="container text-center my-5">
