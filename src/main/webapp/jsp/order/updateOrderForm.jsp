@@ -36,19 +36,10 @@
 					<br />
 					<br />
 				</c:forEach></td>
-
 		</tr>
 	</table>
-		<div>
-		<form method="post" action="controller">
-			<input type="hidden" name="command" value="update_order" /> <input
-				type="hidden" name="cart" value="${cart}" /> <input type="submit"
-				value="Add book DON'T WORK" />
-		</form>
-	</div>
 	<br/>
 	<div>total cost = ${order.totalCost}</div>
-
 	<br/>
 	<div>
 					<form method="post" action="controller">

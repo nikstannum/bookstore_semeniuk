@@ -146,6 +146,14 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	public OrderDto preProcessAddBookToOrder(OrderDto orderDto) {
+		
+		
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public OrderDto update(OrderDto dto) {
 		log.debug("Service method called successfully");
 		Order existing = orderDao.get(dto.getId());
