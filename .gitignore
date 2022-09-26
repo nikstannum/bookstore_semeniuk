@@ -4,6 +4,8 @@ target/
 *.iml
 *.class
 .classpath
+.project
+.factorypath
 bin/
 out/
 logs/
