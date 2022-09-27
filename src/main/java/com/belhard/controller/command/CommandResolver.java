@@ -31,14 +31,17 @@ import com.belhard.controller.command.impl.users.UpdateUserFormCommand;
 import com.belhard.controller.command.impl.users.UserCommand;
 import com.belhard.controller.command.impl.users.UsersCommand;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Component
 public class CommandResolver {
 
 	public Command getCommand(String commandStr) {
 		AnnotationConfigApplicationContext context = null;
-		Command command = null;
 		try {
 			context = new AnnotationConfigApplicationContext(ContextConfiguration.class);
+			Command command;
 			switch (commandStr) {
 			// book
 			case "books" -> command = context.getBean(BooksCommand.class);
@@ -72,11 +75,12 @@ public class CommandResolver {
 			case "error" -> command = context.getBean(ErrorCommand.class);
 			default -> command = context.getBean(ErrorCommand.class);
 			}
+			return command;
 		} catch (BeansException e) {
-			e.printStackTrace();
+			log.error(e);
 		} finally {
-//			context.close(); // FIXME
+//			context.close(); // FIXME 
 		}
-		return command;
+		throw new RuntimeException();
 	}
 }

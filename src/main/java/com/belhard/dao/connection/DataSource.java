@@ -80,6 +80,7 @@ public class DataSource implements AutoCloseable {
 	public void releaseConnection(ProxyConnection connection) {
 		givenAwayConnections.remove(connection);
 		freeConnections.offer(connection);
+		log.info("connection was returned");
 	}
 
 	private void destroyPoll() {
@@ -100,7 +101,7 @@ public class DataSource implements AutoCloseable {
 		DriverManager.getDrivers().asIterator().forEachRemaining(driver -> {
 			try {
 				DriverManager.deregisterDriver(driver);
-				log.info("Driver {} deregistered", driver);
+				log.info("Driver deregistered", driver);
 			} catch (SQLException e) {
 				log.error("Driver wasn't deregister", e);
 			}
