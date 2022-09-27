@@ -2,8 +2,8 @@ package com.belhard.service.impl;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.UserDao;
@@ -13,12 +13,15 @@ import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
 import com.belhard.serviceutil.Mapper;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
+@Service
 public class UserServiceImpl implements UserService {
 
-
-	private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
 	private final UserDao userDao;
 
+	@Autowired
 	public UserServiceImpl(UserDao userDao) {
 		this.userDao = userDao;
 	}
@@ -65,7 +68,7 @@ public class UserServiceImpl implements UserService {
 		log.debug("Service method called successfully");
 		return userDao.getAll().stream().map(this::toDto).toList();
 	}
-	
+
 	@Override
 	public List<UserDto> getAll(Paging paging) {
 		int limit = paging.getLimit();

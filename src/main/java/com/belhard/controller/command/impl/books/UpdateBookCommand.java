@@ -2,14 +2,16 @@ package com.belhard.controller.command.impl.books;
 
 import java.math.BigDecimal;
 
+import org.springframework.stereotype.Controller;
+
 import com.belhard.controller.command.Command;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
-@Log4j2
+
+@Controller
 public class UpdateBookCommand implements Command {
 
 	private final BookService service;
@@ -17,7 +19,7 @@ public class UpdateBookCommand implements Command {
 	public UpdateBookCommand(BookService service) {
 		this.service = service;
 	}
-	
+
 	@Override
 	public String execute(HttpServletRequest req) {
 		Long id = Long.parseLong(req.getParameter("id"));

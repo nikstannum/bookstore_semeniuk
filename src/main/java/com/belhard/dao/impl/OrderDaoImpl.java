@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.belhard.dao.OrderDao;
 import com.belhard.dao.OrderInfoDao;
 import com.belhard.dao.UserDao;
@@ -19,19 +22,20 @@ import com.belhard.dao.entity.OrderInfo;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@Repository
 public class OrderDaoImpl implements OrderDao {
 
 	public static final String INSERT = "INSERT INTO orders (user_id, status_id, total_cost) "
-			+ "VALUES (?, (SELECT s.status_id FROM status s WHERE s.name = ?), ?)";
+					+ "VALUES (?, (SELECT s.status_id FROM status s WHERE s.name = ?), ?)";
 	public static final String GET_BY_ID = "SELECT o.order_id, o.user_id, "
-			+ "(SELECT s.name AS name FROM status s WHERE s.status_id = o.status_id), o.total_cost "
-			+ "FROM orders o WHERE o.order_id = ? AND o.deleted = false";
+					+ "(SELECT s.name AS name FROM status s WHERE s.status_id = o.status_id), o.total_cost "
+					+ "FROM orders o WHERE o.order_id = ? AND o.deleted = false";
 	public static final String GET_ALL = "SELECT o.order_id, o.user_id, "
-			+ "(SELECT s.name AS name FROM status s WHERE o.status_id = s.status_id), o.total_cost FROM orders o WHERE o.deleted = false";
+					+ "(SELECT s.name AS name FROM status s WHERE o.status_id = s.status_id), o.total_cost FROM orders o WHERE o.deleted = false";
 	public static final String GET_ALL_PAGED = "SELECT o.order_id, o.user_id, (SELECT s.name AS name FROM status s "
-			+ "WHERE o.status_id = s.status_id), o.total_cost FROM orders o WHERE o.deleted = false ORDER BY o.order_id LIMIT ? OFFSET ?";
+					+ "WHERE o.status_id = s.status_id), o.total_cost FROM orders o WHERE o.deleted = false ORDER BY o.order_id LIMIT ? OFFSET ?";
 	public static final String UPDATE = "UPDATE orders SET user_id = ?, status_id = (SELECT s.status_id FROM status s WHERE s.name = ?), "
-			+ "total_cost = ? WHERE order_id = ? AND deleted = false";
+					+ "total_cost = ? WHERE order_id = ? AND deleted = false";
 	public static final String DELETE = "UPDATE users SET deleted = true WHERE order_id = ?";
 	public static final String GET_COUNT_ALL_ORDERS = "SELECT count(o.order_id) AS all_orders FROM orders o WHERE o.deleted = false";
 
@@ -39,6 +43,7 @@ public class OrderDaoImpl implements OrderDao {
 	private final OrderInfoDao orderInfoDao;
 	private final UserDao userDao;
 
+	@Autowired
 	public OrderDaoImpl(DataSource dataSource, OrderInfoDao orderInfoDao, UserDao userDao) {
 		this.dataSource = dataSource;
 		this.orderInfoDao = orderInfoDao;
@@ -168,7 +173,8 @@ public class OrderDaoImpl implements OrderDao {
 
 	@Override
 	public long countAll() {
-		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections();
+						Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_ORDERS);
 			log.debug("database access completed successfully");
 			if (resultSet.next()) {

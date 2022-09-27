@@ -2,6 +2,8 @@ package com.belhard.controller.filter;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -12,11 +14,12 @@ import jakarta.servlet.http.HttpSession;
 
 @SuppressWarnings("serial")
 @WebFilter(urlPatterns = "/*")
+@Component
 public class AuthorizationFilter extends HttpFilter {
 
 	@Override
 	protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
-			throws IOException, ServletException {
+					throws IOException, ServletException {
 		String command = req.getParameter("command");
 		if (requiresAuthorization(command)) {
 			HttpSession session = req.getSession(false);

@@ -2,6 +2,8 @@ package com.belhard.controller.command.impl.orders;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Controller;
+
 import com.belhard.controller.command.Command;
 import com.belhard.service.OrderService;
 import com.belhard.service.dto.OrderDto;
@@ -10,6 +12,7 @@ import com.belhard.service.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+@Controller
 public class CartCommand implements Command {
 	private final OrderService orderService;
 	private final String PAGE = "jsp/order/cart.jsp";

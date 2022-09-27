@@ -8,17 +8,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.belhard.dao.BookDao;
 import com.belhard.dao.connection.DataSource;
 import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
 
-public class BookDaoImpl implements BookDao {
+import lombok.extern.log4j.Log4j2;
 
-	private static final Logger log = LogManager.getLogger(BookDaoImpl.class);
+@Log4j2
+@Repository
+public class BookDaoImpl implements BookDao {
 
 	public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price, cover_id) "
 					+ "VALUES (?, ?, ?, ?, ?, (SELECT c.cover_id FROM covers c WHERE c.name = ?))";
@@ -45,6 +47,7 @@ public class BookDaoImpl implements BookDao {
 
 	private final DataSource dataSource;
 
+	@Autowired
 	public BookDaoImpl(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}

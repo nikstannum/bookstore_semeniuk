@@ -2,8 +2,8 @@ package com.belhard.controller.command.impl.books;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import com.belhard.controller.command.Command;
 import com.belhard.controller.util.PagingUtil;
@@ -12,12 +12,13 @@ import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
 
+@Controller
 public class BooksCommand implements Command {
 	private final BookService service;
 	private final PagingUtil pagingUtil;
 
+	@Autowired
 	public BooksCommand(BookService service, PagingUtil pagingUtil) {
 		this.service = service;
 		this.pagingUtil = pagingUtil;

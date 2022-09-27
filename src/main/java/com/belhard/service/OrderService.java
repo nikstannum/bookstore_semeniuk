@@ -13,5 +13,4 @@ public interface OrderService extends CrudService<Long, OrderDto> {
 
 	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId, boolean increaseQuantity);
 	
-	public OrderDto preProcessAddBookToOrder (OrderDto orderDto);
 }

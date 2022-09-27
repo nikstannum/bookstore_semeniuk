@@ -2,11 +2,14 @@ package com.belhard.controller.command.impl;
 
 import java.util.Locale;
 
+import org.springframework.stereotype.Controller;
+
 import com.belhard.controller.command.Command;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+@Controller
 public class ChangeLanguageCommand implements Command {
 
 	@Override

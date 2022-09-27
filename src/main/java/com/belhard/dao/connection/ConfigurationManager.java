@@ -4,16 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
+@Component
 public class ConfigurationManager {
 	private final Properties properties;
 	private static final String propsFile = "/application.properties";
-	private static final Logger log = LogManager.getLogger(ConfigurationManager.class);
-	public static final ConfigurationManager INSTANCE = new ConfigurationManager();
 
-	private ConfigurationManager() {
+	public ConfigurationManager() {
 		properties = new Properties();
 		try (InputStream input = getClass().getResourceAsStream(propsFile);) {
 			properties.load(input);

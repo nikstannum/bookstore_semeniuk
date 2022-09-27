@@ -1,17 +1,18 @@
 package com.belhard.controller.command.impl.users;
 
+import org.springframework.stereotype.Controller;
+
 import com.belhard.controller.command.Command;
-import com.belhard.dao.entity.User;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+@Controller
 public class CreateUserCommand implements Command {
-	
+
 	private final UserService service;
-	
 
 	public CreateUserCommand(UserService service) {
 		this.service = service;

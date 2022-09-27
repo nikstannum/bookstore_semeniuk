@@ -1,5 +1,7 @@
 package com.belhard.controller.command.impl;
 
+import org.springframework.stereotype.Controller;
+
 import com.belhard.controller.command.Command;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
@@ -7,6 +9,7 @@ import com.belhard.service.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+@Controller
 public class LoginCommand implements Command {
 	private final UserService userService;
 

@@ -1,7 +1,8 @@
 package com.belhard.controller.command.impl.books;
 
 import java.math.BigDecimal;
-import java.util.Locale;
+
+import org.springframework.stereotype.Controller;
 
 import com.belhard.controller.command.Command;
 import com.belhard.service.BookService;
@@ -9,8 +10,8 @@ import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
+@Controller
 public class CreateBookCommand implements Command {
 
 	private final BookService service;

@@ -2,6 +2,7 @@ package com.belhard.controller.command.impl.books;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Controller;
 
 import com.belhard.controller.command.Command;
 import com.belhard.service.BookService;
@@ -9,6 +10,7 @@ import com.belhard.service.dto.BookDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+@Controller
 public class BookCommand implements Command {
 
 	private final BookService service;

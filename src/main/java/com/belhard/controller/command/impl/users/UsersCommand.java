@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Controller;
 
 import com.belhard.controller.command.Command;
 import com.belhard.controller.util.PagingUtil;
@@ -15,6 +16,7 @@ import com.belhard.service.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 
+@Controller
 public class UsersCommand implements Command {
 
 	private final UserService service;

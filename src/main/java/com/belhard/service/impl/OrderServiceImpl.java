@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookDao;
 import com.belhard.dao.OrderDao;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.OrderInfo;
-import com.belhard.dao.impl.OrderDaoImpl;
 import com.belhard.service.OrderService;
 import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.OrderDto;
@@ -21,10 +23,12 @@ import com.belhard.serviceutil.Mapper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@Service
 public class OrderServiceImpl implements OrderService {
 	private final OrderDao orderDao;
 	private final BookDao bookDao;
 
+	@Autowired
 	public OrderServiceImpl(OrderDao orderDao, BookDao bookDao) {
 		this.orderDao = orderDao;
 		this.bookDao = bookDao;
@@ -129,7 +133,7 @@ public class OrderServiceImpl implements OrderService {
 		order.setStatus(Order.Status.valueOf(dto.getStatusDto().toString()));
 		BigDecimal totalCost = dto.getTotalCost();
 		dto.getDetailsDto().stream().map(elm -> elm.getBookPrice().multiply(BigDecimal.valueOf(elm.getBookQuantity())))
-				.forEach(totalCost::add);
+						.forEach(totalCost::add);
 		order.setTotalCost(totalCost);
 		order.setDetails(toDetails(dto.getDetailsDto()));
 		return order;
@@ -143,14 +147,6 @@ public class OrderServiceImpl implements OrderService {
 		orderDto.setTotalCost(order.getTotalCost());
 		orderDto.setDetailsDto(toDetailsDto(order.getDetails()));
 		return orderDto;
-	}
-
-	@Override
-	public OrderDto preProcessAddBookToOrder(OrderDto orderDto) {
-		
-		
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -177,7 +173,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId,
-			boolean increaseQuantity) {
+					boolean increaseQuantity) {
 		List<Integer> listOfIndexOfSubjectToRemoval = new ArrayList<>();
 		for (OrderInfoDto elm : list) {
 			if (elm.getId() == detailsDtoId) {

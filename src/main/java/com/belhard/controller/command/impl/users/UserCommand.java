@@ -1,5 +1,7 @@
 package com.belhard.controller.command.impl.users;
 
+import org.springframework.stereotype.Controller;
+
 import com.belhard.controller.command.Command;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
@@ -8,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@Controller
 public class UserCommand implements Command {
 	private final UserService service;
 

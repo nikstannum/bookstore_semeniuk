@@ -1,23 +1,26 @@
 package com.belhard.service.impl;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookDao;
 import com.belhard.dao.entity.Book;
-import com.belhard.dao.entity.Book.BookCover;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
-import com.belhard.service.dto.BookDto.BookCoverDto;
 import com.belhard.serviceutil.Mapper;
 
-import java.math.BigDecimal;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
+@Service
 public class BookServiceImpl implements BookService {
 	private final BookDao bookDao;
-	private static final Logger log = LogManager.getLogger(BookServiceImpl.class);
 
+	@Autowired
 	public BookServiceImpl(BookDao bookDao) {
 		this.bookDao = bookDao;
 	}

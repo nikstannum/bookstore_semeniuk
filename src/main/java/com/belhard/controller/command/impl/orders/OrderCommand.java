@@ -1,5 +1,7 @@
 package com.belhard.controller.command.impl.orders;
 
+import org.springframework.stereotype.Controller;
+
 import com.belhard.controller.command.Command;
 import com.belhard.service.OrderService;
 import com.belhard.service.dto.OrderDto;
@@ -8,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@Controller
 public class OrderCommand implements Command {
 	private final OrderService service;
 

@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.belhard.dao.BookDao;
 import com.belhard.dao.OrderInfoDao;
 import com.belhard.dao.connection.DataSource;
@@ -16,26 +19,28 @@ import com.belhard.dao.entity.OrderInfo;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@Repository
 public class OrderInfoDaoImpl implements OrderInfoDao {
 
 	private static final String INSERT = "INSERT INTO order_infos (book_id, order_id, book_quantity, book_price) VALUES (?, ?, ?, ?)";
 	private static final String GET_BY_ID = "SELECT i.order_infos_id, i.book_id, i.order_id, i.book_quantity, i.book_price "
-			+ "FROM order_infos i WHERE i.order_infos_id = ? AND i.deleted = false";
+					+ "FROM order_infos i WHERE i.order_infos_id = ? AND i.deleted = false";
 	private static final String GET_ALL = "SELECT i.order_infos_id, i.book_id, i.order_id, i.book_quantity, i.book_price "
-			+ "FROM order_infos i WHERE i.deleted = false";
+					+ "FROM order_infos i WHERE i.deleted = false";
 	private static final String GET_ALL_PAGED = "SELECT i.order_infos_id, i.book_id, i.order_id, i.book_quantity, i.book_price "
-			+ "FROM order_infos i WHERE i.deleted = false ORDER BY i.order_infos_id LIMIT ? OFFSET ?";
+					+ "FROM order_infos i WHERE i.deleted = false ORDER BY i.order_infos_id LIMIT ? OFFSET ?";
 	private static final String GET_BY_ORDER_ID = "SELECT i.order_infos_id, i.book_id, i.order_id, i.book_quantity, i.book_price "
-			+ "FROM order_infos i WHERE i.order_id = ? AND i.deleted = false";
+					+ "FROM order_infos i WHERE i.order_id = ? AND i.deleted = false";
 	private static final String UPDATE = "UPDATE order_infos SET book_id = ?, order_id = ?, book_quantity = ?, book_price = ? "
-			+ "WHERE order_infos_id = ? AND deleted = false";
+					+ "WHERE order_infos_id = ? AND deleted = false";
 	private static final String GET_COUNT_ALL_ORDER_INFOS = "SELECT count(o.order_infos_id) AS total FROM order_infos i "
-			+ "WHERE i.deleted = false" ;
+					+ "WHERE i.deleted = false";
 	private static final String DELETE = "UPDATE order_infos SET deleted = true WHERE order_infos_id = ?";
 
 	private final DataSource dataSource;
 	private final BookDao bookDao;
 
+	@Autowired
 	public OrderInfoDaoImpl(DataSource dataSource, BookDao bookDao) {
 		this.dataSource = dataSource;
 		this.bookDao = bookDao;
@@ -44,7 +49,8 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	@Override
 	public OrderInfo create(OrderInfo entity) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(INSERT, PreparedStatement.RETURN_GENERATED_KEYS)) {
+						PreparedStatement statement = connection.prepareStatement(INSERT,
+										PreparedStatement.RETURN_GENERATED_KEYS)) {
 			statement.setLong(1, entity.getBook().getId());
 			statement.setLong(2, entity.getOrderId());
 			statement.setInt(3, entity.getBookQuantity());
@@ -66,7 +72,7 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	public List<OrderInfo> getByOrderId(Long id) {
 		List<OrderInfo> details = new ArrayList<>();
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_BY_ORDER_ID)) {
+						PreparedStatement statement = connection.prepareStatement(GET_BY_ORDER_ID)) {
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
@@ -83,7 +89,7 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	@Override
 	public OrderInfo get(Long id) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
+						PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			log.debug("database access completed successfully");
@@ -109,7 +115,8 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	@Override
 	public List<OrderInfo> getAll() {
 		List<OrderInfo> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections();
+						Statement statement = connection.createStatement()) {
 			ResultSet result = statement.executeQuery(GET_ALL);
 			while (result.next()) {
 				list.add(process(result));
@@ -126,7 +133,7 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	public List<OrderInfo> getAll(int limit, long offset) {
 		List<OrderInfo> list = new ArrayList<>();
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
+						PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
 			statement.setInt(1, limit);
 			statement.setLong(2, offset);
 			ResultSet result = statement.executeQuery();
@@ -143,7 +150,8 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 
 	@Override
 	public long countAll() {
-		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections();
+						Statement statement = connection.createStatement()) {
 			ResultSet result = statement.executeQuery(GET_COUNT_ALL_ORDER_INFOS);
 			if (result.next()) {
 				log.debug("database access completed successfully");
@@ -158,7 +166,7 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 	@Override
 	public OrderInfo update(OrderInfo entity) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(UPDATE)) {
+						PreparedStatement statement = connection.prepareStatement(UPDATE)) {
 			statement.setLong(1, entity.getBook().getId());
 			statement.setLong(2, entity.getOrderId());
 			statement.setLong(3, entity.getBookQuantity());
@@ -172,11 +180,11 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean delete(Long id) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(DELETE)) {
+						PreparedStatement statement = connection.prepareStatement(DELETE)) {
 			statement.setLong(1, id);
 			int rowsDelete = statement.executeUpdate();
 			log.debug("database access completed successfully");

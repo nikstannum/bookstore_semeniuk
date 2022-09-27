@@ -24,12 +24,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@Component
 public class DataSource implements AutoCloseable {
 
 	private BlockingQueue<ProxyConnection> freeConnections;
@@ -37,9 +38,10 @@ public class DataSource implements AutoCloseable {
 	public final int poolSize;
 	private final ConfigurationManager configurationManager;
 
-	DataSource(ConfigurationManager configurationManager) {
+	@Autowired
+	public DataSource(ConfigurationManager configurationManager) {
 		this.configurationManager = configurationManager;
-		poolSize = Integer.parseInt(ConfigurationManager.INSTANCE.getProperty("db.pool_size"));
+		poolSize = Integer.parseInt(configurationManager.getProperty("db.pool_size"));
 		freeConnections = new LinkedBlockingDeque<>(poolSize);
 		givenAwayConnections = new ArrayDeque<>();
 		init();
@@ -69,7 +71,7 @@ public class DataSource implements AutoCloseable {
 			}
 			log.info("connection to database completed");
 		} catch (SQLException e) {
-			log.error("connection to database didn't complete");
+			log.error("connection to database didn't complete", e);
 		} catch (ClassNotFoundException e) {
 			log.error(e);
 		}
@@ -106,7 +108,6 @@ public class DataSource implements AutoCloseable {
 	}
 
 	public class ProxyConnection implements Connection {
-		private static final Logger log = LogManager.getLogger(ProxyConnection.class);
 		private final Connection realConnection;
 
 		ProxyConnection(Connection realConnection) {
@@ -116,16 +117,13 @@ public class DataSource implements AutoCloseable {
 		void reallyClose() {
 			try {
 				realConnection.close();
-				log.info("ProxyConnection is closed");
 			} catch (SQLException e) {
-				log.error("ProxyConnection not closed", e);
 			}
 		}
 
 		@Override
 		public void close() throws SQLException {
 			releaseConnection(this);
-			log.info("ProxyConnection returned in the pool");
 		}
 
 		@Override

@@ -1,12 +1,5 @@
 package com.belhard.dao.impl;
 
-import com.belhard.dao.UserDao;
-import com.belhard.dao.connection.DataSource;
-import com.belhard.dao.entity.User;
-import com.belhard.dao.entity.User.UserRole;
-
-import lombok.extern.log4j.Log4j2;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,31 +7,41 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.belhard.dao.UserDao;
+import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.entity.User;
+import com.belhard.dao.entity.User.UserRole;
+
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@Repository
 public class UserDaoImpl implements UserDao {
 
 	private static final String GET_ALL_PAGED = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role "
-			+ "FROM users u JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false ORDER BY u.user_id LIMIT ? OFFSET ?";
+					+ "FROM users u JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false ORDER BY u.user_id LIMIT ? OFFSET ?";
 	public static final String INSERT = "INSERT INTO users (first_name, last_name, email, password, role_id) "
-			+ "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
+					+ "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
 	public static final String GET_BY_ID = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
-			+ "JOIN role r ON u.role_id = r.role_id WHERE u.user_id = ? AND u.deleted = false";
+					+ "JOIN role r ON u.role_id = r.role_id WHERE u.user_id = ? AND u.deleted = false";
 	public static final String GET_ALL = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
-			+ "JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false";
+					+ "JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false";
 	public static final String GET_BY_EMAIL = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
-			+ "JOIN role r ON u.role_id = r.role_id WHERE u.email = ? AND u.deleted = false";
+					+ "JOIN role r ON u.role_id = r.role_id WHERE u.email = ? AND u.deleted = false";
 	public static final String GET_BY_LASTNAME = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
-			+ "JOIN role r ON u.role_id = r.role_id WHERE u.last_name = ? AND u.deleted = false";
+					+ "JOIN role r ON u.role_id = r.role_id WHERE u.last_name = ? AND u.deleted = false";
 	public static final String GET_COUNT_ALL_USERS = "SELECT count(u.user_id) AS all_users FROM users u WHERE u.deleted = false";
 	public static final String UPDATE = "UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ?, "
-			+ "role_id = (SELECT r.role_id FROM role r WHERE r.name = ?) WHERE user_id = ? AND deleted = false";
+					+ "role_id = (SELECT r.role_id FROM role r WHERE r.name = ?) WHERE user_id = ? AND deleted = false";
 	public static final String DELETE = "UPDATE users SET deleted = true WHERE user_id = ?";
 
 	private final DataSource dataSource;
 
+	@Autowired
 	public UserDaoImpl(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
@@ -46,7 +49,8 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public User create(User user) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+						PreparedStatement statement = connection.prepareStatement(INSERT,
+										Statement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, user.getFirstName());
 			statement.setString(2, user.getLastName());
 			statement.setString(3, user.getEmail());
@@ -68,7 +72,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public User get(Long id) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
+						PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
 			statement.setLong(1, id);
 			ResultSet result = statement.executeQuery();
 			log.debug("database access completed successfully");
@@ -84,7 +88,8 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<User> getAll() {
 		List<User> users = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections();
+						Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(GET_ALL);
 			log.debug("database access completed successfully");
 			while (resultSet.next()) {
@@ -101,7 +106,7 @@ public class UserDaoImpl implements UserDao {
 	public List<User> getAll(int limit, long offset) {
 		List<User> users = new ArrayList<>();
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
+						PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
 			statement.setInt(1, limit);
 			statement.setLong(2, offset);
 			ResultSet resultSet = statement.executeQuery();
@@ -119,7 +124,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public User getUserByEmail(String email) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_BY_EMAIL)) {
+						PreparedStatement statement = connection.prepareStatement(GET_BY_EMAIL)) {
 			statement.setString(1, email);
 			ResultSet resultSet = statement.executeQuery();
 			log.debug("database access completed successfully");
@@ -136,7 +141,7 @@ public class UserDaoImpl implements UserDao {
 	public List<User> getUsersByLastName(String lastName) {
 		List<User> users = new ArrayList<>();
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(GET_BY_LASTNAME)) {
+						PreparedStatement statement = connection.prepareStatement(GET_BY_LASTNAME)) {
 			statement.setString(1, lastName);
 			ResultSet resultSet = statement.executeQuery();
 			log.debug("database access completed successfully");
@@ -151,7 +156,8 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public long countAll() {
-		try (Connection connection = dataSource.getFreeConnections(); Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getFreeConnections();
+						Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_USERS);
 			log.debug("database access completed successfully");
 			if (resultSet.next()) {
@@ -166,7 +172,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public User update(User user) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(UPDATE)) {
+						PreparedStatement statement = connection.prepareStatement(UPDATE)) {
 			statement.setString(1, user.getFirstName());
 			statement.setString(2, user.getLastName());
 			statement.setString(3, user.getEmail());
@@ -185,7 +191,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public boolean delete(Long id) {
 		try (Connection connection = dataSource.getFreeConnections();
-				PreparedStatement statement = connection.prepareStatement(DELETE)) {
+						PreparedStatement statement = connection.prepareStatement(DELETE)) {
 			statement.setLong(1, id);
 			int rowsDelete = statement.executeUpdate();
 			log.debug("database access completed successfully");
