@@ -2,7 +2,6 @@ package com.belhard.controller.command.impl.books;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.belhard.controller.command.Command;
@@ -18,7 +17,6 @@ public class BooksCommand implements Command {
 	private final BookService service;
 	private final PagingUtil pagingUtil;
 
-	@Autowired
 	public BooksCommand(BookService service, PagingUtil pagingUtil) {
 		this.service = service;
 		this.pagingUtil = pagingUtil;
@@ -36,4 +34,5 @@ public class BooksCommand implements Command {
 		req.setAttribute("currentPage", paging.getPage());
 		return "jsp/book/books.jsp";
 	}
+
 }
