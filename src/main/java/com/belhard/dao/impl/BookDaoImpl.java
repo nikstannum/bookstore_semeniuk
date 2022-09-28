@@ -19,8 +19,6 @@ import com.belhard.dao.BookDao;
 import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
 
-import lombok.extern.log4j.Log4j2;
-
 @Repository
 public class BookDaoImpl implements BookDao {
 

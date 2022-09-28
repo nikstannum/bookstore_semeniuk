@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.belhard.dao.OrderDao;
 import com.belhard.dao.OrderInfoDao;
 import com.belhard.dao.UserDao;
-import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.connection.DSource;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.Order.Status;
 import com.belhard.dao.entity.OrderInfo;
@@ -39,12 +39,12 @@ public class OrderDaoImpl implements OrderDao {
 	public static final String DELETE = "UPDATE users SET deleted = true WHERE order_id = ?";
 	public static final String GET_COUNT_ALL_ORDERS = "SELECT count(o.order_id) AS all_orders FROM orders o WHERE o.deleted = false";
 
-	private final DataSource dataSource;
+	private final DSource dataSource;
 	private final OrderInfoDao orderInfoDao;
 	private final UserDao userDao;
 
 	@Autowired
-	public OrderDaoImpl(DataSource dataSource, OrderInfoDao orderInfoDao, UserDao userDao) {
+	public OrderDaoImpl(DSource dataSource, OrderInfoDao orderInfoDao, UserDao userDao) {
 		this.dataSource = dataSource;
 		this.orderInfoDao = orderInfoDao;
 		this.userDao = userDao;

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.belhard.dao.UserDao;
-import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.connection.DSource;
 import com.belhard.dao.entity.User;
 import com.belhard.dao.entity.User.UserRole;
 
@@ -39,10 +39,10 @@ public class UserDaoImpl implements UserDao {
 					+ "role_id = (SELECT r.role_id FROM role r WHERE r.name = ?) WHERE user_id = ? AND deleted = false";
 	public static final String DELETE = "UPDATE users SET deleted = true WHERE user_id = ?";
 
-	private final DataSource dataSource;
+	private final DSource dataSource;
 
 	@Autowired
-	public UserDaoImpl(DataSource dataSource) {
+	public UserDaoImpl(DSource dataSource) {
 		this.dataSource = dataSource;
 	}
 

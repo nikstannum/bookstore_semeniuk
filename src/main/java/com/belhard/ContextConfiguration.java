@@ -13,12 +13,12 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @ComponentScan
 public class ContextConfiguration {
-	
+
 	@Bean
 	public JdbcTemplate jdbcTemplate() {
 		return new JdbcTemplate(dataSource());
 	}
-	
+
 	@Bean
 	public DataSource dataSource() {
 		HikariDataSource dataSource = new HikariDataSource();
@@ -26,8 +26,7 @@ public class ContextConfiguration {
 		dataSource.setJdbcUrl(configurationManager.getProperty("db.url"));
 		dataSource.setPassword(configurationManager.getProperty("db.password"));
 		dataSource.setUsername(configurationManager.getProperty("db.user"));
-		return dataSource();
+		return dataSource;
 	}
-	
 
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.belhard.dao.BookDao;
 import com.belhard.dao.OrderInfoDao;
-import com.belhard.dao.connection.DataSource;
+import com.belhard.dao.connection.DSource;
 import com.belhard.dao.entity.OrderInfo;
 
 import lombok.extern.log4j.Log4j2;
@@ -37,11 +37,11 @@ public class OrderInfoDaoImpl implements OrderInfoDao {
 					+ "WHERE i.deleted = false";
 	private static final String DELETE = "UPDATE order_infos SET deleted = true WHERE order_infos_id = ?";
 
-	private final DataSource dataSource;
+	private final DSource dataSource;
 	private final BookDao bookDao;
 
 	@Autowired
-	public OrderInfoDaoImpl(DataSource dataSource, BookDao bookDao) {
+	public OrderInfoDaoImpl(DSource dataSource, BookDao bookDao) {
 		this.dataSource = dataSource;
 		this.bookDao = bookDao;
 	}
