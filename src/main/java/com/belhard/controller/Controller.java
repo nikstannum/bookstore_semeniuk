@@ -2,9 +2,6 @@ package com.belhard.controller;
 
 import java.io.IOException;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import com.belhard.ContextConfiguration;
 import com.belhard.controller.command.Command;
 import com.belhard.controller.command.CommandResolver;
 
@@ -21,10 +18,9 @@ import lombok.extern.log4j.Log4j2;
 public class Controller extends HttpServlet {
 
 	private static final String REDIRECT = "redirect:";
-	
+
 	private CommandResolver resolver;
-	private AnnotationConfigApplicationContext context;
-	
+//	private AnnotationConfigApplicationContext context;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,8 +35,9 @@ public class Controller extends HttpServlet {
 	private void process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String commandStr = req.getParameter("command");
 		Class<? extends Command> commandDefinition = resolver.getCommand(commandStr);
-		Command command = context.getBean(commandDefinition);
+		Command command = ContextListener.context.getBean(commandDefinition);
 		String page = command.execute(req);
+
 		if (page.startsWith(REDIRECT)) {
 			resp.sendRedirect(req.getContextPath() + "/" + page.substring(REDIRECT.length()));
 		} else {
@@ -50,17 +47,18 @@ public class Controller extends HttpServlet {
 
 	@Override
 	public void destroy() {
-		context.close();
+//		if (context != null) {
+//		context.close();
 		log.info("SERVLET DESTROYED");
+//	}
 	}
 
 	@Override
 	public void init() throws ServletException {
-		context = new AnnotationConfigApplicationContext(ContextConfiguration.class);
-		resolver = context.getBean(CommandResolver.class);
+//		context = new AnnotationConfigApplicationContext(ContextConfiguration.class);
+//		resolver = context.getBean(CommandResolver.class);
+		resolver = ContextListener.context.getBean(CommandResolver.class);
 		log.info("SERVLET INIT");
 	}
-	
-	
 
 }
