@@ -20,7 +20,6 @@ public class Controller extends HttpServlet {
 	private static final String REDIRECT = "redirect:";
 
 	private CommandResolver resolver;
-//	private AnnotationConfigApplicationContext context;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,16 +46,11 @@ public class Controller extends HttpServlet {
 
 	@Override
 	public void destroy() {
-//		if (context != null) {
-//		context.close();
 		log.info("SERVLET DESTROYED");
-//	}
 	}
 
 	@Override
 	public void init() throws ServletException {
-//		context = new AnnotationConfigApplicationContext(ContextConfiguration.class);
-//		resolver = context.getBean(CommandResolver.class);
 		resolver = ContextListener.context.getBean(CommandResolver.class);
 		log.info("SERVLET INIT");
 	}
