@@ -4,21 +4,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.belhard.dao.BookDao;
-import com.belhard.dao.connection.DataSource;
 import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
 
 import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 @Repository
 public class BookDaoImpl implements BookDao {
 
@@ -30,8 +32,8 @@ public class BookDaoImpl implements BookDao {
 	public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
 					+ "cover FROM books b " + "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false";
 	public static final String GET_ALL_PAGED = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
-					+ "cover FROM books b "
-					+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false ORDER BY b.book_id LIMIT ? OFFSET ?";
+					+ "cover FROM books b JOIN covers c ON b.cover_id = c.cover_id "
+					+ "WHERE b.deleted = false ORDER BY b.book_id LIMIT ? OFFSET ?";
 	public static final String GET_BY_ISBN = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name "
 					+ "AS cover FROM books b "
 					+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.isbn = ? AND b.deleted = false";
@@ -45,173 +47,109 @@ public class BookDaoImpl implements BookDao {
 					+ "WHERE book_id = ? AND deleted = false";
 	public static final String DELETE = "UPDATE books SET deleted = true WHERE book_id = ?";
 
-	private final DataSource dataSource;
+	private final JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public BookDaoImpl(DataSource dataSource) {
-		this.dataSource = dataSource;
+	public BookDaoImpl(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	@Override
 	public Book create(Book book) {
-		try (Connection connection = dataSource.getFreeConnections();
-						PreparedStatement statement = connection.prepareStatement(INSERT,
-										Statement.RETURN_GENERATED_KEYS)) {
-			statement.setString(1, book.getTitle());
-			statement.setString(2, book.getAuthor());
-			statement.setString(3, book.getIsbn());
-			statement.setInt(4, book.getPages());
-			statement.setBigDecimal(5, book.getPrice());
-			statement.setString(6, book.getCover().toString());
-			statement.executeUpdate();
-			log.debug("database access completed successfully");
-			ResultSet keys = statement.getGeneratedKeys();
-			if (keys.next()) {
-				long id = keys.getLong("book_id");
-				return get(id);
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		PreparedStatementCreator psc = new PreparedStatementCreator() {
+
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				PreparedStatement statement = con.prepareStatement(INSERT);
+				statement.setString(1, book.getTitle());
+				statement.setString(2, book.getAuthor());
+				statement.setString(3, book.getIsbn());
+				statement.setInt(4, book.getPages());
+				statement.setBigDecimal(5, book.getPrice());
+				statement.setString(6, book.getCover().toString());
+				return statement;
 			}
-		} catch (SQLException e) {
-			log.error(e);
+		};
+		jdbcTemplate.update(psc, keyHolder);
+		Number num = keyHolder.getKey();
+		if (num == null) {
+			throw new RuntimeException("key is null");
 		}
-		return null;
+		Long id = num.longValue();
+		return get(id);
 	}
 
 	@Override
 	public Book get(Long id) {
-		try (Connection connection = dataSource.getFreeConnections();
-						PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
-			statement.setLong(1, id);
-			ResultSet resultSet = statement.executeQuery();
-			log.debug("database access completed successfully");
-			if (resultSet.next()) {
-				return processBook(resultSet);
-			}
-		} catch (SQLException e) {
-			log.error(e);
-		}
-		return null;
+		return jdbcTemplate.queryForObject(GET_BY_ID, this::mapRow, id);
 	}
 
 	@Override
 	public List<Book> getAll() {
-		List<Book> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections();
-						Statement statement = connection.createStatement()) {
-			ResultSet resultSet = statement.executeQuery(GET_ALL);
-			log.debug("database access completed successfully");
-			while (resultSet.next()) {
-				list.add(processBook(resultSet));
-			}
-			return list;
-		} catch (SQLException e) {
-			log.error(e);
-		}
-		return null;
+		return jdbcTemplate.query(GET_ALL, this::mapRow);
 	}
 
 	@Override
 	public List<Book> getAll(int limit, long offset) {
-		List<Book> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections();
-						PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
-			statement.setInt(1, limit);
-			statement.setLong(2, offset);
-			ResultSet resultSet = statement.executeQuery();
-			log.debug("database access completed successfully");
-			while (resultSet.next()) {
-				list.add(processBook(resultSet));
-			}
-			return list;
-		} catch (SQLException e) {
-			log.error("database access completed unsuccessfully", e);
-		}
-		return list;
+		return jdbcTemplate.query(GET_ALL_PAGED, this::mapRow, limit, offset);
 	}
 
 	@Override
 	public Book getBookByIsbn(String isbn) {
-		try (Connection connection = dataSource.getFreeConnections();
-						PreparedStatement statement = connection.prepareStatement(GET_BY_ISBN)) {
-			statement.setString(1, isbn);
-			ResultSet resultSet = statement.executeQuery();
-			log.debug("database access completed successfully");
-			if (resultSet.next()) {
-				return processBook(resultSet);
-			}
-		} catch (SQLException e) {
-			log.error(e);
-		}
-		return null;
+		return jdbcTemplate.queryForObject(GET_BY_ISBN, this::mapRow, isbn);
 	}
 
 	@Override
 	public List<Book> getBooksByAuthor(String author) {
-		List<Book> list = new ArrayList<>();
-		try (Connection connection = dataSource.getFreeConnections();
-						PreparedStatement statement = connection.prepareStatement(GET_BY_AUTHOR)) {
-			statement.setString(1, author);
-			ResultSet resultSet = statement.executeQuery();
-			log.debug("database access completed successfully");
-			while (resultSet.next()) {
-				list.add(processBook(resultSet));
-			}
-			return list;
-		} catch (SQLException e) {
-			log.error(e);
-		}
-		return list;
+		return jdbcTemplate.query(GET_BY_AUTHOR, this::mapRow, author);
 	}
 
 	@Override
 	public Book update(Book book) {
-		try (Connection connection = dataSource.getFreeConnections();
-						PreparedStatement statement = connection.prepareStatement(UPDATE)) {
-			statement.setString(1, book.getTitle());
-			statement.setString(2, book.getAuthor());
-			statement.setString(3, book.getIsbn());
-			statement.setInt(4, book.getPages());
-			statement.setBigDecimal(5, book.getPrice());
-			statement.setString(6, book.getCover().toString());
-			statement.setLong(7, book.getId());
-			statement.executeUpdate();
-			log.debug("database access completed successfully");
-			return get(book.getId());
-		} catch (SQLException e) {
-			log.error(e);
+		PreparedStatementCreator psc = new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				PreparedStatement statement = con.prepareStatement(DELETE);
+				statement.setString(1, book.getTitle());
+				statement.setString(2, book.getAuthor());
+				statement.setString(3, book.getIsbn());
+				statement.setInt(4, book.getPages());
+				statement.setBigDecimal(5, book.getPrice());
+				statement.setString(6, book.getCover().toString());
+				statement.setLong(7, book.getId());
+				return statement;
+			}
+		};
+		int rowUpdate = jdbcTemplate.update(psc);
+		if (rowUpdate == 0) {
+			throw new RuntimeException("Can't update book with id=" + book.getId());
 		}
-		return null;
+		return get(book.getId());
 	}
 
 	@Override
 	public boolean delete(Long id) {
-		try (Connection connection = dataSource.getFreeConnections();
-						PreparedStatement statement = connection.prepareStatement(DELETE)) {
-			statement.setLong(1, id);
-			int rowsDelete = statement.executeUpdate();
-			log.debug("database access completed successfully");
-			return rowsDelete == 1;
-		} catch (SQLException e) {
-			log.error(e);
-		}
-		return false;
+		return jdbcTemplate.update(DELETE, id) == 1;
 	}
 
 	@Override
 	public long countAll() {
-		try (Connection connection = dataSource.getFreeConnections();
-						Statement statement = connection.createStatement()) {
-			ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_BOOKS);
-			log.debug("database access completed successfully");
-			if (resultSet.next()) {
-				return resultSet.getLong("total");
+		ResultSetExtractor<Long> count = new ResultSetExtractor<>() {
+
+			@Override
+			public Long extractData(ResultSet rs) throws SQLException, DataAccessException {
+				if (rs.next()) {
+					return rs.getLong("total");
+				}
+				throw new RuntimeException("ERROR: count of books not definition");
 			}
-		} catch (SQLException e) {
-			log.error(e);
-		}
-		throw new RuntimeException("ERROR: count of books not definition");
+		};
+
+		return jdbcTemplate.query(GET_COUNT_ALL_BOOKS, count);
 	}
 
-	private Book processBook(ResultSet resultSet) throws SQLException {
+	private Book mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 		Book book = new Book();
 		book.setId(resultSet.getLong("book_id"));
 		book.setTitle(resultSet.getString("title"));
