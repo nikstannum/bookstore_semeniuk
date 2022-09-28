@@ -1,5 +1,8 @@
 package com.belhard.controller.command;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
@@ -37,50 +40,50 @@ import lombok.extern.log4j.Log4j2;
 @Component
 public class CommandResolver {
 
-	public Command getCommand(String commandStr) {
-		AnnotationConfigApplicationContext context = null;
-		try {
-			context = new AnnotationConfigApplicationContext(ContextConfiguration.class);
-			Command command;
-			switch (commandStr) {
-			// book
-			case "books" -> command = context.getBean(BooksCommand.class);
-			case "book" -> command = context.getBean(BookCommand.class);
-			case "update_book_form" -> command = context.getBean(UpdateBookFormCommand.class);
-			case "create_book_form" -> command = context.getBean(CreateBookFormCommand.class);
-			case "create_book" -> command = context.getBean(CreateBookCommand.class);
-			case "update_book" -> command = context.getBean(UpdateBookCommand.class);
-			// user
-			case "users" -> command = context.getBean(UsersCommand.class);
-			case "user" -> command = context.getBean(UserCommand.class);
-			case "create_user_form" -> command = context.getBean(CreateUserFormCommand.class);
-			case "create_user" -> command = context.getBean(CreateUserCommand.class);
-			case "update_user_form" -> command = context.getBean(UpdateUserFormCommand.class);
-			case "update_user" -> command = context.getBean(UpdateUserCommand.class);
-			// order
-			case "order" -> command = context.getBean(OrderCommand.class);
-			case "orders" -> command = context.getBean(OrdersCommand.class);
-			case "checkout_order" -> command = context.getBean(CreateOrderCommand.class);
-			case "update_order_form" -> command = context.getBean(UpdateOrderFormCommand.class);
-			case "increase_quantity" -> command = context.getBean(IncreaseQuantityCommand.class);
-			case "update_order" -> command = context.getBean(UpdateOrderCommand.class);
-			// login
-			case "login_form" -> command = context.getBean(LoginFormCommand.class);
-			case "login" -> command = context.getBean(LoginCommand.class);
-			case "logout" -> command = context.getBean(LogoutCommand.class);
-			// other
-			case "add_to_cart" -> command = context.getBean(AddToCart.class);
-			case "cart" -> command = context.getBean(CartCommand.class);
-			case "change_language" -> command = context.getBean(ChangeLanguageCommand.class);
-			case "error" -> command = context.getBean(ErrorCommand.class);
-			default -> command = context.getBean(ErrorCommand.class);
-			}
-			return command;
-		} catch (BeansException e) {
-			log.error(e);
-		} finally {
-//			context.close(); // FIXME 
-		}
-		throw new RuntimeException();
+
+	private final Map<String, Class<? extends Command>> commands;
+
+	private CommandResolver() {
+		commands = new HashMap<>();
+
+		// book
+		commands.put("books", BooksCommand.class);
+		commands.put("book", BookCommand.class);
+		commands.put("update_book_form", UpdateBookFormCommand.class);
+		commands.put("create_book_form", CreateBookFormCommand.class);
+		commands.put("create_book", CreateBookCommand.class);
+		commands.put("update_book", UpdateBookCommand.class);
+		// user
+		commands.put("users", UsersCommand.class);
+		commands.put("user", UserCommand.class);
+		commands.put("create_user_form", CreateUserFormCommand.class);
+		commands.put("create_user", CreateUserCommand.class);
+		commands.put("update_user_form", UpdateUserFormCommand.class);
+		commands.put("update_user", UpdateUserCommand.class);
+		// order
+		commands.put("order", OrderCommand.class);
+		commands.put("orders", OrdersCommand.class);
+		commands.put("checkout_order", CreateOrderCommand.class);
+		commands.put("update_order_form", UpdateOrderFormCommand.class);
+		commands.put("increase_quantity", IncreaseQuantityCommand.class);
+		commands.put("update_order", UpdateOrderCommand.class);
+		// login
+		commands.put("login_form", LoginFormCommand.class);
+		commands.put("login", LoginCommand.class);
+		commands.put("logout", LogoutCommand.class);
+		// other
+		commands.put("add_to_cart", AddToCart.class);
+		commands.put("cart", CartCommand.class);
+		commands.put("change_language", ChangeLanguageCommand.class);
+		commands.put("error", ErrorCommand.class);
 	}
+
+	public Class<? extends Command> getCommand(String command) {
+		Class<? extends Command> commandInstance = commands.get(command);
+		if (commandInstance == null) {
+			commandInstance = commands.get("error");
+		}
+		return commandInstance;
+	}
+
 }
