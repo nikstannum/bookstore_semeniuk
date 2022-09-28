@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.belhard.dao.connection.ConfigurationManager;
 import com.zaxxer.hikari.HikariDataSource;
@@ -27,6 +28,11 @@ public class ContextConfiguration {
 		dataSource.setPassword(configurationManager.getProperty("db.password"));
 		dataSource.setUsername(configurationManager.getProperty("db.user"));
 		return dataSource;
+	}
+
+	@Bean
+	public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
+		return new NamedParameterJdbcTemplate(dataSource());
 	}
 
 }

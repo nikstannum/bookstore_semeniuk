@@ -121,7 +121,7 @@ public class BookDaoImpl implements BookDao {
 		};
 		int rowUpdate = jdbcTemplate.update(psc);
 		if (rowUpdate == 0) {
-			throw new RuntimeException("Can't update book with id=" + book.getId());
+			throw new RuntimeException("Couldn't update book with id=" + book.getId());
 		}
 		return get(book.getId());
 	}
