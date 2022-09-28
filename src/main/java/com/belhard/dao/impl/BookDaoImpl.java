@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -24,8 +27,8 @@ public class BookDaoImpl implements BookDao {
 
 	public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price, cover_id) "
 					+ "VALUES (?, ?, ?, ?, ?, (SELECT c.cover_id FROM covers c WHERE c.name = ?))";
-	public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
-					+ "cover FROM books b "
+	public static final String GET_BY_ID = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS cover "
+					+ "FROM books b "
 					+ "JOIN covers c ON b.cover_id = c.cover_id WHERE b.book_id = ? AND b.deleted = false";
 	public static final String GET_ALL = "SELECT b.book_id, b.title, b.author, b.isbn, b.pages, b.price, c.name AS "
 					+ "cover FROM books b " + "JOIN covers c ON b.cover_id = c.cover_id WHERE b.deleted = false";
@@ -59,7 +62,7 @@ public class BookDaoImpl implements BookDao {
 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-				PreparedStatement statement = con.prepareStatement(INSERT);
+				PreparedStatement statement = con.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, book.getTitle());
 				statement.setString(2, book.getAuthor());
 				statement.setString(3, book.getIsbn());
@@ -70,11 +73,8 @@ public class BookDaoImpl implements BookDao {
 			}
 		};
 		jdbcTemplate.update(psc, keyHolder);
-		Number num = keyHolder.getKey();
-		if (num == null) {
-			throw new RuntimeException("key is null");
-		}
-		Long id = num.longValue();
+		Map<String, Object> keys = keyHolder.getKeys();
+		Long id = (Long) keys.get("book_id");
 		return get(id);
 	}
 
@@ -95,11 +95,16 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public Book getBookByIsbn(String isbn) {
-		return jdbcTemplate.queryForObject(GET_BY_ISBN, this::mapRow, isbn);
+		try {
+			return jdbcTemplate.queryForObject(GET_BY_ISBN, this::mapRow, isbn);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public List<Book> getBooksByAuthor(String author) {
+
 		return jdbcTemplate.query(GET_BY_AUTHOR, this::mapRow, author);
 	}
 
@@ -108,7 +113,7 @@ public class BookDaoImpl implements BookDao {
 		PreparedStatementCreator psc = new PreparedStatementCreator() {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-				PreparedStatement statement = con.prepareStatement(DELETE);
+				PreparedStatement statement = con.prepareStatement(UPDATE);
 				statement.setString(1, book.getTitle());
 				statement.setString(2, book.getAuthor());
 				statement.setString(3, book.getIsbn());
