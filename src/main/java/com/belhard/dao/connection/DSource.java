@@ -31,7 +31,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
-public class DataSource implements AutoCloseable {
+public class DSource implements AutoCloseable {
 
 	private BlockingQueue<ProxyConnection> freeConnections;
 	private Queue<ProxyConnection> givenAwayConnections;
@@ -39,7 +39,7 @@ public class DataSource implements AutoCloseable {
 	private final ConfigurationManager configurationManager;
 
 	@Autowired
-	public DataSource(ConfigurationManager configurationManager) {
+	public DSource(ConfigurationManager configurationManager) {
 		this.configurationManager = configurationManager;
 		poolSize = Integer.parseInt(configurationManager.getProperty("db.pool_size"));
 		freeConnections = new LinkedBlockingDeque<>(poolSize);
