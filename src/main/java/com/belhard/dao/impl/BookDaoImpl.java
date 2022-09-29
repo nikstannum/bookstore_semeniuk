@@ -74,6 +74,9 @@ public class BookDaoImpl implements BookDao {
 		};
 		jdbcTemplate.update(psc, keyHolder);
 		Map<String, Object> keys = keyHolder.getKeys();
+		if (keys.get("book_id") == null) {
+			throw new RuntimeException("Couldn't create new book");
+		}
 		Long id = (Long) keys.get("book_id");
 		return get(id);
 	}

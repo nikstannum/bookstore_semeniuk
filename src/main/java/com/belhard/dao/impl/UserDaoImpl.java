@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -27,7 +28,7 @@ public class UserDaoImpl implements UserDao {
 					+ "ORDER BY u.user_id LIMIT :limit OFFSET :offset";
 
 	public static final String INSERT = "INSERT INTO users (first_name, last_name, email, password, role_id) "
-					+ "VALUES (:firstName, :lastName, :email, :password, (SELECT r.role_id FROM role r WHERE r.name = roleName))";
+					+ "VALUES (:firstName, :lastName, :email, :password, (SELECT r.role_id FROM role r WHERE r.name = :roleName))";
 
 	public static final String GET_BY_ID = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
 					+ "JOIN role r ON u.role_id = r.role_id WHERE u.user_id = :id AND u.deleted = false";
@@ -54,11 +55,11 @@ public class UserDaoImpl implements UserDao {
 		params.addValue("password", user.getPassword());
 		params.addValue("roleName", user.getRole().toString());
 		jdbcTemplate.update(INSERT, params, keyHolder);
-		Number key = keyHolder.getKey();
-		if (key == null) {
-			throw new RuntimeException("couldn't create new user");
+		Map<String, Object> keys = keyHolder.getKeys();
+		if (keys.get("user_id") == null) {
+			throw new RuntimeException("Couldn't create new user");
 		}
-		Long id = key.longValue();
+		Long id = (Long) keys.get("user_id");
 		return get(id);
 	}
 
@@ -86,7 +87,12 @@ public class UserDaoImpl implements UserDao {
 	public User getUserByEmail(String email) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("email", email);
-		return jdbcTemplate.queryForObject(GET_BY_EMAIL, params, this::mapRow);
+		try {
+			return jdbcTemplate.queryForObject(GET_BY_EMAIL, params, this::mapRow);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+
 	}
 
 	@Override
@@ -115,6 +121,7 @@ public class UserDaoImpl implements UserDao {
 		params.addValue("email", user.getEmail());
 		params.addValue("password", user.getPassword());
 		params.addValue("roleName", user.getRole().toString());
+		params.addValue("id", user.getId());
 		int rowUpdated = jdbcTemplate.update(UPDATE, params);
 		if (rowUpdated == 0) {
 			throw new RuntimeException("Couldn't update user with id=" + user.getId());
