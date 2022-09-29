@@ -1,141 +1,208 @@
 package com.belhard.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.belhard.dao.UserDao;
+import com.belhard.dao.connection.DataSource;
 import com.belhard.dao.entity.User;
 import com.belhard.dao.entity.User.UserRole;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Repository
-@RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
 
 	private static final String GET_ALL_PAGED = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role "
-					+ "FROM users u JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false "
-					+ "ORDER BY u.user_id LIMIT :limit OFFSET :offset";
-
+					+ "FROM users u JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false ORDER BY u.user_id LIMIT ? OFFSET ?";
 	public static final String INSERT = "INSERT INTO users (first_name, last_name, email, password, role_id) "
-					+ "VALUES (:firstName, :lastName, :email, :password, (SELECT r.role_id FROM role r WHERE r.name = :roleName))";
-
+					+ "VALUES (?, ?, ?, ?, (SELECT r.role_id FROM role r WHERE r.name = ?))";
 	public static final String GET_BY_ID = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
-					+ "JOIN role r ON u.role_id = r.role_id WHERE u.user_id = :id AND u.deleted = false";
+					+ "JOIN role r ON u.role_id = r.role_id WHERE u.user_id = ? AND u.deleted = false";
 	public static final String GET_ALL = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
 					+ "JOIN role r ON u.role_id = r.role_id WHERE u.deleted = false";
 	public static final String GET_BY_EMAIL = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
-					+ "JOIN role r ON u.role_id = r.role_id WHERE u.email = :email AND u.deleted = false";
+					+ "JOIN role r ON u.role_id = r.role_id WHERE u.email = ? AND u.deleted = false";
 	public static final String GET_BY_LASTNAME = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u "
-					+ "JOIN role r ON u.role_id = r.role_id WHERE u.last_name = :lastName AND u.deleted = false";
+					+ "JOIN role r ON u.role_id = r.role_id WHERE u.last_name = ? AND u.deleted = false";
 	public static final String GET_COUNT_ALL_USERS = "SELECT count(u.user_id) AS all_users FROM users u WHERE u.deleted = false";
-	public static final String UPDATE = "UPDATE users SET first_name = :firstName, last_name = :lastName, email = :email, password = :password, "
-					+ "role_id = (SELECT r.role_id FROM role r WHERE r.name = :roleName) WHERE user_id = :id AND deleted = false";
-	public static final String DELETE = "UPDATE users SET deleted = true WHERE user_id = :id";
+	public static final String UPDATE = "UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ?, "
+					+ "role_id = (SELECT r.role_id FROM role r WHERE r.name = ?) WHERE user_id = ? AND deleted = false";
+	public static final String DELETE = "UPDATE users SET deleted = true WHERE user_id = ?";
 
-	private final NamedParameterJdbcTemplate jdbcTemplate;
+	private final DataSource dataSource;
+
+	@Autowired
+	public UserDaoImpl(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
 	@Override
 	public User create(User user) {
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("firstName", user.getFirstName());
-		params.addValue("lastName", user.getLastName());
-		params.addValue("email", user.getEmail());
-		params.addValue("password", user.getPassword());
-		params.addValue("roleName", user.getRole().toString());
-		jdbcTemplate.update(INSERT, params, keyHolder);
-		Map<String, Object> keys = keyHolder.getKeys();
-		if (keys.get("user_id") == null) {
-			throw new RuntimeException("Couldn't create new user");
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(INSERT,
+										Statement.RETURN_GENERATED_KEYS)) {
+			statement.setString(1, user.getFirstName());
+			statement.setString(2, user.getLastName());
+			statement.setString(3, user.getEmail());
+			statement.setString(4, user.getPassword());
+			statement.setString(5, user.getRole().toString());
+			statement.executeUpdate();
+			ResultSet keys = statement.getGeneratedKeys();
+			log.debug("database access completed successfully");
+			if (keys.next()) {
+				Long id = keys.getLong("user_id");
+				return get(id);
+			}
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
 		}
-		Long id = (Long) keys.get("user_id");
-		return get(id);
+		return null;
 	}
 
 	@Override
 	public User get(Long id) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("id", id);
-		return jdbcTemplate.queryForObject(GET_BY_ID, params, this::mapRow);
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(GET_BY_ID)) {
+			statement.setLong(1, id);
+			ResultSet result = statement.executeQuery();
+			log.debug("database access completed successfully");
+			if (result.next()) {
+				return processUser(result);
+			}
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		return null;
 	}
 
 	@Override
 	public List<User> getAll() {
-		return jdbcTemplate.query(GET_ALL, this::mapRow);
+		List<User> users = new ArrayList<>();
+		try (Connection connection = dataSource.getFreeConnections();
+						Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(GET_ALL);
+			log.debug("database access completed successfully");
+			while (resultSet.next()) {
+				users.add(processUser(resultSet));
+			}
+			return users;
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		return users;
 	}
 
 	@Override
 	public List<User> getAll(int limit, long offset) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("limit", limit);
-		params.put("offset", offset);
-		return jdbcTemplate.query(GET_ALL_PAGED, params, this::mapRow);
+		List<User> users = new ArrayList<>();
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
+			statement.setInt(1, limit);
+			statement.setLong(2, offset);
+			ResultSet resultSet = statement.executeQuery();
+			log.debug("database access completed successfully");
+			while (resultSet.next()) {
+				users.add(processUser(resultSet));
+			}
+			return users;
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		return users;
 	}
 
 	@Override
 	public User getUserByEmail(String email) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("email", email);
-		try {
-			return jdbcTemplate.queryForObject(GET_BY_EMAIL, params, this::mapRow);
-		} catch (EmptyResultDataAccessException e) {
-			return null;
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(GET_BY_EMAIL)) {
+			statement.setString(1, email);
+			ResultSet resultSet = statement.executeQuery();
+			log.debug("database access completed successfully");
+			if (resultSet.next()) {
+				return processUser(resultSet);
+			}
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
 		}
+		return null;
 	}
 
 	@Override
 	public List<User> getUsersByLastName(String lastName) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("lastName", lastName);
-		return jdbcTemplate.query(GET_BY_EMAIL, params, this::mapRow);
+		List<User> users = new ArrayList<>();
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(GET_BY_LASTNAME)) {
+			statement.setString(1, lastName);
+			ResultSet resultSet = statement.executeQuery();
+			log.debug("database access completed successfully");
+			while (resultSet.next()) {
+				users.add(processUser(resultSet));
+			}
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		return users;
 	}
 
 	@Override
 	public long countAll() {
-		Long count = jdbcTemplate.query(GET_COUNT_ALL_USERS, (rs) -> {
-			if (rs.next()) {
-				return rs.getLong("all_users");
+		try (Connection connection = dataSource.getFreeConnections();
+						Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(GET_COUNT_ALL_USERS);
+			log.debug("database access completed successfully");
+			if (resultSet.next()) {
+				return resultSet.getLong("all_users");
 			}
-			throw new RuntimeException("ERROR: count of users not definition");
-		});
-		return count;
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		throw new RuntimeException("ERROR: count of users not definition");
 	}
 
 	@Override
 	public User update(User user) {
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("firstName", user.getFirstName());
-		params.addValue("lastName", user.getLastName());
-		params.addValue("email", user.getEmail());
-		params.addValue("password", user.getPassword());
-		params.addValue("roleName", user.getRole().toString());
-		params.addValue("id", user.getId());
-		int rowUpdated = jdbcTemplate.update(UPDATE, params);
-		if (rowUpdated == 0) {
-			throw new RuntimeException("Couldn't update user with id=" + user.getId());
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(UPDATE)) {
+			statement.setString(1, user.getFirstName());
+			statement.setString(2, user.getLastName());
+			statement.setString(3, user.getEmail());
+			statement.setString(4, user.getPassword());
+			statement.setString(5, user.getRole().toString());
+			statement.setLong(6, user.getId());
+			statement.executeUpdate();
+			log.debug("database access completed successfully");
+			return get(user.getId());
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
 		}
-		return get(user.getId());
+		return null;
 	}
 
 	@Override
 	public boolean delete(Long id) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("id", id);
-		return jdbcTemplate.update(DELETE, params) == 1;
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(DELETE)) {
+			statement.setLong(1, id);
+			int rowsDelete = statement.executeUpdate();
+			log.debug("database access completed successfully");
+			return rowsDelete == 1;
+		} catch (SQLException e) {
+			log.error("database access completed unsuccessfully", e);
+		}
+		return false;
 	}
 
-	private User mapRow(ResultSet result, int num) throws SQLException {
+	private User processUser(ResultSet result) throws SQLException {
 		User user = new User();
 		user.setId(result.getLong("user_id"));
 		user.setFirstName(result.getString("first_name"));

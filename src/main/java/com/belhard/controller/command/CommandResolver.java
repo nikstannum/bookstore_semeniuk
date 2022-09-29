@@ -22,7 +22,6 @@ import com.belhard.controller.command.impl.errors.ErrorCommand;
 import com.belhard.controller.command.impl.orders.AddToCart;
 import com.belhard.controller.command.impl.orders.CartCommand;
 import com.belhard.controller.command.impl.orders.CreateOrderCommand;
-import com.belhard.controller.command.impl.orders.DecreaseQuantityCommand;
 import com.belhard.controller.command.impl.orders.IncreaseQuantityCommand;
 import com.belhard.controller.command.impl.orders.OrderCommand;
 import com.belhard.controller.command.impl.orders.OrdersCommand;
@@ -67,15 +66,14 @@ public class CommandResolver {
 		commands.put("checkout_order", CreateOrderCommand.class);
 		commands.put("update_order_form", UpdateOrderFormCommand.class);
 		commands.put("increase_quantity", IncreaseQuantityCommand.class);
-		commands.put("decrease_quantity", DecreaseQuantityCommand.class);
 		commands.put("update_order", UpdateOrderCommand.class);
-		commands.put("add_to_cart", AddToCart.class);
-		commands.put("cart", CartCommand.class);
 		// login
 		commands.put("login_form", LoginFormCommand.class);
 		commands.put("login", LoginCommand.class);
 		commands.put("logout", LogoutCommand.class);
 		// other
+		commands.put("add_to_cart", AddToCart.class);
+		commands.put("cart", CartCommand.class);
 		commands.put("change_language", ChangeLanguageCommand.class);
 		commands.put("error", ErrorCommand.class);
 	}
