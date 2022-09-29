@@ -92,7 +92,6 @@ public class UserDaoImpl implements UserDao {
 		} catch (EmptyResultDataAccessException e) {
 			return null;
 		}
-
 	}
 
 	@Override
