@@ -8,9 +8,13 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -23,6 +27,7 @@ import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
 
 @Repository
+@Transactional
 public class BookDaoImpl implements BookDao {
 
 	public static final String INSERT = "INSERT INTO books (title, author, isbn, pages, price, cover_id) "
@@ -49,6 +54,9 @@ public class BookDaoImpl implements BookDao {
 	public static final String DELETE = "UPDATE books SET deleted = true WHERE book_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
+
+	@PersistenceContext
+	private EntityManager manager;
 
 	@Autowired
 	public BookDaoImpl(JdbcTemplate jdbcTemplate) {
@@ -83,36 +91,37 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public Book get(Long id) {
-		return jdbcTemplate.queryForObject(GET_BY_ID, this::mapRow, id);
+		return manager.find(Book.class, id);
 	}
 
 	@Override
 	public List<Book> getAll() {
-		return jdbcTemplate.query(GET_ALL, this::mapRow);
+		return manager.createQuery("from Book", Book.class).getResultList();
 	}
 
 	@Override
 	public List<Book> getAll(int limit, long offset) {
-		return jdbcTemplate.query(GET_ALL_PAGED, this::mapRow, limit, offset);
+		TypedQuery<Book> query = manager.createQuery("from Book", Book.class);
+		query.setFirstResult((int) offset);
+		query.setMaxResults(limit);
+		return query.getResultList();
 	}
 
 	@Override
 	public Book getBookByIsbn(String isbn) {
-		try {
-			return jdbcTemplate.queryForObject(GET_BY_ISBN, this::mapRow, isbn);
-		} catch (EmptyResultDataAccessException e) {
-			return null;
-		}
+		TypedQuery<Book> query = manager.createQuery("from Book where isbn = :isbn", Book.class);
+		query.setParameter("isbn", isbn);
+		return query.getResultStream().findAny().get();
 	}
 
 	@Override
-	public List<Book> getBooksByAuthor(String author) {
+	public List<Book> getBooksByAuthor(String author) { // FIXME to JPA
 
 		return jdbcTemplate.query(GET_BY_AUTHOR, this::mapRow, author);
 	}
 
 	@Override
-	public Book update(Book book) {
+	public Book update(Book book) { // FIXME to JPA
 		PreparedStatementCreator psc = new PreparedStatementCreator() {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -135,12 +144,12 @@ public class BookDaoImpl implements BookDao {
 	}
 
 	@Override
-	public boolean delete(Long id) {
+	public boolean delete(Long id) { // FIXME to JPA
 		return jdbcTemplate.update(DELETE, id) == 1;
 	}
 
 	@Override
-	public long countAll() {
+	public long countAll() { // FIXME to JPA
 		ResultSetExtractor<Long> count = new ResultSetExtractor<>() {
 
 			@Override
