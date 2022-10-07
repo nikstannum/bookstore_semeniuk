@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.belhard.controller.util.PagingUtil.Paging;
-import com.belhard.dao.BookDao;
+import com.belhard.dao.BookRepository;
 import com.belhard.dao.entity.Book;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
@@ -18,10 +18,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Service
 public class BookServiceImpl implements BookService {
-	private final BookDao bookDao;
+	private final BookRepository bookDao;
 
 	@Autowired
-	public BookServiceImpl(BookDao bookDao) {
+	public BookServiceImpl(BookRepository bookDao) {
 		this.bookDao = bookDao;
 	}
 

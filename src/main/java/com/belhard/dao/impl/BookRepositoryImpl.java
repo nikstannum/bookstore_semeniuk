@@ -9,12 +9,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
-import com.belhard.dao.BookDao;
+import com.belhard.dao.BookRepository;
 import com.belhard.dao.entity.Book;
 
 @Repository
 @Transactional
-public class BookRepositoryImpl implements BookDao {
+public class BookRepositoryImpl implements BookRepository {
 
 	@PersistenceContext
 	private EntityManager manager;
@@ -86,7 +86,7 @@ public class BookRepositoryImpl implements BookDao {
 						Long.class);
 		query.setParameter("deleted", false);
 		if (query.getResultList().isEmpty()) {
-			throw new RuntimeException("ERROR!!!!!!!");
+			throw new RuntimeException("count of books was not definition");
 		}
 		return query.getResultStream().findAny().get();
 	}

@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.belhard.controller.util.PagingUtil.Paging;
-import com.belhard.dao.BookDao;
-import com.belhard.dao.OrderDao;
+import com.belhard.dao.BookRepository;
+import com.belhard.dao.OrderRepository;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.OrderInfo;
 import com.belhard.service.OrderService;
@@ -25,11 +25,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Service
 public class OrderServiceImpl implements OrderService {
-	private final OrderDao orderDao;
-	private final BookDao bookDao;
+	private final OrderRepository orderDao;
+	private final BookRepository bookDao;
 
 	@Autowired
-	public OrderServiceImpl(OrderDao orderDao, BookDao bookDao) {
+	public OrderServiceImpl(OrderRepository orderDao, BookRepository bookDao) {
 		this.orderDao = orderDao;
 		this.bookDao = bookDao;
 	}

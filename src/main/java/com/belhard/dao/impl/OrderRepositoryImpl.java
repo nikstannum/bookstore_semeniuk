@@ -7,14 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import com.belhard.dao.OrderDao;
-import com.belhard.dao.OrderInfoDao;
+import com.belhard.dao.OrderRepository;
+import com.belhard.dao.OrderInfoRepository;
 import com.belhard.dao.UserDao;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.Order.Status;
@@ -26,7 +29,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 @Repository
-public class OrderDaoImpl implements OrderDao {
+public class OrderRepositoryImpl implements OrderRepository {
 
 	public static final String INSERT = "INSERT INTO orders (user_id, status_id, total_cost) "
 					+ "VALUES (:user_id, (SELECT s.status_id FROM status s WHERE s.name = :status_name), :total_cost)";
@@ -44,12 +47,16 @@ public class OrderDaoImpl implements OrderDao {
 	public static final String DELETE = "UPDATE users SET deleted = true WHERE order_id = :order_id";
 	public static final String GET_COUNT_ALL_ORDERS = "SELECT count(o.order_id) AS all_orders FROM orders o WHERE o.deleted = false";
 
-	private final OrderInfoDao orderInfoDao;
+	private final OrderInfoRepository orderInfoDao;
 	private final UserDao userDao;
 	private final NamedParameterJdbcTemplate jdbcTemplate;
+	
+	@PersistenceContext
+	private EntityManager manager;
 
 	@Override
 	public Order create(Order entity) {
+		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("user_id", entity.getUser().getId());
