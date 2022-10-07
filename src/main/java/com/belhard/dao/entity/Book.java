@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Where;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "books")
+@Where(clause = "deleted = false")
 public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +48,9 @@ public class Book {
 	@Column(name = "cover_id")
 	@Convert(converter = BookCoverConverter.class)
 	private BookCover cover;
+
+	@Column(name = "deleted")
+	private boolean deleted;
 
 	public enum BookCover {
 		SOFT, HARD, SPECIAL
