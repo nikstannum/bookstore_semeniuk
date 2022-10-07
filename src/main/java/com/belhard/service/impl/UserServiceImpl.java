@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.belhard.controller.util.PagingUtil.Paging;
-import com.belhard.dao.UserDao;
+import com.belhard.dao.UserRepository;
 import com.belhard.dao.entity.User;
 import com.belhard.service.DigestUtil;
 import com.belhard.service.UserService;
@@ -19,10 +19,10 @@ import lombok.extern.log4j.Log4j2;
 @Service
 public class UserServiceImpl implements UserService {
 
-	private final UserDao userDao;
+	private final UserRepository userDao;
 
 	@Autowired
-	public UserServiceImpl(UserDao userDao) {
+	public UserServiceImpl(UserRepository userDao) {
 		this.userDao = userDao;
 	}
 

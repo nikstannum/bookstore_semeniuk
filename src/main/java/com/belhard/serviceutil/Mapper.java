@@ -10,7 +10,6 @@ import com.belhard.dao.entity.User;
 import com.belhard.dao.entity.User.UserRole;
 import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
-import com.belhard.service.dto.OrderDto;
 import com.belhard.service.dto.OrderInfoDto;
 import com.belhard.service.dto.UserDto;
 import com.belhard.service.dto.UserDto.UserRoleDto;
@@ -36,7 +35,7 @@ public enum Mapper {
 		user.setLastName(userDto.getLastName());
 		user.setEmail(userDto.getEmail());
 		user.setPassword(userDto.getPassword());
-		user.setRole(UserRole.valueOf(userDto.getUserRoleDto().toString()));
+		user.setUserRole(UserRole.valueOf(userDto.getUserRoleDto().toString()));
 		return user;
 	}
 

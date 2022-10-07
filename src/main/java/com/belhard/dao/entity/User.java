@@ -2,88 +2,86 @@ package com.belhard.dao.entity;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.Where;
+
+import com.belhard.dao.entity.converter.UserRoleConverter;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@RequiredArgsConstructor
+@Entity
+@Table(name = "users")
+@Where(clause = "deleted = false")
 public class User {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private UserRole userRole;
 
-    public enum UserRole {
-        ADMIN, MANAGER, USER
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
+	private Long id;
 
-    public UserRole getRole() {
-        return userRole;
-    }
+	@Column(name = "first_name")
+	private String firstName;
 
-    public void setRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
+	@Column(name = "last_name")
+	private String lastName;
 
-    public Long getId() {
-        return id;
-    }
+	@Column(name = "email")
+	private String email;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Column(name = "password")
+	private String password;
 
-    public String getFirstName() {
-        return firstName;
-    }
+	@Column(name = "role_id")
+	@Convert(converter = UserRoleConverter.class)
+	private UserRole userRole;
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	@Transient
+	@Column(name = "deleted")
+	private boolean deleted;
 
-    public String getLastName() {
-        return lastName;
-    }
+	public enum UserRole {
+		ADMIN, MANAGER, USER
+	}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	public UserRole getRole() {
+		return userRole;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (Hibernate.getClass(this) != Hibernate.getClass(obj))
+			return false;
+		User other = (User) obj;
+		return id != null && Objects.equals(id, other.id);
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+						+ ", password=" + password + ", userRole=" + userRole + "]";
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id.equals(user.id) && email.equals(user.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", userRole=" + userRole +
-                '}';
-    }
 }

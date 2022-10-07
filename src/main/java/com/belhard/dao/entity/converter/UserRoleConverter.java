@@ -1,24 +1,24 @@
-package com.belhard.dao.entity;
+package com.belhard.dao.entity.converter;
 
 import javax.persistence.AttributeConverter;
 
-import com.belhard.dao.entity.Book.BookCover;
+import com.belhard.dao.entity.User.UserRole;
 
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class BookCoverConverter implements AttributeConverter<BookCover, Long> {
+public class UserRoleConverter implements AttributeConverter<UserRole, Long> {
 
 	@Override
-	public Long convertToDatabaseColumn(BookCover attribute) {
+	public Long convertToDatabaseColumn(UserRole attribute) {
 		switch (attribute) {
-		case SOFT -> {
+		case ADMIN -> {
 			return 1L;
 		}
-		case HARD -> {
+		case MANAGER -> {
 			return 2L;
 		}
-		case SPECIAL -> {
+		case USER -> {
 			return 3L;
 		}
 		default -> {
@@ -29,22 +29,22 @@ public class BookCoverConverter implements AttributeConverter<BookCover, Long> {
 	}
 
 	@Override
-	public BookCover convertToEntityAttribute(Long dbData) {
+	public UserRole convertToEntityAttribute(Long dbData) {
 		if (dbData > Integer.MAX_VALUE) {
-			log.error("value cover_id from table books equals " + dbData);
+			log.error("value role_id from table role equals " + dbData);
 			throw new RuntimeException(dbData + " not supported");
 		}
 		int intValue = dbData.intValue();
 		switch (intValue) {
 		case 1 -> {
-			return BookCover.SOFT;
+			return UserRole.ADMIN;
 		}
 		case 2 -> {
 
-			return BookCover.HARD;
+			return UserRole.MANAGER;
 		}
 		case 3 -> {
-			return BookCover.SPECIAL;
+			return UserRole.USER;
 		}
 		default -> {
 			log.error(dbData + " not supported");
@@ -52,4 +52,5 @@ public class BookCoverConverter implements AttributeConverter<BookCover, Long> {
 		}
 		}
 	}
+
 }
