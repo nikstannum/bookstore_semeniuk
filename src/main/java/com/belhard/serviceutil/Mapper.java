@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
 import com.belhard.dao.entity.Order;
@@ -17,8 +19,8 @@ import com.belhard.service.dto.OrderInfoDto;
 import com.belhard.service.dto.UserDto;
 import com.belhard.service.dto.UserDto.UserRoleDto;
 
-public enum Mapper {
-	INSTANCE;
+@Component
+public class Mapper {
 
 	public UserDto userToDto(User user) {
 		UserDto userDto = new UserDto();
@@ -84,7 +86,7 @@ public enum Mapper {
 		OrderDto orderDto = new OrderDto();
 		orderDto.setId(order.getId());
 		orderDto.setStatusDto(OrderDto.StatusDto.valueOf(order.getStatus().toString()));
-		orderDto.setUserDto(Mapper.INSTANCE.userToDto(order.getUser()));
+		orderDto.setUserDto(userToDto(order.getUser()));
 		orderDto.setTotalCost(order.getTotalCost());
 		orderDto.setDetailsDto(toDetailsDto(order.getDetails()));
 		for (OrderInfoDto elm : orderDto.getDetailsDto()) {
@@ -98,7 +100,7 @@ public enum Mapper {
 		for (OrderInfo elm : details) {
 			OrderInfoDto dto = new OrderInfoDto();
 			dto.setId(elm.getId());
-			dto.setBookDto(Mapper.INSTANCE.bookToDto(elm.getBook()));
+			dto.setBookDto(bookToDto(elm.getBook()));
 			dto.setBookQuantity(elm.getBookQuantity());
 			dto.setBookPrice(elm.getBookPrice());
 			detailsDto.add(dto);
@@ -111,7 +113,7 @@ public enum Mapper {
 		for (OrderInfoDto elm : detailsDto) {
 			OrderInfo entity = new OrderInfo();
 			entity.setId(elm.getId());
-			entity.setBook(Mapper.INSTANCE.bookToEntity(elm.getBookDto()));
+			entity.setBook(bookToEntity(elm.getBookDto()));
 			entity.setBookQuantity(elm.getBookQuantity());
 			entity.setBookPrice(elm.getBookPrice());
 			details.add(entity);
@@ -122,7 +124,7 @@ public enum Mapper {
 	public Order toEntity(OrderDto dto) {
 		Order order = new Order();
 		order.setId(dto.getId());
-		order.setUser(Mapper.INSTANCE.userToEntity(dto.getUserDto()));
+		order.setUser(userToEntity(dto.getUserDto()));
 		order.setStatus(Order.Status.valueOf(dto.getStatusDto().toString()));
 		BigDecimal totalCost = dto.getTotalCost();
 		dto.getDetailsDto().stream().map(elm -> elm.getBookPrice().multiply(BigDecimal.valueOf(elm.getBookQuantity())))
