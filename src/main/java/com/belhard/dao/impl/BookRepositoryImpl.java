@@ -82,9 +82,7 @@ public class BookRepositoryImpl implements BookRepository {
 
 	@Override
 	public long countAll() {
-		TypedQuery<Long> query = manager.createQuery("SELECT count(book_id) from Book WHERE deleted = :deleted",
-						Long.class);
-		query.setParameter("deleted", false);
+		TypedQuery<Long> query = manager.createQuery("SELECT count(book_id) from Book", Long.class);
 		if (query.getResultList().isEmpty()) {
 			throw new RuntimeException("count of books was not definition");
 		}

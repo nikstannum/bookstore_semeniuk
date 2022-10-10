@@ -67,7 +67,7 @@ public class OrderInfoRepositoryImpl implements OrderInfoRepository {
 		fromDb.setBook(entity.getBook());
 		fromDb.setBookPrice(entity.getBookPrice());
 		fromDb.setBookQuantity(entity.getBookQuantity());
-		fromDb.setOrderId(entity.getOrderId());
+		fromDb.setOrder(entity.getOrder());
 		return fromDb;
 	}
 

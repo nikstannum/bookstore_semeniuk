@@ -8,7 +8,7 @@ import lombok.Data;
 public class OrderInfoDto {
 
 	private Long id;
-	private Long orderDtoId;
+	private OrderDto orderDto;
 	private BookDto bookDto;
 	private Integer bookQuantity;
 	private BigDecimal bookPrice;

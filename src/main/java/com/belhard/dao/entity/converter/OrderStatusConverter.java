@@ -2,7 +2,6 @@ package com.belhard.dao.entity.converter;
 
 import javax.persistence.AttributeConverter;
 
-import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.Order.Status;
 
 import lombok.extern.log4j.Log4j2;

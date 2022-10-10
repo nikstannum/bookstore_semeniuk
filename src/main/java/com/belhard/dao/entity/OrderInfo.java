@@ -35,9 +35,6 @@ public class OrderInfo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "order_id")
-	private Long orderId;
-
 	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE })
 	@JoinColumn(name = "book_id")
 	private Book book;
@@ -49,6 +46,7 @@ public class OrderInfo {
 	private BigDecimal bookPrice;
 
 	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@JoinColumn(name = "order_id")
 	private Order order;
 
 	@Transient
@@ -74,7 +72,7 @@ public class OrderInfo {
 
 	@Override
 	public String toString() {
-		return "OrderInfo [id=" + id + ", orderId=" + orderId + ", book=" + book.getTitle() + ", bookQuantity="
+		return "OrderInfo [id=" + id + ", orderId=" + order.getId() + ", book=" + book.getTitle() + ", bookQuantity="
 						+ bookQuantity + ", bookPrice=" + bookPrice + "]";
 	}
 

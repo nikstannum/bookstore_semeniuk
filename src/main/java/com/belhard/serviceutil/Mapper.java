@@ -1,15 +1,18 @@
 package com.belhard.serviceutil;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.belhard.dao.entity.Book;
 import com.belhard.dao.entity.Book.BookCover;
+import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.OrderInfo;
 import com.belhard.dao.entity.User;
 import com.belhard.dao.entity.User.UserRole;
 import com.belhard.service.dto.BookDto;
 import com.belhard.service.dto.BookDto.BookCoverDto;
+import com.belhard.service.dto.OrderDto;
 import com.belhard.service.dto.OrderInfoDto;
 import com.belhard.service.dto.UserDto;
 import com.belhard.service.dto.UserDto.UserRoleDto;
@@ -71,25 +74,64 @@ public enum Mapper {
 			entity.setBook(bookToEntity(elm.getBookDto()));
 			entity.setBookPrice(elm.getBookPrice());
 			entity.setBookQuantity(elm.getBookQuantity());
-			entity.setOrderId(orderDtoId);
+			entity.setOrder(toEntity(elm.getOrderDto()));
 			infosEntity.add(entity);
 		}
 		return infosEntity;
 	}
 
-	public List<OrderInfoDto> infosToDto(List<OrderInfo> entity) {
-		List<OrderInfoDto> infosDto = new ArrayList<>();
-		for (OrderInfo elm : entity) {
-			OrderInfoDto dto = new OrderInfoDto();
-			dto.setBookDto(bookToDto(elm.getBook()));
-			dto.setBookPrice(elm.getBookPrice());
-			dto.setBookQuantity(elm.getBookQuantity());
-			dto.setOrderDtoId(elm.getOrderId());
-			dto.setId(elm.getId());
-			infosDto.add(dto);
+	public OrderDto toDto(Order order) {
+		OrderDto orderDto = new OrderDto();
+		orderDto.setId(order.getId());
+		orderDto.setStatusDto(OrderDto.StatusDto.valueOf(order.getStatus().toString()));
+		orderDto.setUserDto(Mapper.INSTANCE.userToDto(order.getUser()));
+		orderDto.setTotalCost(order.getTotalCost());
+		orderDto.setDetailsDto(toDetailsDto(order.getDetails()));
+		for (OrderInfoDto elm : orderDto.getDetailsDto()) {
+			elm.setOrderDto(orderDto);
 		}
-		return infosDto;
-
+		return orderDto;
 	}
 
+	public List<OrderInfoDto> toDetailsDto(List<OrderInfo> details) {
+		List<OrderInfoDto> detailsDto = new ArrayList<>();
+		for (OrderInfo elm : details) {
+			OrderInfoDto dto = new OrderInfoDto();
+			dto.setId(elm.getId());
+			dto.setBookDto(Mapper.INSTANCE.bookToDto(elm.getBook()));
+			dto.setBookQuantity(elm.getBookQuantity());
+			dto.setBookPrice(elm.getBookPrice());
+			detailsDto.add(dto);
+		}
+		return detailsDto;
+	}
+
+	public List<OrderInfo> toDetails(List<OrderInfoDto> detailsDto) {
+		List<OrderInfo> details = new ArrayList<>(detailsDto.size());
+		for (OrderInfoDto elm : detailsDto) {
+			OrderInfo entity = new OrderInfo();
+			entity.setId(elm.getId());
+			entity.setBook(Mapper.INSTANCE.bookToEntity(elm.getBookDto()));
+			entity.setBookQuantity(elm.getBookQuantity());
+			entity.setBookPrice(elm.getBookPrice());
+			details.add(entity);
+		}
+		return details;
+	}
+
+	public Order toEntity(OrderDto dto) {
+		Order order = new Order();
+		order.setId(dto.getId());
+		order.setUser(Mapper.INSTANCE.userToEntity(dto.getUserDto()));
+		order.setStatus(Order.Status.valueOf(dto.getStatusDto().toString()));
+		BigDecimal totalCost = dto.getTotalCost();
+		dto.getDetailsDto().stream().map(elm -> elm.getBookPrice().multiply(BigDecimal.valueOf(elm.getBookQuantity())))
+						.forEach(totalCost::add);
+		order.setTotalCost(totalCost);
+		order.setDetails(toDetails(dto.getDetailsDto()));
+		for (OrderInfo elm : order.getDetails()) {
+			elm.setOrder(order);
+		}
+		return order;
+	}
 }

@@ -51,9 +51,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
 	@Override
 	public long countAll() {
-		TypedQuery<Long> query = manager.createQuery("SELECT count(order_id) from Order WHERE deleted = :deleted",
-						Long.class);
-		query.setParameter("deleted", false);
+		TypedQuery<Long> query = manager.createQuery("SELECT count(order_id) from Order", Long.class);
 		if (query.getResultList().isEmpty()) {
 			throw new RuntimeException("count of details of orders was not definition");
 		}
@@ -62,12 +60,8 @@ public class OrderRepositoryImpl implements OrderRepository {
 
 	@Override
 	public Order update(Order entity) {
-		Order fromDb = manager.find(Order.class, entity.getId());
-		fromDb.setDetails(entity.getDetails());
-		fromDb.setStatus(entity.getStatus());
-		fromDb.setTotalCost(entity.getTotalCost());
-		fromDb.setUser(entity.getUser());
-		return fromDb;
+		manager.merge(entity);
+		return entity;
 	}
 
 	@Override

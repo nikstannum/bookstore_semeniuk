@@ -62,11 +62,8 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public long countAll() { // FIXME whether it is necessary to specify a parameter 'deleted' here if there
-								// is a corresponding annotation over the class
-		TypedQuery<Long> query = manager.createQuery("SELECT count(user_id) from User WHERE deleted = :deleted",
-						Long.class);
-		query.setParameter("deleted", false);
+	public long countAll() {
+		TypedQuery<Long> query = manager.createQuery("SELECT count(user_id) from User", Long.class);
 		if (query.getResultList().isEmpty()) {
 			throw new RuntimeException("count of users was not definition");
 		}
