@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.dao.OrderInfoRepository;
 import com.belhard.dao.entity.OrderInfo;
 
@@ -20,12 +21,14 @@ public class OrderInfoRepositoryImpl implements OrderInfoRepository {
 	private EntityManager manager;
 
 	@Override
+	@LogInvocation
 	public OrderInfo create(OrderInfo entity) {
 		manager.persist(entity);
 		return entity;
 	}
 
 	@Override
+	@LogInvocation
 	public List<OrderInfo> getByOrderId(Long id) {
 		TypedQuery<OrderInfo> query = manager.createQuery("from OrderInfo where order_id = :order_id", OrderInfo.class);
 		query.setParameter("order_id", id);
@@ -33,16 +36,19 @@ public class OrderInfoRepositoryImpl implements OrderInfoRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public OrderInfo get(Long id) {
 		return manager.find(OrderInfo.class, id);
 	}
 
 	@Override
+	@LogInvocation
 	public List<OrderInfo> getAll() {
 		return manager.createQuery("from OrderInfo", OrderInfo.class).getResultList();
 	}
 
 	@Override
+	@LogInvocation
 	public List<OrderInfo> getAll(int limit, long offset) {
 		TypedQuery<OrderInfo> query = manager.createQuery("from OrderInfo", OrderInfo.class);
 		query.setFirstResult((int) offset);
@@ -51,6 +57,7 @@ public class OrderInfoRepositoryImpl implements OrderInfoRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public long countAll() {
 		TypedQuery<Long> query = manager.createQuery(
 						"SELECT count(order_infos_id) from OrderInfo WHERE deleted = :deleted", Long.class);
@@ -62,6 +69,7 @@ public class OrderInfoRepositoryImpl implements OrderInfoRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public OrderInfo update(OrderInfo entity) {
 		OrderInfo fromDb = manager.find(OrderInfo.class, entity.getId());
 		fromDb.setBook(entity.getBook());
@@ -72,6 +80,18 @@ public class OrderInfoRepositoryImpl implements OrderInfoRepository {
 	}
 
 	@Override
+	public boolean removeRedundantDetails(List<Long> listId) {
+		for (Long id : listId) {
+			boolean result = delete(id);
+			if (result == false) {
+				throw new RuntimeException("Failed to delete item details");
+			}
+		}
+		return true;
+	}
+
+	@Override
+	@LogInvocation
 	public boolean delete(Long id) {
 		OrderInfo info = manager.find(OrderInfo.class, id);
 		info.setDeleted(true);

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 import com.belhard.service.BookService;
 
@@ -19,6 +20,7 @@ public class AddToCart implements Command {
 		this.service = service;
 	}
 
+	@LogInvocation
 	@Override
 	public String execute(HttpServletRequest req) {
 		Long bookId = Long.parseLong(req.getParameter("bookId"));

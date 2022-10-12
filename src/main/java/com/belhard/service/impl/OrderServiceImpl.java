@@ -9,8 +9,10 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookRepository;
+import com.belhard.dao.OrderInfoRepository;
 import com.belhard.dao.OrderRepository;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.OrderInfo;
@@ -22,16 +24,16 @@ import com.belhard.service.dto.UserDto;
 import com.belhard.serviceutil.Mapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final BookRepository bookRepository;
+	private final OrderInfoRepository orderInfoRepository;
 	private final Mapper mapper;
 
+	@LogInvocation
 	@Transactional
 	@Override
 	public OrderDto get(Long id) {
@@ -42,10 +44,12 @@ public class OrderServiceImpl implements OrderService {
 		return mapper.toDto(order);
 	}
 
+	@LogInvocation
 	public OrderDto processCart(Map<Long, Integer> cart, UserDto userDto) {
 		return createOrderDto(cart, userDto);
 	}
 
+	@LogInvocation
 	private OrderDto createOrderDto(Map<Long, Integer> cart, UserDto userDto) {
 		OrderDto orderDto = new OrderDto();
 		orderDto.setUserDto(userDto);
@@ -69,39 +73,39 @@ public class OrderServiceImpl implements OrderService {
 		return orderDto;
 	}
 
+	@LogInvocation
 	@Override
 	public List<OrderDto> getAll() {
-		log.debug("Service method called successfully");
 		return orderRepository.getAll().stream().map(mapper::toDto).toList();
 	}
 
+	@LogInvocation
 	@Transactional
 	@Override
 	public List<OrderDto> getAll(Paging paging) {
 		int limit = paging.getLimit();
 		long offset = paging.getOffset();
-		log.debug("Service method called successfully");
 		return orderRepository.getAll(limit, offset).stream().map(mapper::toDto).toList();
 	}
 
+	@LogInvocation
 	@Override
 	public long countAll() {
-		log.debug("Service method called successfully");
 		return orderRepository.countAll();
 	}
 
+	@LogInvocation
 	@Override
 	public OrderDto create(OrderDto dto) {
-		log.debug("Service method called successfully");
 		Order order = mapper.toEntity(dto);
 		OrderDto orderDto = mapper.toDto(orderRepository.create(order));
 		return orderDto;
 	}
 
+	@LogInvocation
 	@Transactional
 	@Override
 	public OrderDto update(OrderDto dto) {
-		log.debug("Service method called successfully");
 		Order existing = orderRepository.get(dto.getId());
 		if (existing == null) {
 			throw new RuntimeException("order wasn't found");
@@ -116,13 +120,14 @@ public class OrderServiceImpl implements OrderService {
 				infoIdForDelete.add(elm);
 			}
 		}
-		orderRepository.removeRedundantDetails(infoIdForDelete);
+		orderInfoRepository.removeRedundantDetails(infoIdForDelete);
 		Order order = mapper.toEntity(dto);
 		Order updated = orderRepository.update(order);
 		OrderDto orderDtoUpdated = mapper.toDto(updated);
 		return orderDtoUpdated;
 	}
 
+	@LogInvocation
 	@Override
 	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId,
 					boolean increaseQuantity) {
@@ -155,9 +160,9 @@ public class OrderServiceImpl implements OrderService {
 		return orderDto;
 	}
 
+	@LogInvocation
 	@Override
 	public void delete(Long id) {
-		log.debug("Service method called successfully");
 		boolean result = orderRepository.delete(id);
 		if (!result) {
 			throw new RuntimeException("order didn't be deleted");

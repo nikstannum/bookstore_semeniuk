@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 
+import com.belhard.aop.LogInvocation;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -18,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 public class AuthorizationFilter extends HttpFilter {
 
 	@Override
+	@LogInvocation
 	protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 					throws IOException, ServletException {
 		String command = req.getParameter("command");

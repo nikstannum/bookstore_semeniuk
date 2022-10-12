@@ -2,6 +2,7 @@ package com.belhard.controller.command.impl.users;
 
 import org.springframework.stereotype.Controller;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
@@ -17,6 +18,7 @@ public class UpdateUserFormCommand implements Command {
 	}
 
 	@Override
+	@LogInvocation
 	public String execute(HttpServletRequest req) {
 		Long id = Long.parseLong(req.getParameter("id"));
 		UserDto userDto = service.get(id);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 import com.belhard.service.OrderService;
 import com.belhard.service.dto.OrderDto;
@@ -20,6 +21,7 @@ public class DecreaseQuantityCommand implements Command {
 		this.service = service;
 	}
 
+	@LogInvocation
 	@Override
 	public String execute(HttpServletRequest req) {
 		HttpSession session = req.getSession();

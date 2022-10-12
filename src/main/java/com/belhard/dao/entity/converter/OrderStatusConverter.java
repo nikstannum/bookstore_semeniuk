@@ -2,11 +2,11 @@ package com.belhard.dao.entity.converter;
 
 import javax.persistence.AttributeConverter;
 
+import org.springframework.stereotype.Component;
+
 import com.belhard.dao.entity.Order.Status;
 
-import lombok.extern.log4j.Log4j2;
-
-@Log4j2
+@Component
 public class OrderStatusConverter implements AttributeConverter<Status, Long> {
 
 	@Override
@@ -25,7 +25,6 @@ public class OrderStatusConverter implements AttributeConverter<Status, Long> {
 			return 4L;
 		}
 		default -> {
-			log.error(attribute + " not supported");
 			throw new IllegalArgumentException(attribute + " not supported");
 		}
 		}
@@ -34,7 +33,6 @@ public class OrderStatusConverter implements AttributeConverter<Status, Long> {
 	@Override
 	public Status convertToEntityAttribute(Long dbData) {
 		if (dbData > Integer.MAX_VALUE) {
-			log.error("value status_id from table books equals " + dbData);
 			throw new RuntimeException(dbData + " not supported");
 		}
 		int intValue = dbData.intValue();
@@ -53,7 +51,6 @@ public class OrderStatusConverter implements AttributeConverter<Status, Long> {
 			return Status.CANCELED;
 		}
 		default -> {
-			log.error(dbData + " not supported");
 			throw new IllegalArgumentException(dbData + " not supported");
 		}
 		}
