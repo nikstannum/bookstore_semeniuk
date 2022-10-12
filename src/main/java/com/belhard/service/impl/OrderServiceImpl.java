@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.belhard.controller.util.PagingUtil.Paging;
-import com.belhard.dao.BookDao;
-import com.belhard.dao.OrderDao;
+import com.belhard.dao.BookRepository;
+import com.belhard.dao.OrderRepository;
 import com.belhard.dao.entity.Order;
 import com.belhard.dao.entity.OrderInfo;
 import com.belhard.service.OrderService;
@@ -20,41 +21,25 @@ import com.belhard.service.dto.OrderInfoDto;
 import com.belhard.service.dto.UserDto;
 import com.belhard.serviceutil.Mapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-	private final OrderDao orderDao;
-	private final BookDao bookDao;
+	private final OrderRepository orderRepository;
+	private final BookRepository bookRepository;
+	private final Mapper mapper;
 
-	@Autowired
-	public OrderServiceImpl(OrderDao orderDao, BookDao bookDao) {
-		this.orderDao = orderDao;
-		this.bookDao = bookDao;
-	}
-
+	@Transactional
 	@Override
 	public OrderDto get(Long id) {
-		Order order = orderDao.get(id);
+		Order order = orderRepository.get(id);
 		if (order == null) {
 			throw new RuntimeException("Couldn't find order with id: " + id);
 		}
-		return toDto(order);
-	}
-
-	private List<OrderInfoDto> toDetailsDto(List<OrderInfo> details) {
-		List<OrderInfoDto> detailsDto = new ArrayList<>(details.size());
-		for (OrderInfo elm : details) {
-			OrderInfoDto dto = new OrderInfoDto();
-			dto.setId(elm.getId());
-			dto.setOrderDtoId(elm.getOrderId());
-			dto.setBookDto(Mapper.INSTANCE.bookToDto(elm.getBook()));
-			dto.setBookQuantity(elm.getBookQuantity());
-			dto.setBookPrice(elm.getBookPrice());
-			detailsDto.add(dto);
-		}
-		return detailsDto;
+		return mapper.toDto(order);
 	}
 
 	public OrderDto processCart(Map<Long, Integer> cart, UserDto userDto) {
@@ -69,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
 		cart.forEach((bookId, quantity) -> {
 			OrderInfoDto orderInfoDto = new OrderInfoDto();
-			BookDto bookDto = Mapper.INSTANCE.bookToDto(bookDao.get(bookId));
+			BookDto bookDto = mapper.bookToDto(bookRepository.get(bookId));
 			orderInfoDto.setBookDto(bookDto);
 			orderInfoDto.setBookPrice(bookDto.getPrice());
 			orderInfoDto.setBookQuantity(quantity);
@@ -77,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
 		});
 		BigDecimal totalCost = BigDecimal.ZERO;
 		for (Long key : cart.keySet()) {
-			totalCost = totalCost.add(bookDao.get(key).getPrice().multiply(BigDecimal.valueOf(cart.get(key))));
+			totalCost = totalCost.add(bookRepository.get(key).getPrice().multiply(BigDecimal.valueOf(cart.get(key))));
 		}
 		orderDto.setTotalCost(totalCost);
 		orderDto.setDetailsDto(detailsDto);
@@ -87,78 +72,43 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<OrderDto> getAll() {
 		log.debug("Service method called successfully");
-		return orderDao.getAll().stream().map(this::toDto).toList();
+		return orderRepository.getAll().stream().map(mapper::toDto).toList();
 	}
 
+	@Transactional
 	@Override
 	public List<OrderDto> getAll(Paging paging) {
 		int limit = paging.getLimit();
 		long offset = paging.getOffset();
 		log.debug("Service method called successfully");
-		return orderDao.getAll(limit, offset).stream().map(this::toDto).toList();
+		return orderRepository.getAll(limit, offset).stream().map(mapper::toDto).toList();
 	}
 
 	@Override
 	public long countAll() {
 		log.debug("Service method called successfully");
-		return orderDao.countAll();
-	}
-
-	private List<OrderInfo> toDetails(List<OrderInfoDto> detailsDto) {
-		List<OrderInfo> details = new ArrayList<>(detailsDto.size());
-		for (OrderInfoDto elm : detailsDto) {
-			OrderInfo entity = new OrderInfo();
-			entity.setId(elm.getId());
-			entity.setOrderId(elm.getOrderDtoId());
-			entity.setBook(Mapper.INSTANCE.bookToEntity(elm.getBookDto()));
-			entity.setBookQuantity(elm.getBookQuantity());
-			entity.setBookPrice(elm.getBookPrice());
-			details.add(entity);
-		}
-		return details;
+		return orderRepository.countAll();
 	}
 
 	@Override
 	public OrderDto create(OrderDto dto) {
 		log.debug("Service method called successfully");
-		Order order = toEntity(dto);
-		OrderDto orderDto = toDto(orderDao.create(order));
+		Order order = mapper.toEntity(dto);
+		OrderDto orderDto = mapper.toDto(orderRepository.create(order));
 		return orderDto;
 	}
 
-	private Order toEntity(OrderDto dto) {
-		Order order = new Order();
-		order.setId(dto.getId());
-		order.setUser(Mapper.INSTANCE.userToEntity(dto.getUserDto()));
-		order.setStatus(Order.Status.valueOf(dto.getStatusDto().toString()));
-		BigDecimal totalCost = dto.getTotalCost();
-		dto.getDetailsDto().stream().map(elm -> elm.getBookPrice().multiply(BigDecimal.valueOf(elm.getBookQuantity())))
-						.forEach(totalCost::add);
-		order.setTotalCost(totalCost);
-		order.setDetails(toDetails(dto.getDetailsDto()));
-		return order;
-	}
-
-	private OrderDto toDto(Order order) {
-		OrderDto orderDto = new OrderDto();
-		orderDto.setId(order.getId());
-		orderDto.setStatusDto(OrderDto.StatusDto.valueOf(order.getStatus().toString()));
-		orderDto.setUserDto(Mapper.INSTANCE.userToDto(order.getUser()));
-		orderDto.setTotalCost(order.getTotalCost());
-		orderDto.setDetailsDto(toDetailsDto(order.getDetails()));
-		return orderDto;
-	}
-
+	@Transactional
 	@Override
 	public OrderDto update(OrderDto dto) {
 		log.debug("Service method called successfully");
-		Order existing = orderDao.get(dto.getId());
+		Order existing = orderRepository.get(dto.getId());
 		if (existing == null) {
 			throw new RuntimeException("order wasn't found");
 		}
 		List<OrderInfo> infosFromDB = existing.getDetails();
 		List<Long> listInfoIdFromDB = infosFromDB.stream().map(elm -> elm.getId()).toList();
-		List<OrderInfo> infos = toDetails(dto.getDetailsDto());
+		List<OrderInfo> infos = mapper.toDetails(dto.getDetailsDto());
 		List<Long> listInfoIdFromRequest = infos.stream().map(elm -> elm.getId()).toList();
 		List<Long> infoIdForDelete = new ArrayList<>();
 		for (Long elm : listInfoIdFromDB) {
@@ -166,11 +116,13 @@ public class OrderServiceImpl implements OrderService {
 				infoIdForDelete.add(elm);
 			}
 		}
-		orderDao.removeRedundantDetails(infoIdForDelete);
-		OrderDto orderDtoUpdated = toDto(orderDao.update(toEntity(dto)));
+		orderRepository.removeRedundantDetails(infoIdForDelete);
+		Order order = mapper.toEntity(dto);
+		Order updated = orderRepository.update(order);
+		OrderDto orderDtoUpdated = mapper.toDto(updated);
 		return orderDtoUpdated;
 	}
-	
+
 	@Override
 	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId,
 					boolean increaseQuantity) {
@@ -179,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
 			if (elm.getId() == detailsDtoId) {
 				if (increaseQuantity) {
 					elm.setBookQuantity(elm.getBookQuantity() + 1);
-					BigDecimal bookPriceFromCatalog = bookDao.get(elm.getBookDto().getId()).getPrice();
+					BigDecimal bookPriceFromCatalog = bookRepository.get(elm.getBookDto().getId()).getPrice();
 					BigDecimal oldCost = orderDto.getTotalCost();
 					BigDecimal updatedCost = oldCost.add(bookPriceFromCatalog);
 					orderDto.setTotalCost(updatedCost);
@@ -206,7 +158,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void delete(Long id) {
 		log.debug("Service method called successfully");
-		boolean result = orderDao.delete(id);
+		boolean result = orderRepository.delete(id);
 		if (!result) {
 			throw new RuntimeException("order didn't be deleted");
 		}

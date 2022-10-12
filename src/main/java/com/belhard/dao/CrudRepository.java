@@ -2,7 +2,7 @@ package com.belhard.dao;
 
 import java.util.List;
 
-public interface CrudDao<K, T> {
+public interface CrudRepository<K, T> {
     T create(T entity);
 
     T get(K id);

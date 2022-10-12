@@ -3,27 +3,24 @@ package com.belhard.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.belhard.controller.util.PagingUtil.Paging;
-import com.belhard.dao.BookDao;
+import com.belhard.dao.BookRepository;
 import com.belhard.dao.entity.Book;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 import com.belhard.serviceutil.Mapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
-	private final BookDao bookDao;
-
-	@Autowired
-	public BookServiceImpl(BookDao bookDao) {
-		this.bookDao = bookDao;
-	}
+	private final BookRepository bookDao;
+	private final Mapper mapper;
 
 	@Override
 	public BookDto create(BookDto bookDto) {
@@ -59,7 +56,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	public Book toEntity(BookDto bookDto) {
-		Book book = Mapper.INSTANCE.bookToEntity(bookDto);
+		Book book = mapper.bookToEntity(bookDto);
 		return book;
 	}
 
@@ -74,7 +71,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	public BookDto toDto(Book book) {
-		BookDto bookDto = Mapper.INSTANCE.bookToDto(book);
+		BookDto bookDto = mapper.bookToDto(book);
 		return bookDto;
 	}
 
