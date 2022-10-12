@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 
-import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 import com.belhard.controller.util.PagingUtil;
 import com.belhard.controller.util.PagingUtil.Paging;
@@ -23,7 +22,6 @@ public class OrdersCommand implements Command {
 		this.pagingUtil = pagingUtil;
 	}
 
-	@LogInvocation
 	@Override
 	public String execute(HttpServletRequest req) {
 		Paging paging = pagingUtil.getPaging(req);

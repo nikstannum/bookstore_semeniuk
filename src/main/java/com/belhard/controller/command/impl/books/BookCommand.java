@@ -1,8 +1,8 @@
 package com.belhard.controller.command.impl.books;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
@@ -14,10 +14,11 @@ public class BookCommand implements Command {
 
 	private final BookService service;
 
+	@Autowired
 	public BookCommand(BookService service) {
 		this.service = service;
 	}
-	@LogInvocation
+
 	@Override
 	public String execute(HttpServletRequest req) {
 		Long id = getId(req);

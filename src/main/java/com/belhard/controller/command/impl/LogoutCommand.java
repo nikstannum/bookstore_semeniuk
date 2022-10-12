@@ -2,7 +2,6 @@ package com.belhard.controller.command.impl;
 
 import org.springframework.stereotype.Controller;
 
-import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 public class LogoutCommand implements Command {
 
 	@Override
-	@LogInvocation
 	public String execute(HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		session.invalidate();

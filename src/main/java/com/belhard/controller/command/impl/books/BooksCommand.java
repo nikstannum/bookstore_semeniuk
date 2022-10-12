@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 
-import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 import com.belhard.controller.util.PagingUtil;
 import com.belhard.controller.util.PagingUtil.Paging;
@@ -24,7 +23,6 @@ public class BooksCommand implements Command {
 	}
 
 	@Override
-	@LogInvocation
 	public String execute(HttpServletRequest req) {
 		Paging paging = pagingUtil.getPaging(req);
 		List<BookDto> books = service.getAll(paging);

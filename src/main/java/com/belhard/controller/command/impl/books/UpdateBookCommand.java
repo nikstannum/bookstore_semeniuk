@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Controller;
 
-import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
@@ -21,7 +20,6 @@ public class UpdateBookCommand implements Command {
 		this.service = service;
 	}
 
-	@LogInvocation
 	@Override
 	public String execute(HttpServletRequest req) {
 		Long id = Long.parseLong(req.getParameter("id"));
