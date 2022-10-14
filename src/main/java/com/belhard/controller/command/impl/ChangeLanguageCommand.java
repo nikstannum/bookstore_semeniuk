@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import org.springframework.stereotype.Controller;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class ChangeLanguageCommand implements Command {
 
+	@LogInvocation
 	@Override
 	public String execute(HttpServletRequest req) {
 		HttpSession session = req.getSession();

@@ -2,6 +2,7 @@ package com.belhard.controller.command.impl;
 
 import org.springframework.stereotype.Controller;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.Command;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
@@ -17,6 +18,7 @@ public class LoginCommand implements Command {
 		this.userService = userService;
 	}
 
+	@LogInvocation
 	@Override
 	public String execute(HttpServletRequest req) {
 		String email = req.getParameter("email");
