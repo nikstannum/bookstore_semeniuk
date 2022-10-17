@@ -112,7 +112,7 @@ public class BookServiceImpl implements BookService {
 
 	@LogInvocation
 	@Override
-	public long countAll() {
+	public long countAll() { // TODO Check work on @Where deleted = false
 		return bookRepository.count();
 	}
 

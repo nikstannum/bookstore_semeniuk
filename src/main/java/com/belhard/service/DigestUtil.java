@@ -5,8 +5,10 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public enum DigestUtil {
-	INSTANCE;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DigestUtil {
 
 	public String hash(String password) {
 		try {

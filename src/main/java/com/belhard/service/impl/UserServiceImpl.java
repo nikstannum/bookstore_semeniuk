@@ -2,6 +2,11 @@ package com.belhard.service.impl;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.belhard.aop.LogInvocation;
@@ -21,19 +26,21 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final Mapper mapper;
+	private final DigestUtil digestUtil;
 
-	@LogInvocation
 	@Override
+	@LogInvocation
 	public UserDto create(UserDto userDto) {
 		validatePassword(userDto);
-		String hashedPassword = DigestUtil.INSTANCE.hash(userDto.getPassword());
+		String hashedPassword = digestUtil.hash(userDto.getPassword());
 		userDto.setPassword(hashedPassword);
-		User existing = userRepository.getUserByEmail(userDto.getEmail());
+		User existing = userRepository.getUserByEmail(userDto.getEmail()); // TODO Optional?
 		if (existing != null) {
 			throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
 		}
 		User user = mapper.userToEntity(userDto);
-		return mapper.userToDto(userRepository.create(user));
+		User created = userRepository.save(user);
+		return mapper.userToDto(created);
 	}
 
 	private void validatePassword(UserDto userDto) {
@@ -45,22 +52,26 @@ public class UserServiceImpl implements UserService {
 	@LogInvocation
 	@Override
 	public UserDto get(Long id) {
-		User user = userRepository.get(id);
+		User user = userRepository.findById(id)
+						.orElseThrow(() -> new RuntimeException("user with id = " + id + " wasn't found"));
 		return mapper.userToDto(user);
 	}
 
 	@LogInvocation
 	@Override
 	public List<UserDto> getAll() {
-		return userRepository.getAll().stream().map(o -> mapper.userToDto(o)).toList();
+		return userRepository.findAll().stream().map(mapper::userToDto).toList();
 	}
 
 	@LogInvocation
 	@Override
 	public List<UserDto> getAll(Paging paging) {
+		int page = (int) paging.getPage();
 		int limit = paging.getLimit();
-		long offset = paging.getOffset();
-		return userRepository.getAll(limit, offset).stream().map(o -> mapper.userToDto(o)).toList();
+		Sort sort = Sort.by(Direction.ASC, "user_id");
+		Pageable pageable = PageRequest.of(page - 1, limit, sort);
+		Page<User> userPage = userRepository.findAll(pageable);
+		return userPage.toList().stream().map(mapper::userToDto).toList();
 	}
 
 	@LogInvocation
@@ -73,13 +84,13 @@ public class UserServiceImpl implements UserService {
 	@LogInvocation
 	@Override
 	public List<UserDto> getUsersByLastName(String lastName) {
-		return userRepository.getUsersByLastName(lastName).stream().map(o -> mapper.userToDto(o)).toList();
+		return userRepository.getUsersByLastName(lastName).stream().map(mapper::userToDto).toList();
 	}
 
 	@LogInvocation
 	@Override
-	public long countAll() {
-		return userRepository.countAll();
+	public long countAll() { // TODO Check work on @Where deleted = false
+		return userRepository.count();
 	}
 
 	@LogInvocation
@@ -90,19 +101,21 @@ public class UserServiceImpl implements UserService {
 			throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
 		}
 		User user = mapper.userToEntity(userDto);
-		return mapper.userToDto(userRepository.update(user));
+		return mapper.userToDto(userRepository.save(user));
 	}
 
 	@LogInvocation
 	@Override
 	public void delete(Long id) {
-		userRepository.softDelete(id);
+		User user = userRepository.findById(id)
+						.orElseThrow(() -> new RuntimeException("user with id = " + id + " wasn't found"));
+		user.setDeleted(true);
 	}
 
 	@LogInvocation
 	@Override
 	public UserDto validate(String email, String password) {
-		String hashedPassword = DigestUtil.INSTANCE.hash(password);
+		String hashedPassword = digestUtil.hash(password);
 		User user = userRepository.getUserByEmail(email);
 		String userPassword = user.getPassword();
 		if (userPassword.equals(hashedPassword)) {
