@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.dao.BookRepository;
 import com.belhard.dao.entity.Book;
 
@@ -20,22 +21,26 @@ public class BookRepositoryImpl implements BookRepository {
 	private EntityManager manager;
 
 	@Override
+	@LogInvocation
 	public Book create(Book book) {
 		manager.persist(book);
 		return book;
 	}
 
 	@Override
+	@LogInvocation
 	public Book get(Long id) {
 		return manager.find(Book.class, id);
 	}
 
 	@Override
+	@LogInvocation
 	public List<Book> getAll() {
 		return manager.createQuery("from Book", Book.class).getResultList();
 	}
 
 	@Override
+	@LogInvocation
 	public List<Book> getAll(int limit, long offset) {
 		TypedQuery<Book> query = manager.createQuery("from Book", Book.class);
 		query.setFirstResult((int) offset);
@@ -44,6 +49,7 @@ public class BookRepositoryImpl implements BookRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public Book getBookByIsbn(String isbn) {
 		TypedQuery<Book> query = manager.createQuery("from Book where isbn = :isbn", Book.class);
 		query.setParameter("isbn", isbn);
@@ -54,6 +60,7 @@ public class BookRepositoryImpl implements BookRepository {
 		return book;
 	}
 
+	@LogInvocation
 	@Override
 	public List<Book> getBooksByAuthor(String author) {
 		TypedQuery<Book> query = manager.createQuery("from Book where author = :author", Book.class);
@@ -61,6 +68,7 @@ public class BookRepositoryImpl implements BookRepository {
 		return query.getResultList();
 	}
 
+	@LogInvocation
 	@Override
 	public Book update(Book book) {
 		Book fromDb = manager.find(Book.class, book.getId());
@@ -73,6 +81,7 @@ public class BookRepositoryImpl implements BookRepository {
 		return fromDb;
 	}
 
+	@LogInvocation
 	@Override
 	public boolean delete(Long id) {
 		Book book = manager.find(Book.class, id);
@@ -80,6 +89,7 @@ public class BookRepositoryImpl implements BookRepository {
 		return true;
 	}
 
+	@LogInvocation
 	@Override
 	public long countAll() {
 		TypedQuery<Long> query = manager.createQuery("SELECT count(book_id) from Book", Long.class);

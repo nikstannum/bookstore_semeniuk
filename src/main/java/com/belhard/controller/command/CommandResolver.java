@@ -3,11 +3,9 @@ package com.belhard.controller.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.belhard.ContextConfiguration;
+import com.belhard.aop.LogInvocation;
 import com.belhard.controller.command.impl.ChangeLanguageCommand;
 import com.belhard.controller.command.impl.LoginCommand;
 import com.belhard.controller.command.impl.LoginFormCommand;
@@ -35,16 +33,12 @@ import com.belhard.controller.command.impl.users.UpdateUserFormCommand;
 import com.belhard.controller.command.impl.users.UserCommand;
 import com.belhard.controller.command.impl.users.UsersCommand;
 
-import lombok.extern.log4j.Log4j2;
-
-@Log4j2
 @Component
 public class CommandResolver {
 
-
 	private final Map<String, Class<? extends Command>> commands;
 
-	private CommandResolver() {
+	protected CommandResolver() {
 		commands = new HashMap<>();
 
 		// book
@@ -80,6 +74,7 @@ public class CommandResolver {
 		commands.put("error", ErrorCommand.class);
 	}
 
+	@LogInvocation
 	public Class<? extends Command> getCommand(String command) {
 		Class<? extends Command> commandInstance = commands.get(command);
 		if (commandInstance == null) {

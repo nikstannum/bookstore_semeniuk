@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.dao.UserRepository;
 import com.belhard.dao.entity.User;
 
@@ -20,22 +21,26 @@ public class UserRepositoryImpl implements UserRepository {
 	private EntityManager manager;
 
 	@Override
+	@LogInvocation
 	public User create(User user) {
 		manager.persist(user);
 		return user;
 	}
 
 	@Override
+	@LogInvocation
 	public User get(Long id) {
 		return manager.find(User.class, id);
 	}
 
 	@Override
+	@LogInvocation
 	public List<User> getAll() {
 		return manager.createQuery("from User", User.class).getResultList();
 	}
 
 	@Override
+	@LogInvocation
 	public List<User> getAll(int limit, long offset) {
 		TypedQuery<User> query = manager.createQuery("from User", User.class);
 		query.setFirstResult((int) offset);
@@ -44,6 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public User getUserByEmail(String email) {
 		TypedQuery<User> query = manager.createQuery("from User where email = :email", User.class);
 		query.setParameter("email", email);
@@ -55,6 +61,7 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public List<User> getUsersByLastName(String lastName) {
 		TypedQuery<User> query = manager.createQuery("from User where last_name = :lastName", User.class);
 		query.setParameter("lastName", lastName);
@@ -62,6 +69,7 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public long countAll() {
 		TypedQuery<Long> query = manager.createQuery("SELECT count(user_id) from User", Long.class);
 		if (query.getResultList().isEmpty()) {
@@ -71,6 +79,7 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public User update(User user) {
 		User fromDb = manager.find(User.class, user.getId());
 		fromDb.setEmail(user.getEmail());
@@ -82,6 +91,7 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	@LogInvocation
 	public boolean delete(Long id) {
 		User user = manager.find(User.class, id);
 		user.setDeleted(true);

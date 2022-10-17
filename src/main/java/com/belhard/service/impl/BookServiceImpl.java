@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.belhard.aop.LogInvocation;
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookRepository;
 import com.belhard.dao.entity.Book;
@@ -13,9 +14,7 @@ import com.belhard.service.dto.BookDto;
 import com.belhard.serviceutil.Mapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -23,13 +22,14 @@ public class BookServiceImpl implements BookService {
 	private final Mapper mapper;
 
 	@Override
+	@LogInvocation
 	public BookDto create(BookDto bookDto) {
-		log.debug("Service method called successfully");
 		validateCreate(bookDto);
 		Book book = toEntity(bookDto);
 		return toDto(bookDao.create(book));
 	}
 
+	@LogInvocation
 	private void validateCreate(BookDto bookDto) {
 		Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
 		if (existing != null) {
@@ -38,6 +38,7 @@ public class BookServiceImpl implements BookService {
 		validate(bookDto);
 	}
 
+	@LogInvocation
 	private static void validate(BookDto bookDto) {
 		if (bookDto.getPages() == null) {
 			throw new RuntimeException("Pages couldn't be null");
@@ -47,6 +48,7 @@ public class BookServiceImpl implements BookService {
 		}
 	}
 
+	@LogInvocation
 	private void validateUpdate(BookDto bookDto) {
 		Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
 		if (existing != null && !(existing.getId().equals(bookDto.getId()))) {
@@ -55,14 +57,15 @@ public class BookServiceImpl implements BookService {
 		validate(bookDto);
 	}
 
+	@LogInvocation
 	public Book toEntity(BookDto bookDto) {
 		Book book = mapper.bookToEntity(bookDto);
 		return book;
 	}
 
+	@LogInvocation
 	@Override
 	public BookDto get(Long id) {
-		log.debug("Service method called successfully");
 		Book book = bookDao.get(id);
 		if (book == null) {
 			throw new RuntimeException("Couldn't find book with id: " + id);
@@ -70,27 +73,29 @@ public class BookServiceImpl implements BookService {
 		return toDto(book);
 	}
 
+	@LogInvocation
 	public BookDto toDto(Book book) {
 		BookDto bookDto = mapper.bookToDto(book);
 		return bookDto;
 	}
 
+	@LogInvocation
 	@Override
 	public List<BookDto> getAll() {
-		log.debug("Service method called successfully");
 		return bookDao.getAll().stream().map(this::toDto).toList();
 	}
 
 	@Override
+	@LogInvocation
 	public List<BookDto> getAll(Paging paging) {
 		int limit = paging.getLimit();
 		long offset = paging.getOffset();
 		return bookDao.getAll(limit, offset).stream().map(this::toDto).toList();
 	}
 
+	@LogInvocation
 	@Override
 	public BookDto getBookDtoByIsbn(String isbn) {
-		log.debug("Service method called successfully");
 		Book book = bookDao.getBookByIsbn(isbn);
 		if (book == null) {
 			throw new RuntimeException("Couldn't find book with isbn: " + isbn);
@@ -98,37 +103,37 @@ public class BookServiceImpl implements BookService {
 		return toDto(book);
 	}
 
+	@LogInvocation
 	@Override
 	public List<BookDto> getBooksByAuthor(String author) {
-		log.debug("Service method called successfully");
 		return bookDao.getBooksByAuthor(author).stream().map(this::toDto).toList();
 	}
 
+	@LogInvocation
 	@Override
 	public BookDto update(BookDto bookDto) {
-		log.debug("Service method called successfully");
 		validateUpdate(bookDto);
 		Book book = toEntity(bookDto);
 		return toDto(bookDao.update(book));
 	}
 
+	@LogInvocation
 	@Override
 	public void delete(Long id) {
-		log.debug("Service method called successfully");
 		if (!bookDao.delete(id)) {
 			throw new RuntimeException("Couldn't delete object with id = " + id);
 		}
 	}
 
+	@LogInvocation
 	@Override
 	public long countAll() {
-		log.debug("Service method called successfully");
 		return bookDao.countAll();
 	}
 
+	@LogInvocation
 	@Override
 	public BigDecimal totalCostAllBooksOfAuthor(String author) {
-		log.debug("Service method called successfully");
 		List<BookDto> dtos = getBooksByAuthor(author);
 		BigDecimal totalCost = BigDecimal.valueOf(0);
 		for (BookDto dto : dtos) {

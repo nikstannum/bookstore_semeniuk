@@ -6,9 +6,6 @@ import java.util.Properties;
 
 import org.springframework.stereotype.Component;
 
-import lombok.extern.log4j.Log4j2;
-
-@Log4j2
 @Component
 public class ConfigurationManager {
 	private final Properties properties;
@@ -19,7 +16,6 @@ public class ConfigurationManager {
 		try (InputStream input = getClass().getResourceAsStream(propsFile);) {
 			properties.load(input);
 		} catch (IOException e) {
-			log.error(e);
 			throw new RuntimeException(e);
 		}
 	}

@@ -2,12 +2,11 @@ package com.belhard.dao.entity.converter;
 
 import javax.persistence.AttributeConverter;
 
-import com.belhard.dao.entity.Book;
+import org.springframework.stereotype.Component;
+
 import com.belhard.dao.entity.Book.BookCover;
 
-import lombok.extern.log4j.Log4j2;
-
-@Log4j2
+@Component
 public class BookCoverConverter implements AttributeConverter<BookCover, Long> {
 
 	@Override
@@ -23,7 +22,6 @@ public class BookCoverConverter implements AttributeConverter<BookCover, Long> {
 			return 3L;
 		}
 		default -> {
-			log.error(attribute + " not supported");
 			throw new IllegalArgumentException(attribute + " not supported");
 		}
 		}
@@ -32,7 +30,6 @@ public class BookCoverConverter implements AttributeConverter<BookCover, Long> {
 	@Override
 	public BookCover convertToEntityAttribute(Long dbData) {
 		if (dbData > Integer.MAX_VALUE) {
-			log.error("value cover_id from table books equals " + dbData);
 			throw new RuntimeException(dbData + " not supported");
 		}
 		int intValue = dbData.intValue();
@@ -48,7 +45,6 @@ public class BookCoverConverter implements AttributeConverter<BookCover, Long> {
 			return BookCover.SPECIAL;
 		}
 		default -> {
-			log.error(dbData + " not supported");
 			throw new IllegalArgumentException(dbData + " not supported");
 		}
 		}
