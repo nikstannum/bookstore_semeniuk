@@ -1,11 +1,11 @@
 package com.belhard.dao;
 
-import com.belhard.dao.entity.Book;
-
 import java.util.List;
 
-public interface BookRepository extends CrudRepository<Long, Book> {
-    Book getBookByIsbn(String isbn);
+import com.belhard.dao.entity.Book;
 
-    List<Book> getBooksByAuthor(String author);
+public interface BookRepository extends CrudRepository<Long, Book> {
+	Book getBookByIsbn(String isbn);
+
+	List<Book> getBooksByAuthor(String author);
 }

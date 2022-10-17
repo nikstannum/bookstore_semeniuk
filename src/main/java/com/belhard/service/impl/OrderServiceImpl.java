@@ -163,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
 	@LogInvocation
 	@Override
 	public void delete(Long id) {
-		boolean result = orderRepository.delete(id);
+		boolean result = orderRepository.softDelete(id);
 		if (!result) {
 			throw new RuntimeException("order didn't be deleted");
 		}

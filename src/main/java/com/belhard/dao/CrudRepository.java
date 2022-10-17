@@ -1,20 +1,7 @@
 package com.belhard.dao;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CrudRepository<K, T> {
-	T create(T entity);
-
-	T get(K id);
-
-	List<T> getAll();
-
-	long countAll();
-
-	T update(T entity);
-
-	boolean delete(K id);
-
-	List<T> getAll(int limit, long offset);
+public interface CrudRepository<K, T> extends JpaRepository<T, K> {
 
 }

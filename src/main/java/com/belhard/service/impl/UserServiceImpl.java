@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
 	@LogInvocation
 	@Override
 	public void delete(Long id) {
-		userRepository.delete(id);
+		userRepository.softDelete(id);
 	}
 
 	@LogInvocation

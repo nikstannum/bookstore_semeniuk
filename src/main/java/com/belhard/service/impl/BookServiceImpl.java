@@ -2,7 +2,13 @@ package com.belhard.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.belhard.aop.LogInvocation;
@@ -18,28 +24,26 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
-	private final BookRepository bookDao;
+	private final BookRepository bookRepository;
 	private final Mapper mapper;
 
 	@Override
 	@LogInvocation
 	public BookDto create(BookDto bookDto) {
-		validateCreate(bookDto);
-		Book book = toEntity(bookDto);
-		return toDto(bookDao.create(book));
+		validate(bookDto);
+		Book book = bookRepository.save(mapper.bookToEntity(bookDto));
+		return mapper.bookToDto(book);
 	}
 
-	@LogInvocation
-	private void validateCreate(BookDto bookDto) {
-		Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
+	private void validate(BookDto bookDto) {
+		Book existing = bookRepository.getBookByIsbn(bookDto.getIsbn()); // TODO or Optional?
 		if (existing != null) {
 			throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
 		}
-		validate(bookDto);
+		validateNumberPages(bookDto);
 	}
 
-	@LogInvocation
-	private static void validate(BookDto bookDto) {
+	private void validateNumberPages(BookDto bookDto) {
 		if (bookDto.getPages() == null) {
 			throw new RuntimeException("Pages couldn't be null");
 		}
@@ -48,87 +52,68 @@ public class BookServiceImpl implements BookService {
 		}
 	}
 
-	@LogInvocation
-	private void validateUpdate(BookDto bookDto) {
-		Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
-		if (existing != null && !(existing.getId().equals(bookDto.getId()))) {
-			throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
-		}
-		validate(bookDto);
-	}
-
-	@LogInvocation
-	public Book toEntity(BookDto bookDto) {
-		Book book = mapper.bookToEntity(bookDto);
-		return book;
-	}
-
-	@LogInvocation
 	@Override
 	public BookDto get(Long id) {
-		Book book = bookDao.get(id);
-		if (book == null) {
-			throw new RuntimeException("Couldn't find book with id: " + id);
-		}
-		return toDto(book);
-	}
-
-	@LogInvocation
-	public BookDto toDto(Book book) {
-		BookDto bookDto = mapper.bookToDto(book);
-		return bookDto;
+		Optional<Book> optionalBook = bookRepository.findById(id);
+		Book book = optionalBook.orElseThrow(() -> new RuntimeException("Book with id = " + id + " doesn't exist"));
+		return mapper.bookToDto(book);
 	}
 
 	@LogInvocation
 	@Override
 	public List<BookDto> getAll() {
-		return bookDao.getAll().stream().map(this::toDto).toList();
+		List<Book> list = bookRepository.findAll();
+		return list.stream().map(mapper::bookToDto).toList();
 	}
 
 	@Override
 	@LogInvocation
 	public List<BookDto> getAll(Paging paging) {
+		int page = (int) paging.getPage();
 		int limit = paging.getLimit();
-		long offset = paging.getOffset();
-		return bookDao.getAll(limit, offset).stream().map(this::toDto).toList();
+		Sort sort = Sort.by(Direction.ASC, "book_id");
+		Pageable pageable = PageRequest.of(page - 1, limit, sort);
+		Page<Book> booksPage = bookRepository.findAll(pageable);
+		return booksPage.toList().stream().map(mapper::bookToDto).toList();
 	}
 
 	@LogInvocation
 	@Override
 	public BookDto getBookDtoByIsbn(String isbn) {
-		Book book = bookDao.getBookByIsbn(isbn);
+		Book book = bookRepository.getBookByIsbn(isbn); // TODO or Optional?
 		if (book == null) {
 			throw new RuntimeException("Couldn't find book with isbn: " + isbn);
 		}
-		return toDto(book);
+		return mapper.bookToDto(book);
 	}
 
 	@LogInvocation
 	@Override
 	public List<BookDto> getBooksByAuthor(String author) {
-		return bookDao.getBooksByAuthor(author).stream().map(this::toDto).toList();
+		return bookRepository.getBooksByAuthor(author).stream().map(mapper::bookToDto).toList();
 	}
 
 	@LogInvocation
 	@Override
 	public BookDto update(BookDto bookDto) {
-		validateUpdate(bookDto);
-		Book book = toEntity(bookDto);
-		return toDto(bookDao.update(book));
+		validate(bookDto);
+		Book book = mapper.bookToEntity(bookDto);
+		Book updated = bookRepository.save(book);
+		return mapper.bookToDto(updated);
 	}
 
 	@LogInvocation
 	@Override
 	public void delete(Long id) {
-		if (!bookDao.delete(id)) {
-			throw new RuntimeException("Couldn't delete object with id = " + id);
-		}
+		Book book = bookRepository.findById(id)
+						.orElseThrow(() -> new RuntimeException("book with id = " + id + " wasn't find"));
+		book.setDeleted(true);
 	}
 
 	@LogInvocation
 	@Override
 	public long countAll() {
-		return bookDao.countAll();
+		return bookRepository.count();
 	}
 
 	@LogInvocation
