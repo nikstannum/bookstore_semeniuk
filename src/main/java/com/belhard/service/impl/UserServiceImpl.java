@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 	public List<UserDto> getAll(Paging paging) {
 		int page = (int) paging.getPage();
 		int limit = paging.getLimit();
-		Sort sort = Sort.by(Direction.ASC, "user_id");
+		Sort sort = Sort.by(Direction.ASC, "id");
 		Pageable pageable = PageRequest.of(page - 1, limit, sort);
 		Page<User> userPage = userRepository.findAll(pageable);
 		return userPage.toList().stream().map(mapper::userToDto).toList();
@@ -110,6 +110,7 @@ public class UserServiceImpl implements UserService {
 		User user = userRepository.findById(id)
 						.orElseThrow(() -> new RuntimeException("user with id = " + id + " wasn't found"));
 		user.setDeleted(true);
+		userRepository.save(user);
 	}
 
 	@LogInvocation

@@ -1,11 +1,13 @@
 package com.belhard.dao;
 
-import com.belhard.dao.entity.User;
-
 import java.util.List;
 
-public interface UserRepository extends CrudRepository<Long, User> {
-    User getUserByEmail(String email);
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    List<User> getUsersByLastName(String lastName);
+import com.belhard.dao.entity.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+	User getUserByEmail(String email);
+
+	List<User> getUsersByLastName(String lastName);
 }

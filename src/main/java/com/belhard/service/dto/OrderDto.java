@@ -5,10 +5,14 @@ import java.util.List;
 
 import com.belhard.dao.entity.OrderInfo;
 import com.belhard.dao.entity.User;
+import com.belhard.service.dto.UserDto.UserRoleDto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class OrderDto {
 	private Long id;
 	private UserDto userDto;

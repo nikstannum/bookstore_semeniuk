@@ -30,15 +30,23 @@ public class BookServiceImpl implements BookService {
 	@Override
 	@LogInvocation
 	public BookDto create(BookDto bookDto) {
-		validate(bookDto);
+		validateCreate(bookDto);
 		Book book = bookRepository.save(mapper.bookToEntity(bookDto));
 		return mapper.bookToDto(book);
 	}
 
-	private void validate(BookDto bookDto) {
+	private void validateCreate(BookDto bookDto) {
 		Book existing = bookRepository.getBookByIsbn(bookDto.getIsbn()); // TODO or Optional?
 		if (existing != null) {
 			throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
+		}
+		validateNumberPages(bookDto);
+	}
+
+	private void validateUpdate(BookDto bookDto) {
+		Book existing = bookRepository.getBookByIsbn(bookDto.getIsbn()); // TODO or Optional?
+		if (existing == null) {
+			throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " wasn't found");
 		}
 		validateNumberPages(bookDto);
 	}
@@ -71,7 +79,7 @@ public class BookServiceImpl implements BookService {
 	public List<BookDto> getAll(Paging paging) {
 		int page = (int) paging.getPage();
 		int limit = paging.getLimit();
-		Sort sort = Sort.by(Direction.ASC, "book_id");
+		Sort sort = Sort.by(Direction.ASC, "id");
 		Pageable pageable = PageRequest.of(page - 1, limit, sort);
 		Page<Book> booksPage = bookRepository.findAll(pageable);
 		return booksPage.toList().stream().map(mapper::bookToDto).toList();
@@ -96,7 +104,7 @@ public class BookServiceImpl implements BookService {
 	@LogInvocation
 	@Override
 	public BookDto update(BookDto bookDto) {
-		validate(bookDto);
+		validateUpdate(bookDto);
 		Book book = mapper.bookToEntity(bookDto);
 		Book updated = bookRepository.save(book);
 		return mapper.bookToDto(updated);
@@ -108,6 +116,7 @@ public class BookServiceImpl implements BookService {
 		Book book = bookRepository.findById(id)
 						.orElseThrow(() -> new RuntimeException("book with id = " + id + " wasn't find"));
 		book.setDeleted(true);
+		bookRepository.save(book);
 	}
 
 	@LogInvocation
