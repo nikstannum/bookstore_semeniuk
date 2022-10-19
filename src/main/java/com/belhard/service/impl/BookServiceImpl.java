@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.belhard.aop.LogInvocation;
+import com.belhard.controller.util.MessageManager;
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookRepository;
 import com.belhard.dao.entity.Book;
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
 	private final Mapper mapper;
+	private final MessageManager messageManager;
 
 	@Override
 	@LogInvocation
@@ -65,9 +67,9 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public BookDto get(Long id) throws EntityNotFoundException {
-		Optional<Book> optionalBook = bookRepository.findById(id);
-		Book book = optionalBook
-						.orElseThrow(() -> new EntityNotFoundException("book with id = " + id + " doesn't exist"));
+		Optional<Book> optionalBook = bookRepository.findById(id); // "book with id = " + id + " doesn't exist"
+		Book book = optionalBook.orElseThrow(
+						() -> new EntityNotFoundException(messageManager.getMessage("book.book_not_found")));
 		return mapper.bookToDto(book);
 	}
 

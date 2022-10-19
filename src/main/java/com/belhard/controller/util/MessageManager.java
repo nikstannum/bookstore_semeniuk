@@ -3,20 +3,25 @@ package com.belhard.controller.util;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import lombok.Data;
+import org.springframework.stereotype.Component;
 
-@Data
-//@Component
+@Component
+//@Scope("prototype")
 public class MessageManager {
 	private static final String BUNDLE_NAME = "messages";
-	private final ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
-	private Locale locale;
+	private ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
 
-	public MessageManager(Locale locale) {
-		this.locale = locale;
+	public void changeLocale(Locale locale) {
+		resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
 	}
 
 	public String getMessage(String key) {
 		return resourceBundle.getString(key);
 	}
+
+	@Override
+	public String toString() { // FIXME delete
+		return "MessageManager [locale=" + resourceBundle.getLocale() + "]";
+	}
+
 }

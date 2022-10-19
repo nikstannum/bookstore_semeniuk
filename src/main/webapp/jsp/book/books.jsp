@@ -4,13 +4,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="en">
-<jsp:include page="/jsp/navbar.jsp"></jsp:include>
-<fmt:setBundle basename="messages"/>
+<jsp:include page="/jsp/navbar.jsp"/>
 <c:if test="${sessionScope.language != null}">
-	<fmt:setLocale value="${sessionScope.language}"/>
+	<fmt:setLocale value="${sessionScope.language}" />
 </c:if>
+ <fmt:setBundle basename="messages" />
 <body>
-<jsp:include page="/jsp/paging.jsp"/>
+	<jsp:include page="/jsp/paging.jsp" />
 	<div>
 		<h5>
 			<a href="controller?command=create_book_form">Create new book</a>
@@ -18,25 +18,28 @@
 	</div>
 	<div>
 		<h5>
-			${requestScope.message} <br /> <fmt:message key="book.ourbooks"/>
+			${requestScope.message} <br />
+			<fmt:message key="book.ourbooks" />
 		</h5>
 	</div>
 
- <style>
-   TABLE {
-    width: 100%; 
-    border-collapse: collapse; 
-   }
-   TD, TH {
-    padding: 3px; 
-    border: 1px solid black;
-   }
-   TH {
-    background: #b0e0e6;
-   }
-  </style>
-  
-	<table >
+	<style>
+TABLE {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+TD, TH {
+	padding: 3px;
+	border: 1px solid black;
+}
+
+TH {
+	background: #b0e0e6;
+}
+</style>
+
+	<table>
 		<tr>
 			<th>#</th>
 			<th>title</th>
@@ -51,11 +54,12 @@
 				<td>${book.author}</td>
 				<td>
 					<form method="post" action="controller">
-						<input type="hidden" name="command" value="add_to_cart" /> 
-						<input type="hidden" name="bookId" value="${book.id}" />
-						<input type="hidden" name="currentCommand" value="${requestScope.currentCommand}" />
-						<input type="hidden" name="currentPage" value="${requestScope.currentPage}" />
-						<input type="submit" value="Add to cart" />
+						<input type="hidden" name="command" value="add_to_cart" /> <input
+							type="hidden" name="bookId" value="${book.id}" /> <input
+							type="hidden" name="currentCommand"
+							value="${requestScope.currentCommand}" /> <input type="hidden"
+							name="currentPage" value="${requestScope.currentPage}" /> <input
+							type="submit" value="Add to cart" />
 					</form>
 				</td>
 				<td><a href="controller?command=update_book_form&id=${book.id}"><input

@@ -107,6 +107,8 @@ public class UserServiceImpl implements UserService {
 			throw new SuchEntityExistsException("User with email = " + userDto.getEmail() + " already exists");
 		}
 		User user = mapper.userToEntity(userDto);
+		String hashedPassword = digestUtil.hash(userDto.getPassword());
+		user.setPassword(hashedPassword);
 		return mapper.userToDto(userRepository.save(user));
 	}
 
