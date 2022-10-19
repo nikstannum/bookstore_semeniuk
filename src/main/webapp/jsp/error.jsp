@@ -9,6 +9,7 @@
 <body>
 	<h1>ERROR</h1>
 	<h3>Something went wrong...</h3>
+	<h4>${requestScope.message}</h4>
 </body>
 </html>
 

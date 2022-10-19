@@ -13,6 +13,9 @@ import com.belhard.aop.LogInvocation;
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.UserRepository;
 import com.belhard.dao.entity.User;
+import com.belhard.exception.EntityNotFoundException;
+import com.belhard.exception.SuchEntityExistsException;
+import com.belhard.exception.WrongValueException;
 import com.belhard.service.DigestUtil;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
@@ -30,30 +33,30 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@LogInvocation
-	public UserDto create(UserDto userDto) {
+	public UserDto create(UserDto userDto) throws SuchEntityExistsException {
 		validatePassword(userDto);
 		String hashedPassword = digestUtil.hash(userDto.getPassword());
 		userDto.setPassword(hashedPassword);
-		User existing = userRepository.getUserByEmail(userDto.getEmail()); // TODO Optional?
+		User existing = userRepository.getUserByEmail(userDto.getEmail());
 		if (existing != null) {
-			throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
+			throw new SuchEntityExistsException("User with email = " + userDto.getEmail() + " already exists");
 		}
 		User user = mapper.userToEntity(userDto);
 		User created = userRepository.save(user);
 		return mapper.userToDto(created);
 	}
 
-	private void validatePassword(UserDto userDto) {
+	private void validatePassword(UserDto userDto) throws WrongValueException {
 		if (userDto.getPassword().length() < 4) {
-			throw new RuntimeException("Password is too short. Password length have to more than three symbols");
+			throw new WrongValueException("Password is too short. Password length have to more than three symbols");
 		}
 	}
 
 	@LogInvocation
 	@Override
-	public UserDto get(Long id) {
+	public UserDto get(Long id) throws EntityNotFoundException {
 		User user = userRepository.findById(id)
-						.orElseThrow(() -> new RuntimeException("user with id = " + id + " wasn't found"));
+						.orElseThrow(() -> new EntityNotFoundException("user with id = " + id + " wasn't found"));
 		return mapper.userToDto(user);
 	}
 
@@ -76,8 +79,11 @@ public class UserServiceImpl implements UserService {
 
 	@LogInvocation
 	@Override
-	public UserDto getUserByEmail(String email) {
+	public UserDto getUserByEmail(String email) throws EntityNotFoundException {
 		User user = userRepository.getUserByEmail(email);
+		if (user == null) {
+			throw new EntityNotFoundException("user with email: " + email + " wasn't found");
+		}
 		return mapper.userToDto(user);
 	}
 
@@ -89,16 +95,16 @@ public class UserServiceImpl implements UserService {
 
 	@LogInvocation
 	@Override
-	public long countAll() { // TODO Check work on @Where deleted = false
+	public long countAll() {
 		return userRepository.count();
 	}
 
 	@LogInvocation
 	@Override
-	public UserDto update(UserDto userDto) {
+	public UserDto update(UserDto userDto) throws SuchEntityExistsException {
 		User existing = userRepository.getUserByEmail(userDto.getEmail());
 		if (existing != null && !(existing.getId().equals(userDto.getId()))) {
-			throw new RuntimeException("User with email = " + userDto.getEmail() + " already exists");
+			throw new SuchEntityExistsException("User with email = " + userDto.getEmail() + " already exists");
 		}
 		User user = mapper.userToEntity(userDto);
 		return mapper.userToDto(userRepository.save(user));
@@ -106,22 +112,27 @@ public class UserServiceImpl implements UserService {
 
 	@LogInvocation
 	@Override
-	public void delete(Long id) {
+	public void delete(Long id) throws EntityNotFoundException {
 		User user = userRepository.findById(id)
-						.orElseThrow(() -> new RuntimeException("user with id = " + id + " wasn't found"));
+						.orElseThrow(() -> new EntityNotFoundException("user with id = " + id + " wasn't found"));
 		user.setDeleted(true);
 		userRepository.save(user);
 	}
 
 	@LogInvocation
 	@Override
-	public UserDto validate(String email, String password) {
+	public UserDto validate(String email, String password) throws WrongValueException {
 		String hashedPassword = digestUtil.hash(password);
 		User user = userRepository.getUserByEmail(email);
 		String userPassword = user.getPassword();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			throw new WrongValueException("Wrong email or password");
+		}
 		if (userPassword.equals(hashedPassword)) {
 			return getUserByEmail(email);
 		}
-		throw new RuntimeException("Wrong email or password");
+		throw new WrongValueException("Wrong email or password");
 	}
 }

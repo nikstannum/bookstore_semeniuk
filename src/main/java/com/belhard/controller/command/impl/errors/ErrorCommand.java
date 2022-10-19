@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class ErrorCommand implements Command {
-	
+
 	@LogInvocation
 	@Override
 	public String execute(HttpServletRequest req) {

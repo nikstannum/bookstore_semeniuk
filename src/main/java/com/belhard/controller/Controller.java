@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.belhard.controller.command.Command;
 import com.belhard.controller.command.CommandResolver;
+import com.belhard.controller.command.impl.errors.ErrorCommand;
+import com.belhard.exception.MyAppException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,7 +35,15 @@ public class Controller extends HttpServlet {
 		String commandStr = req.getParameter("command");
 		Class<? extends Command> commandDefinition = resolver.getCommand(commandStr);
 		Command command = ContextListener.context.getBean(commandDefinition);
-		String page = command.execute(req);
+		String page;
+		try {
+			page = command.execute(req);
+		} catch (MyAppException e) {
+			command = ContextListener.context.getBean(ErrorCommand.class);
+			String message = e.getMessage();
+			req.setAttribute("message", message);
+			page = command.execute(req);
+		}
 
 		if (page.startsWith(REDIRECT)) {
 			resp.sendRedirect(req.getContextPath() + "/" + page.substring(REDIRECT.length()));

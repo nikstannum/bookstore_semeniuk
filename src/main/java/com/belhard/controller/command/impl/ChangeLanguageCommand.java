@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ChangeLanguageCommand implements Command {
+	
 
 	@LogInvocation
 	@Override

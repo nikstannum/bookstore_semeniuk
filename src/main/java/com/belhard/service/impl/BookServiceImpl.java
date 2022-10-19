@@ -15,6 +15,9 @@ import com.belhard.aop.LogInvocation;
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.dao.BookRepository;
 import com.belhard.dao.entity.Book;
+import com.belhard.exception.EntityNotFoundException;
+import com.belhard.exception.SuchEntityExistsException;
+import com.belhard.exception.WrongValueException;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 import com.belhard.serviceutil.Mapper;
@@ -35,35 +38,36 @@ public class BookServiceImpl implements BookService {
 		return mapper.bookToDto(book);
 	}
 
-	private void validateCreate(BookDto bookDto) {
-		Book existing = bookRepository.getBookByIsbn(bookDto.getIsbn()); // TODO or Optional?
+	private void validateCreate(BookDto bookDto) throws SuchEntityExistsException {
+		Book existing = bookRepository.getBookByIsbn(bookDto.getIsbn());
 		if (existing != null) {
-			throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
+			throw new SuchEntityExistsException("Book with ISBN = " + bookDto.getIsbn() + " already exists");
 		}
 		validateNumberPages(bookDto);
 	}
 
-	private void validateUpdate(BookDto bookDto) {
-		Book existing = bookRepository.getBookByIsbn(bookDto.getIsbn()); // TODO or Optional?
+	private void validateUpdate(BookDto bookDto) throws EntityNotFoundException {
+		Book existing = bookRepository.getBookByIsbn(bookDto.getIsbn());
 		if (existing == null) {
-			throw new RuntimeException("Book with ISBN = " + bookDto.getIsbn() + " wasn't found");
+			throw new EntityNotFoundException("Book with ISBN = " + bookDto.getIsbn() + " wasn't found");
 		}
 		validateNumberPages(bookDto);
 	}
 
-	private void validateNumberPages(BookDto bookDto) {
+	private void validateNumberPages(BookDto bookDto) throws WrongValueException {
 		if (bookDto.getPages() == null) {
-			throw new RuntimeException("Pages couldn't be null");
+			throw new WrongValueException("Pages couldn't be null");
 		}
 		if (bookDto.getPages() <= 0) {
-			throw new RuntimeException("Pages must be greater than 0");
+			throw new WrongValueException("Pages must be greater than 0");
 		}
 	}
 
 	@Override
-	public BookDto get(Long id) {
+	public BookDto get(Long id) throws EntityNotFoundException {
 		Optional<Book> optionalBook = bookRepository.findById(id);
-		Book book = optionalBook.orElseThrow(() -> new RuntimeException("Book with id = " + id + " doesn't exist"));
+		Book book = optionalBook
+						.orElseThrow(() -> new EntityNotFoundException("book with id = " + id + " doesn't exist"));
 		return mapper.bookToDto(book);
 	}
 
@@ -87,10 +91,10 @@ public class BookServiceImpl implements BookService {
 
 	@LogInvocation
 	@Override
-	public BookDto getBookDtoByIsbn(String isbn) {
-		Book book = bookRepository.getBookByIsbn(isbn); // TODO or Optional?
+	public BookDto getBookDtoByIsbn(String isbn) throws EntityNotFoundException {
+		Book book = bookRepository.getBookByIsbn(isbn);
 		if (book == null) {
-			throw new RuntimeException("Couldn't find book with isbn: " + isbn);
+			throw new EntityNotFoundException("Couldn't find book with isbn: " + isbn);
 		}
 		return mapper.bookToDto(book);
 	}
@@ -112,16 +116,16 @@ public class BookServiceImpl implements BookService {
 
 	@LogInvocation
 	@Override
-	public void delete(Long id) {
+	public void delete(Long id) throws EntityNotFoundException {
 		Book book = bookRepository.findById(id)
-						.orElseThrow(() -> new RuntimeException("book with id = " + id + " wasn't find"));
+						.orElseThrow(() -> new EntityNotFoundException("book with id = " + id + " wasn't find"));
 		book.setDeleted(true);
 		bookRepository.save(book);
 	}
 
 	@LogInvocation
 	@Override
-	public long countAll() { // TODO Check work on @Where deleted = false
+	public long countAll() {
 		return bookRepository.count();
 	}
 
