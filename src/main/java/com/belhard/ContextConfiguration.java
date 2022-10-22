@@ -54,4 +54,14 @@ public class ContextConfiguration {
 	public TransactionManager transactionManager() {
 		return new JpaTransactionManager(entityManagerFactory());
 	}
+
+//	@Bean
+//	public InternalResourceViewResolver viewResolver() {
+//		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+//		viewResolver.setPrefix("/WEB-INF/jsp/");
+//		viewResolver.setSuffix(".jsp");
+//
+//		viewResolver.setViewClass(JstlView.class);
+//		return viewResolver;
+//	}
 }

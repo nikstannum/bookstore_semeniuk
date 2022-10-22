@@ -1,8 +1,9 @@
 package com.belhard.controller.util;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 
 @Component
