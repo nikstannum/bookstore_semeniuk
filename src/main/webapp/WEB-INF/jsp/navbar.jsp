@@ -50,24 +50,24 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav">
 				<li class="nav-item"><a class="nav-link" aria-current="page"
-					href="/bookstore_semeniuk/"><fmt:message key="navbar.home"/></a></li>
+					href="/bookstore_semeniuk"><fmt:message key="navbar.home"/></a></li>
 				<li class="nav-item"><a class="nav-link"
-					href="controller?command=books"><fmt:message key="navbar.allbooks"/></a></li>
+					href="../books/all"><fmt:message key="navbar.allbooks"/></a></li>
 				<li class="nav-item"><a class="nav-link"
-					href="controller?command=users"><fmt:message key="navbar.allusers"/></a></li>
+					href="../users/all"><fmt:message key="navbar.allusers"/></a></li>
 				<li class="nav-item"><a class="nav-link"
-					href="controller?command=orders"><fmt:message key="navbar.allorders"/></a></li>
+					href="../orders/all"><fmt:message key="navbar.allorders"/></a></li>
 				<li class="nav-item"><a class="nav-link"
-					href="controller?command=cart"><fmt:message key="navbar.cart"/></a></li>
+					href="cart"><fmt:message key="navbar.cart"/></a></li>
 				<c:if test="${sessionScope.user == null}">
 					<li class="nav-item"><a class="nav-link"
-						href="controller?command=create_user_form"><fmt:message key="navbar.signup"/></a></li>
+						href="../users/create_user_form"><fmt:message key="navbar.signup"/></a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="controller?command=login_form"><fmt:message key="navbar.signin"/></a></li>
+						href="../users/login_form"><fmt:message key="navbar.signin"/></a></li>
 				</c:if>
 				<c:if test="${sessionScope.user != null}">
 					<li class="nav-item"><a class="nav-link"
-						href="controller?command=logout"><fmt:message key="navbar.logout"/></a></li>
+						href="../users/logout"><fmt:message key="navbar.logout"/></a></li>
 				</c:if>
      	 <li class="nav-item"><a class="nav-link" href="controller?command=change_language&lang=en"><img src="images/langUK.png" alt="English" width="30"/></a></li>
      	 <li class="nav-item"><a class="nav-link" href="controller?command=change_language&lang=ru"><img src="images/langRU.jpg" alt="Russian" width="30"/></a></li>

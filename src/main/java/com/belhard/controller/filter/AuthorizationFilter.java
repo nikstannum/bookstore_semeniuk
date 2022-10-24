@@ -23,25 +23,30 @@ public class AuthorizationFilter extends HttpFilter {
 	@LogInvocation
 	protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 					throws IOException, ServletException {
-		String command = req.getParameter("command");
-		if (requiresAuthorization(command)) {
+		String uri = req.getServletPath();
+
+		if (requiresAuthorization(uri)) {
 			HttpSession session = req.getSession(false);
 			if (session == null || session.getAttribute("user") == null) {
 				req.setAttribute("message", "Require authorization");
-				req.getRequestDispatcher("jsp/loginForm.jsp").forward(req, res);
+				req.getRequestDispatcher("/users/login_form").forward(req, res);
 				return;
 			}
 		}
 		chain.doFilter(req, res);
 	}
 
-	private boolean requiresAuthorization(String command) {
-		if (command == null) {
+	private boolean requiresAuthorization(String uri) {
+
+		if (uri == null) {
 			return false;
 		}
-		return switch (command) {
-		case "users", "orders" -> true;
-		default -> false;
-		};
+		if (uri.contains("create_user") || uri.contains("login") || uri.contains("logout")) {
+			return false;
+		}
+		if (uri.contains("users") || uri.contains("orders")) {
+			return true;
+		}
+		return false;
 	}
 }

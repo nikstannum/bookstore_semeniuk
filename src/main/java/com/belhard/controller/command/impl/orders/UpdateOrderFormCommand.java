@@ -6,12 +6,11 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 
 import com.belhard.aop.LogInvocation;
-import com.belhard.controller.command.Command;
 import com.belhard.service.OrderService;
 import com.belhard.service.dto.OrderDto;
 
 @Controller
-public class UpdateOrderFormCommand implements Command {
+public class UpdateOrderFormCommand {
 	private final OrderService service;
 
 	public UpdateOrderFormCommand(OrderService service) {
@@ -19,7 +18,6 @@ public class UpdateOrderFormCommand implements Command {
 	}
 
 	@LogInvocation
-	@Override
 	public String execute(HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		Long id = Long.parseLong(req.getParameter("id"));

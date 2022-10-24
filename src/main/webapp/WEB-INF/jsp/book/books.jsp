@@ -4,16 +4,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="en">
-<jsp:include page="/jsp/navbar.jsp"/>
+<jsp:include page="../navbar.jsp"/>
 <c:if test="${sessionScope.language != null}">
 	<fmt:setLocale value="${sessionScope.language}" />
 </c:if>
  <fmt:setBundle basename="messages" />
 <body>
-	<jsp:include page="/jsp/paging.jsp" />
+	<jsp:include page="../paging.jsp" />
 	<div>
 		<h5>
-			<a href="controller?command=create_book_form">Create new book</a>
+			<a href="create_book_form">Create new book</a>
 		</h5>
 	</div>
 	<div>
@@ -50,7 +50,7 @@ TH {
 		<c:forEach items="${books}" var="book" varStatus="counter">
 			<tr>
 				<td>${counter.count}</td>
-				<td><a href="controller?command=book&id=${book.id}">${book.title}</a></td>
+				<td><a href="${book.id}">${book.title}</a></td>
 				<td>${book.author}</td>
 				<td>
 					<form method="post" action="controller">
@@ -62,7 +62,7 @@ TH {
 							type="submit" value="Add to cart" />
 					</form>
 				</td>
-				<td><a href="controller?command=update_book_form&id=${book.id}"><input
+				<td><a href="update?id=${book.id}"><input
 						type="submit" value="UPDATE" /></a></td>
 			</tr>
 		</c:forEach>

@@ -8,18 +8,16 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 
 import com.belhard.aop.LogInvocation;
-import com.belhard.controller.command.Command;
 import com.belhard.controller.util.MessageManager;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-public class ChangeLanguageCommand implements Command {
+public class ChangeLanguageCommand {
 	private final MessageManager messageManager; // FIXME
 
 	@LogInvocation
-	@Override
 	public String execute(HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		String reqLanguage = req.getParameter("lang");

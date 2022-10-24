@@ -4,9 +4,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="/jsp/navbar.jsp"></jsp:include>
+<jsp:include page="../navbar.jsp"></jsp:include>
 </head>
-<jsp:include page="/jsp/paging.jsp"/>
+<jsp:include page="../paging.jsp"/>
 	 <style>
    TABLE {
     width: 100%; 
@@ -31,10 +31,10 @@
 		<c:forEach items="${users}" var="user" varStatus="counter">
 			<tr>
 				<td>${counter.count}</td>
-				<td><a href="controller?command=user&id=${user.id}"><c:out value="${user.firstName}"/></a></td>
+				<td><a href="${user.id}"><c:out value="${user.firstName}"/></a></td>
 				<td><c:out value="${user.lastName}"/></td>
 				<td><c:out value="${user.email}"/></td>
-				<td><a href="controller?command=update_user_form&id=${user.id}"><input type ="submit" value="UPDATE"/></a></td>
+				<td><a href="update?id=${user.id}"><input type ="submit" value="UPDATE"/></a></td>
 			</tr>
 		</c:forEach>
 	</table>

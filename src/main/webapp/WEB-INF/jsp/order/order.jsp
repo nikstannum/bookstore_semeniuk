@@ -4,28 +4,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="/jsp/navbar.jsp"></jsp:include>
+<jsp:include page="../navbar.jsp"></jsp:include>
 </head>
-	
-	<h4>
-	${requestScope.message}
-	</h4>
-	<p>Personal info:</p>
+	<h2>result of search:</h2>
 
 	<table style="width: 100%">
 		<tr>
-			<th>id</th>
-			<th>firstName</th>
-			<th>lastName</th>
-			<th>email</th>
-			<th>role</th>
+			<th>order id</th>
+			<th>user</th>
+			<th>Items</th>
+			<th>status</th>
+			<th>action</th>
 		</tr>
 		<tr>
-			<td>${user.id}</td>
-			<td><c:out value="${user.firstName}"/></td>
-			<td><c:out value="${user.lastName}"/></td>
-			<td><c:out value="${user.email}"/></td>
-			<td>${user.userRoleDto}</td>
+			<td>${order.id}</td>
+			<td>${order.userDto.email}</td>
+			<td>
+				<ul>
+					<c:forEach items="${order.detailsDto}" var="info">
+						<li><a href="controller?command=book&id=${info.bookDto.id}">${info.bookDto.title}</a> ($${info.bookPrice}) x ${info.bookQuantity}</li>
+					</c:forEach>
+				</ul>
+				TOTAL PRICE = ${order.totalCost}
+			</td>
+			<td>${order.statusDto}</td>
+			<td><a href="controller?command=update_order_form&id=${order.id}"><input
+						type="submit" value="UPDATE" /></a></td>
 		</tr>
 	</table>
 

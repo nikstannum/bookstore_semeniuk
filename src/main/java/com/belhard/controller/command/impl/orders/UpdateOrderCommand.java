@@ -6,13 +6,12 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 
 import com.belhard.aop.LogInvocation;
-import com.belhard.controller.command.Command;
 import com.belhard.service.OrderService;
 import com.belhard.service.dto.OrderDto;
 import com.belhard.service.dto.OrderDto.StatusDto;
 
 @Controller
-public class UpdateOrderCommand implements Command {
+public class UpdateOrderCommand {
 
 	private final OrderService service;
 
@@ -21,7 +20,6 @@ public class UpdateOrderCommand implements Command {
 	}
 
 	@LogInvocation
-	@Override
 	public String execute(HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		OrderDto orderDto = (OrderDto) session.getAttribute("order");

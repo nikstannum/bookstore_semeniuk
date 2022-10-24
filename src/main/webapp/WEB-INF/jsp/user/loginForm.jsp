@@ -4,13 +4,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="navbar.jsp"></jsp:include>
+<jsp:include page="../navbar.jsp"></jsp:include>
 </head>
 <body>
 	<h1>Login</h1>
 	<h3>${requestScope.message}</h3>
-	<form method="post" action="controller">
-		<input name="command" type="hidden" value="login"/>
+	<form method="post" action="login">
+		<input type="hidden"/>
 		<label for="email-input">Email: </label>
 		<input id="email-input" name="email" type="email" required="required"/>
 		<br/>

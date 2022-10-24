@@ -4,12 +4,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="/jsp/navbar.jsp"></jsp:include>
+<jsp:include page="../navbar.jsp"></jsp:include>
 </head>
 <body>
 	<h1>Register new user</h1>
-	<form method="post" action="controller">
-		<input name="command" type="hidden" value="create_user"/>
+	<form method="post" action="create_user">
+		<input type="hidden" />
 		<label for="first-name-input">First name: </label>
 		<input id="first-name-input" name="firstName" type="text" minlength="1" required="required"/>
 		<br/>
@@ -23,11 +23,11 @@
 		<input id="password-input" name="password" type="password" minlength="4" required="required"/>
 		<br/>
 		<label for="role-input-user">User</label>
-		<input id="role-input-user" name="role" type="radio" value="USER" required="required"/>
+		<input id="role-input-user" name="userRoleDto" type="radio" value="USER" required="required"/>
 		<label for="role-input-manager">Manager</label>
-		<input id="role-input-manager" name="role" type="radio" value="MANAGER" required="required"/>
+		<input id="role-input-manager" name="userRoleDto" type="radio" value="MANAGER" required="required"/>
 		<label for="role-input-admin">Admin</label>
-		<input id="role-input-admin" name="role" type="radio" value="ADMIN" required="required"/>
+		<input id="role-input-admin" name="userRoleDto" type="radio" value="ADMIN" required="required"/>
 		<br/>
 		<input type ="submit" value="REGISTER"/>
 

@@ -114,7 +114,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${maven-war-pluginVersion}</version>
 				<configuration>
-					<warName>bookstore_semeniuk</warName>
+				<warName>bookstore_semeniuk</warName>
 					<outputDirectory>${env.TOMCAT_HOME}/webapps</outputDirectory>
 				</configuration>
 			</plugin>

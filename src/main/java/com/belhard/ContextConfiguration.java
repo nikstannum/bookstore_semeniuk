@@ -14,6 +14,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 
 import com.belhard.dao.connection.ConfigurationManager;
 import com.zaxxer.hikari.HikariDataSource;
@@ -55,13 +57,13 @@ public class ContextConfiguration {
 		return new JpaTransactionManager(entityManagerFactory());
 	}
 
-//	@Bean
-//	public InternalResourceViewResolver viewResolver() {
-//		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-//		viewResolver.setPrefix("/WEB-INF/jsp/");
-//		viewResolver.setSuffix(".jsp");
-//
-//		viewResolver.setViewClass(JstlView.class);
-//		return viewResolver;
-//	}
+	@Bean
+	public InternalResourceViewResolver viewResolver() {
+		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+		viewResolver.setPrefix("/WEB-INF/jsp/");
+		viewResolver.setSuffix(".jsp");
+
+		viewResolver.setViewClass(JstlView.class);
+		return viewResolver;
+	}
 }

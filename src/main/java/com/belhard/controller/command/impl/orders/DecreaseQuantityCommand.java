@@ -8,13 +8,12 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 
 import com.belhard.aop.LogInvocation;
-import com.belhard.controller.command.Command;
 import com.belhard.service.OrderService;
 import com.belhard.service.dto.OrderDto;
 import com.belhard.service.dto.OrderInfoDto;
 
 @Controller
-public class DecreaseQuantityCommand implements Command {
+public class DecreaseQuantityCommand {
 	private final OrderService service;
 
 	public DecreaseQuantityCommand(OrderService service) {
@@ -22,7 +21,6 @@ public class DecreaseQuantityCommand implements Command {
 	}
 
 	@LogInvocation
-	@Override
 	public String execute(HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		OrderDto orderDto = (OrderDto) session.getAttribute("order");

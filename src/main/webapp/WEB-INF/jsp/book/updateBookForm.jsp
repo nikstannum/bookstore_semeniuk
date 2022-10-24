@@ -4,12 +4,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="/jsp/navbar.jsp"></jsp:include>
+<jsp:include page="../navbar.jsp"></jsp:include>
 </head>
 <body>
 	<h1>Update existing book</h1>
-	<form method="post" action="controller">
-		<input name="command" type="hidden" value="update_book"/>
+	<form method="post" action="update_book">
+		<input type="hidden" />
 		<input name="id" type="hidden" value="${requestScope.book.id}"/>
 		<label for="title-input">Title: </label>
 		<input id="title-input" name="title" type="text" value="${requestScope.book.title}" minlength="1" required="required"/>
@@ -27,11 +27,11 @@
 		<input id="price-input" name="price" type="text" value="${requestScope.book.price}" minlength="1" required="required"/>
 		<br />
 		<label for="cover-input-soft">Soft</label>
-		<input id="cover-input-soft" name="cover" type="radio" value="SOFT" required="required"/>
+		<input id="cover-input-soft" name="coverDto" type="radio" value="SOFT" required="required"/>
 		<label for="cover-input-hard">Hard </label>
-		<input id="cover-input-hard" name="cover" type="radio" value="HARD" required="required"/>
+		<input id="cover-input-hard" name="coverDto" type="radio" value="HARD" required="required"/>
 		<label for="cover-input-special">Special </label>
-		<input id="cover-input-special" name="cover" type="radio" value="SPECIAL" required="required"/>
+		<input id="cover-input-special" name="coverDto" type="radio" value="SPECIAL" required="required"/>
 		<br/>
 		<input type ="submit" value="UPDATE"/>
 

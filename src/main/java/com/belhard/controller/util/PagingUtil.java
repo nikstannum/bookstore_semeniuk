@@ -1,8 +1,7 @@
 package com.belhard.controller.util;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.Data;
 
@@ -12,20 +11,12 @@ public class PagingUtil {
 	public PagingUtil() {
 	}
 
-	public Paging getPaging(HttpServletRequest req) {
-		String limitStr = req.getParameter("limit");
-		int limit;
-		if (limitStr == null) {
+	public Paging getPaging(@RequestParam int limit, @RequestParam long page) {
+		if (limit <= 0 || limit > 50) {
 			limit = 10;
-		} else {
-			limit = Integer.parseInt(limitStr);
 		}
-		String pageStr = req.getParameter("page");
-		long page;
-		if (pageStr == null) {
+		if (page < 0) {
 			page = 1;
-		} else {
-			page = Long.parseLong(pageStr);
 		}
 		long offset = (page - 1) * limit;
 		return new Paging(limit, offset, page);

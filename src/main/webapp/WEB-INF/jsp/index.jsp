@@ -8,7 +8,7 @@
 	<fmt:setLocale value="${sessionScope.language}"/>
 </c:if>
 <fmt:setBundle basename="messages"/>
-<jsp:include page="jsp/navbar.jsp"></jsp:include>
+<jsp:include page="navbar.jsp"></jsp:include>
 
 <body>
 	<div>

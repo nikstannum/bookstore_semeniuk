@@ -4,9 +4,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="/jsp/navbar.jsp"/>
+<jsp:include page="../navbar.jsp"/>
 </head>
-<jsp:include page="/jsp/paging.jsp"/>
+<jsp:include page="../paging.jsp"/>
 <body>
  <style>
    TABLE {
@@ -32,7 +32,7 @@
 		<c:forEach items="${orders}" var="order" varStatus="counter">
 			<tr>
 				<td>${counter.count}</td>
-				<td><a href="controller?command=order&id=${order.id}">${order.id}</a></td>
+				<td><a href="${order.id}">${order.id}</a></td>
 				<td>${order.userDto.id}</td>
 				<td>${order.statusDto}</td>
 				<td>${order.totalCost}</td>
