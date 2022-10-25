@@ -58,7 +58,7 @@
 				<li class="nav-item"><a class="nav-link"
 					href="../orders/all"><fmt:message key="navbar.allorders"/></a></li>
 				<li class="nav-item"><a class="nav-link"
-					href="cart"><fmt:message key="navbar.cart"/></a></li>
+					href="../orders/cart"><fmt:message key="navbar.cart"/></a></li>
 				<c:if test="${sessionScope.user == null}">
 					<li class="nav-item"><a class="nav-link"
 						href="../users/create_user_form"><fmt:message key="navbar.signup"/></a></li>

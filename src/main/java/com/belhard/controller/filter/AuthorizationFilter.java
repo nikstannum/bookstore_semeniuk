@@ -29,7 +29,7 @@ public class AuthorizationFilter extends HttpFilter {
 			HttpSession session = req.getSession(false);
 			if (session == null || session.getAttribute("user") == null) {
 				req.setAttribute("message", "Require authorization");
-				req.getRequestDispatcher("/users/login_form").forward(req, res);
+				res.sendRedirect("../users/login_form");
 				return;
 			}
 		}
@@ -41,7 +41,7 @@ public class AuthorizationFilter extends HttpFilter {
 		if (uri == null) {
 			return false;
 		}
-		if (uri.contains("create_user") || uri.contains("login") || uri.contains("logout")) {
+		if (uri.contains("create_user") || uri.contains("login") || uri.contains("logout") || uri.contains("cart")) {
 			return false;
 		}
 		if (uri.contains("users") || uri.contains("orders")) {

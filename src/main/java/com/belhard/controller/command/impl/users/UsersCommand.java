@@ -1,6 +1,5 @@
 package com.belhard.controller.command.impl.users;
 
-import java.net.http.HttpRequest;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +32,8 @@ public class UsersCommand {
 
 	@LogInvocation
 	@RequestMapping("/all")
-	public String execute(@RequestParam(defaultValue = "10") Integer limit, @RequestParam(defaultValue = "1") Long page,
-					Model model) {
+	public String allUsers(@RequestParam(defaultValue = "10") Integer limit,
+					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);
 		List<UserDto> users = service.getAll(paging);
 		long totalEntities = service.countAll();
@@ -87,13 +86,13 @@ public class UsersCommand {
 		session.setAttribute("user", created);
 		return "user/user";
 	}
-	
+
 	@RequestMapping("/login_form")
 	@LogInvocation
 	public String loginForm() {
 		return "user/loginForm";
 	}
-	
+
 	@LogInvocation
 	@RequestMapping("/login")
 	public String loginUser(@RequestParam String email, @RequestParam String password, HttpServletRequest req) {
@@ -103,10 +102,10 @@ public class UsersCommand {
 		req.setAttribute("message", "successfully login");
 		return "index";
 	}
-	
+
 	@RequestMapping("/logout")
 	@LogInvocation
-	public String execute(HttpSession session) {
+	public String logout(HttpSession session) {
 		session.invalidate();
 		return "index";
 	}

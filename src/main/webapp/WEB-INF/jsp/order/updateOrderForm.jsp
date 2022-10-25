@@ -21,17 +21,17 @@
 			<td>${order.userDto.email}</td>
 			<td>
 				<c:forEach items="${order.detailsDto}" var="detailsDto">
-					<a href="controller?command=book&id=${detailsDto.bookDto.id}">${detailsDto.bookDto.title}</a>
+					<a href="../books/${detailsDto.bookDto.id}">${detailsDto.bookDto.title}</a>
 					<br />
 					<br />
 				</c:forEach>
 			</td>
 			<td>
 				<c:forEach items="${order.detailsDto}" var="detailsDto">
-					<a href="controller?command=decrease_quantity&orderId=${order.id}&detailsDtoId=${detailsDto.id}">
+					<a href="decrease_quantity?orderId=${order.id}&detailsDtoId=${detailsDto.id}">
 					<button	name="button">-</button></a>
 							${detailsDto.bookQuantity}
-					<a href="controller?command=increase_quantity&orderId=${order.id}&detailsDtoId=${detailsDto.id}">
+					<a href="increase_quantity?orderId=${order.id}&detailsDtoId=${detailsDto.id}">
 					<button name="button">+</button></a>
 					<br />
 					<br />
@@ -42,17 +42,17 @@
 	<div>total cost = ${order.totalCost}</div>
 	<br/>
 	<div>
-					<form method="post" action="controller">
+					<form method="post" action="update_order">
 					<input type="hidden" name="orderId" value="${order.id}" />
-					<input type="hidden" name="command" value="update_order" />
+					
 					<label for="status-input-canceled">CANCELED</label>
-					<input id="status-input-canceled" name="status" type="radio" value="CANCELED" required="required" />
+					<input id="status-input-canceled" name="statusDto" type="radio" value="CANCELED" required="required" />
 					<label for="status-input-pending">PENDING </label>
-					<input id="status-input-pending" name="status" type="radio" value="PENDING" required="required" />
+					<input id="status-input-pending" name="statusDto" type="radio" value="PENDING" required="required" />
 					<label for="status-input-paid">PAID </label>
-					<input id="status-input-paid" name="status" type="radio" value="PAID" required="required" />
+					<input id="status-input-paid" name="statusDto" type="radio" value="PAID" required="required" />
 					<label for="status-input-delivered">DELIVERED </label>
-					<input id="status-input-delivered" name="status" type="radio" value="DELIVERED" required="required" /><br/><br/>
+					<input id="status-input-delivered" name="statusDto" type="radio" value="DELIVERED" required="required" /><br/><br/>
 					<input type="submit" value="Update order" />
 				</form>
 		</div>

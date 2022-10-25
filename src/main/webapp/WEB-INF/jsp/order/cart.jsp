@@ -22,7 +22,7 @@
 			<c:forEach items="${cart.detailsDto}" var="detailsDto" varStatus="counter">
 		<tr>
 				<td>${counter.count}</td>
-				<td><a href="controller?command=book&id=${detailsDto.bookDto.id}">${detailsDto.bookDto.title}</a></td>
+				<td><a href="../books/${detailsDto.bookDto.id}">${detailsDto.bookDto.title}</a></td>
 				<td>${detailsDto.bookDto.author}</td>
 				<td>${detailsDto.bookPrice}</td>
 				<td>${detailsDto.bookQuantity}</td>
@@ -38,7 +38,7 @@
 	</table>
 	<div>total cost = ${cart.totalCost}</div>
 	<div>
-		<form method="post" action="controller">
+		<form method="post" action="checkout">
 						<input type="hidden" name="command" value="checkout_order" /> <input
 							type="hidden" name="cart" value="${cart}" /> <input
 							type="submit" value="Checkout" />

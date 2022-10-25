@@ -4,31 +4,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-<c:if test="${requestScope.totalPages == 1}">
-		Page ${requestScope.currentPage} out of ${requestScope.totalPages}
-	</c:if>
-<c:if test="${requestScope.currentPage == requestScope.totalPages}">
-	<a href="?page=1"><button name="button">First</button></a>
-	<a href="?page=${requestScope.currentPage - 1}"><button
+	<c:if test="${requestScope.currentPage == requestScope.totalPages && requestScope.currentPage != 1}">
+		<a href="?page=1"><button name="button">First</button></a>
+		<a href="?page=${requestScope.currentPage - 1}"><button
 			name="button">Prev</button></a>
 		Page ${requestScope.currentPage} out of ${requestScope.totalPages}
 	</c:if>
-<c:if test="${requestScope.currentPage == 1}">
-		Page ${requestScope.currentPage} out of ${requestScope.totalPages}
-		<a href="?page=${requestScope.currentPage + 1}"><button
-			name="button">Next</button></a>
-	<a href="?page=${requestScope.totalPages}"><button name="button">Last</button></a>
-</c:if>
-<c:if
-	test="${requestScope.currentPage > 1 && requestScope.currentPage < requestScope.totalPages}">
-	<a href="?page=1"><button name="button">First</button></a>
-	<a href="?page=${requestScope.currentPage - 1}"><button
-			name="button">Prev</button></a>
-		Page ${requestScope.currentPage} out of ${requestScope.totalPages}
-		<a href="?page=${requestScope.currentPage + 1}"><button
-			name="button">Next</button></a>
-	<a href="?page=${requestScope.totalPages}"><button name="button">Last</button></a>
-</c:if>
+	
+	<c:if test="${requestScope.currentPage == 1 && requestScope.totalPages > 1}">
+			Page ${requestScope.currentPage} out of ${requestScope.totalPages}
+			<a href="?page=${requestScope.currentPage + 1}"><button
+				name="button">Next</button></a>
+		<a href="?page=${requestScope.totalPages}"><button name="button">Last</button></a>
+	</c:if>
+	<c:if
+		test="${requestScope.currentPage > 1 && requestScope.currentPage < requestScope.totalPages}">
+		<a href="?page=1"><button name="button">First</button></a>
+		<a href="?page=${requestScope.currentPage - 1}"><button
+				name="button">Prev</button></a>
+			Page ${requestScope.currentPage} out of ${requestScope.totalPages}
+			<a href="?page=${requestScope.currentPage + 1}"><button
+				name="button">Next</button></a>
+		<a href="?page=${requestScope.totalPages}"><button name="button">Last</button></a>
+	</c:if>
 </head>
 <form method="get" action="?page">
 	<input type="hidden" /> 

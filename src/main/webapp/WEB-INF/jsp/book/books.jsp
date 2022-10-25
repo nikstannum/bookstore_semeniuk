@@ -53,13 +53,12 @@ TH {
 				<td><a href="${book.id}">${book.title}</a></td>
 				<td>${book.author}</td>
 				<td>
-					<form method="post" action="controller">
-						<input type="hidden" name="command" value="add_to_cart" /> <input
-							type="hidden" name="bookId" value="${book.id}" /> <input
-							type="hidden" name="currentCommand"
-							value="${requestScope.currentCommand}" /> <input type="hidden"
-							name="currentPage" value="${requestScope.currentPage}" /> <input
-							type="submit" value="Add to cart" />
+					<form method="post" action="../add_to_cart">
+						<input type="hidden"/>
+						<input type="hidden" name="bookId" value="${book.id}" />
+						<input type="hidden" name="currentCommand" value="${requestScope.currentCommand}" />
+						<input type="hidden" name="currentPage" value="${requestScope.currentPage}" />
+						<input type="submit" value="Add to cart" />
 					</form>
 				</td>
 				<td><a href="update?id=${book.id}"><input

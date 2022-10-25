@@ -22,13 +22,13 @@
 			<td>
 				<ul>
 					<c:forEach items="${order.detailsDto}" var="info">
-						<li><a href="controller?command=book&id=${info.bookDto.id}">${info.bookDto.title}</a> ($${info.bookPrice}) x ${info.bookQuantity}</li>
+						<li><a href="../books/${info.bookDto.id}">${info.bookDto.title}</a> ($${info.bookPrice}) x ${info.bookQuantity}</li>
 					</c:forEach>
 				</ul>
 				TOTAL PRICE = ${order.totalCost}
 			</td>
 			<td>${order.statusDto}</td>
-			<td><a href="controller?command=update_order_form&id=${order.id}"><input
+			<td><a href="update?id=${order.id}"><input
 						type="submit" value="UPDATE" /></a></td>
 		</tr>
 	</table>

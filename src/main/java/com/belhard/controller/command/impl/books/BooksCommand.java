@@ -37,7 +37,7 @@ public class BooksCommand {
 		long totalEntities = service.countAll();
 		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
 		model.addAttribute("books", books);
-		model.addAttribute("currentCommand", "books");
+		model.addAttribute("currentCommand", "books/all");
 		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("currentPage", paging.getPage());
 		return "book/books";
