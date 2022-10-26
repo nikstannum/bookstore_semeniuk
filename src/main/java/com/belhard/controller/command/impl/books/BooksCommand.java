@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.belhard.aop.LogInvocation;
 import com.belhard.controller.util.PagingUtil;
 import com.belhard.controller.util.PagingUtil.Paging;
+import com.belhard.exception.MyAppException;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 
@@ -30,8 +32,8 @@ public class BooksCommand {
 
 	@LogInvocation
 	@RequestMapping("/all")
-	public String allBooks(@RequestParam(defaultValue = "10") Integer limit, @RequestParam(defaultValue = "1") Long page,
-					Model model) {
+	public String allBooks(@RequestParam(defaultValue = "10") Integer limit,
+					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);
 		List<BookDto> books = service.getAll(paging);
 		long totalEntities = service.countAll();
@@ -85,4 +87,11 @@ public class BooksCommand {
 		model.addAttribute("message", "book updated successfully");
 		return "book/book";
 	}
+
+	@ExceptionHandler
+	public String myAppExc(MyAppException e, Model model) {
+		model.addAttribute("message", e.getMessage());
+		return "error";
+	}
+
 }

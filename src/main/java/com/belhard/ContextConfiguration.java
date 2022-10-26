@@ -14,10 +14,15 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import com.belhard.dao.connection.ConfigurationManager;
+import com.belhard.interceptor.PrintLogInterceptor;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
@@ -25,7 +30,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableJpaRepositories
-public class ContextConfiguration {
+public class ContextConfiguration extends WebMvcConfigurationSupport {
 
 	@Bean
 	public JdbcTemplate jdbcTemplate() {
@@ -62,8 +67,20 @@ public class ContextConfiguration {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
 		viewResolver.setPrefix("/WEB-INF/jsp/");
 		viewResolver.setSuffix(".jsp");
-
 		viewResolver.setViewClass(JstlView.class);
 		return viewResolver;
+	}
+
+	@Override
+	protected void addInterceptors(InterceptorRegistry registry) {
+		PrintLogInterceptor printLogInterceptor = new PrintLogInterceptor();
+		InterceptorRegistration registration = registry.addInterceptor(printLogInterceptor);
+		registration.addPathPatterns("/**");
+	}
+
+	@Override
+	protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("css/**", "images/**", "js/**").addResourceLocations("classpath:/static/css/",
+						"classpath:/static/images/", "classpath:/static/js/");
 	}
 }

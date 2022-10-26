@@ -50,7 +50,7 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav">
 				<li class="nav-item"><a class="nav-link" aria-current="page"
-					href="/bookstore_semeniuk"><fmt:message key="navbar.home"/></a></li>
+					href="/"><fmt:message key="navbar.home"/></a></li>
 				<li class="nav-item"><a class="nav-link"
 					href="../books/all"><fmt:message key="navbar.allbooks"/></a></li>
 				<li class="nav-item"><a class="nav-link"
@@ -69,8 +69,8 @@
 					<li class="nav-item"><a class="nav-link"
 						href="../users/logout"><fmt:message key="navbar.logout"/></a></li>
 				</c:if>
-     	 <li class="nav-item"><a class="nav-link" href="controller?command=change_language&lang=en"><img src="images/langUK.png" alt="English" width="30"/></a></li>
-     	 <li class="nav-item"><a class="nav-link" href="controller?command=change_language&lang=ru"><img src="images/langRU.jpg" alt="Russian" width="30"/></a></li>
+     	 <li class="nav-item"><a class="nav-link" href="../change_language?lang=en"><img src="images/langUK.png" alt="English" width="30"/></a></li>
+     	 <li class="nav-item"><a class="nav-link" href="../change_language?lang=ru"><img src="images/langRU.jpg" alt="Russian" width="30"/></a></li>
 			</ul>
 		</div>
 	</div>
