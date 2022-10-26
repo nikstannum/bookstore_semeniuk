@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class BooksCommand {
 	}
 
 	@LogInvocation
-	@RequestMapping("/all")
+	@GetMapping("/all")
 	public String allBooks(@RequestParam(defaultValue = "10") Integer limit,
 					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);

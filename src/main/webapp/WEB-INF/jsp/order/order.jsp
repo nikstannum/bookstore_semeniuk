@@ -63,7 +63,7 @@
 <div class="container text-center my-5">
 	<div class="row">
 		<div class="col-lg-10 col-md-4 mx-auto">
-			<img class="rounded-img" src="images/pes.jpg" alt="smartDog" />
+			<img class="rounded-img" src="/images/pes.jpg" alt="smartDog" />
 		</div>
 	</div>
 </div>

@@ -22,7 +22,7 @@
 	<div class="container text-center my-5">
 		<div class="row">
 			<div class="col-lg-10 col-md-4 mx-auto">
-				<img class="rounded-img" src="images/android-chrome-512x512.png"
+				<img class="rounded-img" src="/images/android-chrome-512x512.png"
 					alt="firstImg" />
 				<h1 class="fw-light">Bookstore</h1>
 				<p class="lead text-muted">We are glad to see you</p>
