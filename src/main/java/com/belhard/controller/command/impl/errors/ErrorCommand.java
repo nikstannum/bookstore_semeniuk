@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.belhard.aop.LogInvocation;
 
-@Controller
+//@Controller
 public class ErrorCommand {
 	@RequestMapping("/error")
 	@LogInvocation
