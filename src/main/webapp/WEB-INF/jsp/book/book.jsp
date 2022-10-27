@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,13 +14,13 @@
 
 	<table style="width: 100%">
 		<tr>
-			<th>id</th>
-			<th>title</th>
-			<th>author</th>
-			<th>isbn</th>
-			<th>pages</th>
-			<th>price</th>
-			<th>cover</th>
+			<th><spring:message code="book.table.header.id"/></th>
+			<th><spring:message code="book.table.header.title"/></th>
+			<th><spring:message code="book.table.header.author"/></th>
+			<th><spring:message code="book.table.header.isbn"/></th>
+			<th><spring:message code="book.table.header.pages"/></th>
+			<th><spring:message code="book.table.header.price"/></th>
+			<th><spring:message code="book.table.header.cover"/></th>
 		</tr>
 		<tr>
 			<td>${book.id}</td>
