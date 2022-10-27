@@ -8,6 +8,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.belhard.controller.filter.AuthorizationFilter;
@@ -36,4 +38,11 @@ public class ContextConfiguration implements WebMvcConfigurer {
 		InterceptorRegistration registration = registry.addInterceptor(printLogInterceptor);
 		registration.addPathPatterns("/**");
 	}
+
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		ViewControllerRegistration registration = registry.addViewController("/");
+		registration.setViewName("index");
+	}
+
 }
