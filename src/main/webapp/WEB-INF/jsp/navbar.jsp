@@ -69,8 +69,8 @@
 					<li class="nav-item"><a class="nav-link"
 						href="/users/logout"><fmt:message key="navbar.logout"/></a></li>
 				</c:if>
-     	 <li class="nav-item"><a class="nav-link" href="/change_language?lang=en"><img src="/images/langUK.png" alt="English" width="30"/></a></li>
-     	 <li class="nav-item"><a class="nav-link" href="/change_language?lang=ru"><img src="/images/langRU.jpg" alt="Russian" width="30"/></a></li>
+     	 <li class="nav-item"><a class="nav-link" href="?lang=en"><img src="/images/langUK.png" alt="English" width="30"/></a></li>
+     	 <li class="nav-item"><a class="nav-link" href="?lang=ru"><img src="/images/langRU.jpg" alt="Russian" width="30"/></a></li>
 			</ul>
 		</div>
 	</div>

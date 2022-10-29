@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.LocaleResolver;
 
 import com.belhard.aop.LogInvocation;
 import com.belhard.controller.util.MessageManager;
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
 	private final Mapper mapper;
+	private final LocaleResolver localeResolver;
 	private final MessageManager messageManager;
 
 	@Override

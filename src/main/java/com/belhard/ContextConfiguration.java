@@ -1,7 +1,5 @@
 package com.belhard;
 
-import java.util.Locale;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -17,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
+import com.belhard.controller.MyLocaleResolver;
 import com.belhard.controller.filter.AuthorizationFilter;
 import com.belhard.interceptor.PrintLogInterceptor;
 
@@ -60,9 +59,8 @@ public class ContextConfiguration implements WebMvcConfigurer {
 
 	@Bean
 	public LocaleResolver localeResolver() {
-		CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-		localeResolver.setCookieMaxAge(120);
-		localeResolver.setDefaultLocale(Locale.US);
+		CookieLocaleResolver localeResolver = new MyLocaleResolver();
+		localeResolver.setCookieMaxAge(60);
 		return localeResolver;
 	}
 

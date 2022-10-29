@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,11 +79,20 @@ public class UsersCommand {
 		return "user/createUserForm";
 	}
 
+	@ModelAttribute
+	public UserDto user() {
+		UserDto user = new UserDto();
+		return user;
+	}
+
 	@RequestMapping("/create_user")
 	@LogInvocation
-	public String createUser(@ModelAttribute UserDto dto, Model model, HttpSession session) {
-		UserDto created = service.create(dto);
-		model.addAttribute("user", created);
+	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session) {
+		if (errors.hasErrors()) {
+			model.addAttribute("errors", errors.getFieldErrors());
+			return "user/createUserForm";
+		}
+		UserDto created = service.create(user);
 		model.addAttribute("message", "User created successfully");
 		session.setAttribute("user", created);
 		return "user/user";

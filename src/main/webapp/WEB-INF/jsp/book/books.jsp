@@ -55,11 +55,11 @@ TH {
 						<input type="hidden" name="bookId" value="${book.id}" />
 						<input type="hidden" name="currentCommand" value="${requestScope.currentCommand}" />
 						<input type="hidden" name="currentPage" value="${requestScope.currentPage}" />
-						<input type="submit" value="Add to cart" />
+						<input type="submit" value="<spring:message code="books.button.add_to_cart" />" />
 					</form>
 				</td>
 				<td><a href="update?id=${book.id}"><input
-						type="submit" value="UPDATE" /></a></td>
+						type="submit" value="<spring:message code="books.button.update" />" /></a></td>
 			</tr>
 		</c:forEach>
 	</table>
