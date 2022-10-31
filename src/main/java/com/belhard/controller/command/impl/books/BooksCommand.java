@@ -1,7 +1,9 @@
 package com.belhard.controller.command.impl.books;
 
-import java.util.List; 
+import java.util.List;
+import java.util.Locale;
 
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,24 +22,23 @@ import com.belhard.exception.MyAppException;
 import com.belhard.service.BookService;
 import com.belhard.service.dto.BookDto;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequestMapping("books")
+@RequiredArgsConstructor
 public class BooksCommand {
 	private final BookService service;
 	private final PagingUtil pagingUtil;
-
-	public BooksCommand(BookService service, PagingUtil pagingUtil) {
-		this.service = service;
-		this.pagingUtil = pagingUtil;
-	}
+	private final MessageSource messageSource;
 
 	@LogInvocation
 	@GetMapping("/all")
 	public String allBooks(@RequestParam(defaultValue = "10") Integer limit,
-					@RequestParam(defaultValue = "1") Long page, Model model) {
+					@RequestParam(defaultValue = "1") Long page, Model model, Locale locale) {
 		Paging paging = pagingUtil.getPaging(limit, page);
-		List<BookDto> books = service.getAll(paging);
-		long totalEntities = service.countAll();
+		List<BookDto> books = service.getAll(paging, locale);
+		long totalEntities = service.countAll(locale);
 		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
 		model.addAttribute("books", books);
 		model.addAttribute("currentCommand", "books/all");
@@ -48,10 +49,11 @@ public class BooksCommand {
 
 	@LogInvocation
 	@RequestMapping("/{id}")
-	public String bookById(@PathVariable Long id, Model model) {
-		BookDto dto = service.get(id);
+	public String bookById(@PathVariable Long id, Model model, Locale locale) {
+		BookDto dto = service.get(id, locale);
 		model.addAttribute("book", dto);
-		model.addAttribute("message", "result of search:");
+		String message = messageSource.getMessage("general.result.of_search", null, locale);
+		model.addAttribute("message", message);
 		return "book/book";
 	}
 
@@ -64,28 +66,29 @@ public class BooksCommand {
 	@RequestMapping("/create_book")
 	@ResponseStatus(HttpStatus.CREATED)
 	@LogInvocation
-	public String createBook(@ModelAttribute BookDto dto, Model model) {
-		BookDto created = service.create(dto);
+	public String createBook(@ModelAttribute BookDto dto, Model model, Locale locale) {
+		BookDto created = service.create(dto, locale);
 		model.addAttribute("book", created);
-		String message = "book created successfully";
+		String message = messageSource.getMessage("book.create.success", null, locale);
 		model.addAttribute("message", message);
 		return "book/book";
 	}
 
 	@RequestMapping("/update")
 	@LogInvocation
-	public String updateBookForm(@RequestParam Long id, Model model) {
-		BookDto book = service.get(id);
+	public String updateBookForm(@RequestParam Long id, Model model, Locale locale) {
+		BookDto book = service.get(id, locale);
 		model.addAttribute("book", book);
 		return "book/updateBookForm";
 	}
 
 	@LogInvocation
 	@RequestMapping("/update_book")
-	public String updateBook(@ModelAttribute BookDto dto, Model model) {
-		BookDto updated = service.update(dto);
+	public String updateBook(@ModelAttribute BookDto dto, Model model, Locale locale) {
+		BookDto updated = service.update(dto, locale);
 		model.addAttribute("book", updated);
-		model.addAttribute("message", "book updated successfully");
+		String message = messageSource.getMessage("book.update.success", null, locale);
+		model.addAttribute("message", message);
 		return "book/book";
 	}
 

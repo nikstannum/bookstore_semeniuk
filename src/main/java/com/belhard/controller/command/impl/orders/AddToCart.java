@@ -13,11 +13,6 @@ import com.belhard.service.BookService;
 
 @Controller
 public class AddToCart {
-	private final BookService service;
-
-	public AddToCart(BookService service) {
-		this.service = service;
-	}
 
 	@LogInvocation
 	public String execute(HttpServletRequest req) {

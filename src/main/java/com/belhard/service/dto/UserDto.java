@@ -1,6 +1,7 @@
 package com.belhard.service.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -10,14 +11,17 @@ import lombok.Setter;
 @Setter
 public class UserDto {
 	private Long id;
+	@NotBlank(message = "{general.errors.field.empty}")
 	private String firstName;
+	@NotBlank(message = "{general.errors.field.empty}")
 	private String lastName;
-	@NotBlank(message = "{errors.user.login.empty}")
-	@Size(min = 6, message = "{errors.user.login.short}")
+	@NotBlank(message = "{general.errors.field.empty}")
+	@Size(min = 3, message = "{errors.user.login.short}")
 	private String email;
-	@NotBlank(message = "{errors.user.password.empty}")
-	@Size(min = 6, message = "{errors.user.password.short}")
+	@NotBlank(message = "{general.errors.field.empty}")
+	@Size(min = 4, message = "{errors.user.password.short}")
 	private String password;
+	@NotNull(message = "{general.errors.field.empty}")
 	private UserRoleDto userRoleDto;
 
 	public enum UserRoleDto {

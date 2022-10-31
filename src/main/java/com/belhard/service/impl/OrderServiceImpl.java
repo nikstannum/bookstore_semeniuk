@@ -3,11 +3,13 @@ package com.belhard.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,22 +42,24 @@ public class OrderServiceImpl implements OrderService {
 	private final BookRepository bookRepository;
 	private final OrderInfoRepository orderInfoRepository;
 	private final Mapper mapper;
+	private final MessageSource messageSource;
 
 	@LogInvocation
 	@Transactional
 	@Override
-	public OrderDto get(Long id) throws EntityNotFoundException {
-		Order order = orderRepository.findById(id)
-						.orElseThrow(() -> new EntityNotFoundException("Couldn't find order with id: " + id));
+	public OrderDto get(Long id, Locale locale) throws EntityNotFoundException {
+		String message = messageSource.getMessage("order.error.not_found_by_id", new Object[] { id }, locale);
+		Order order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(message));
 		return mapper.toDto(order);
 	}
 
 	@LogInvocation
-	public OrderDto processCart(Map<Long, Integer> cart, UserDto userDto) {
-		return createOrderDto(cart, userDto);
+	public OrderDto processCart(Map<Long, Integer> cart, UserDto userDto, Locale locale) {
+		return createOrderDto(cart, userDto, locale);
 	}
 
-	private OrderDto createOrderDto(Map<Long, Integer> cart, UserDto userDto) throws EntityNotFoundException {
+	private OrderDto createOrderDto(Map<Long, Integer> cart, UserDto userDto, Locale locale)
+					throws EntityNotFoundException {
 		OrderDto orderDto = new OrderDto();
 		orderDto.setUserDto(userDto);
 		orderDto.setStatusDto(OrderDto.StatusDto.PENDING);
@@ -64,8 +68,8 @@ public class OrderServiceImpl implements OrderService {
 		cart.forEach((bookId, quantity) -> {
 			OrderInfoDto orderInfoDto = new OrderInfoDto();
 			Optional<Book> optionalBook = bookRepository.findById(bookId);
-			Book book = optionalBook.orElseThrow(
-							() -> new EntityNotFoundException("Book with id = " + bookId + " doesn't exist"));
+			String message = messageSource.getMessage("order.error.not_exist_with_id", new Object[] { bookId }, locale);
+			Book book = optionalBook.orElseThrow(() -> new EntityNotFoundException(message));
 			BookDto bookDto = mapper.bookToDto(book);
 			orderInfoDto.setBookDto(bookDto);
 			orderInfoDto.setBookPrice(bookDto.getPrice());
@@ -74,9 +78,11 @@ public class OrderServiceImpl implements OrderService {
 		});
 		BigDecimal totalCost = BigDecimal.ZERO;
 		for (Long key : cart.keySet()) {
-			totalCost = totalCost.add(bookRepository.findById(key)
-							.orElseThrow(() -> new EntityNotFoundException("Book with id = " + key + " doesn't exist"))
-							.getPrice().multiply(BigDecimal.valueOf(cart.get(key))));
+			String message = messageSource.getMessage("order.error.book_with_id_not_exists", new Object[] { key },
+							locale);
+			totalCost = totalCost
+							.add(bookRepository.findById(key).orElseThrow(() -> new EntityNotFoundException(message))
+											.getPrice().multiply(BigDecimal.valueOf(cart.get(key))));
 		}
 		orderDto.setTotalCost(totalCost);
 		orderDto.setDetailsDto(detailsDto);
@@ -85,14 +91,14 @@ public class OrderServiceImpl implements OrderService {
 
 	@LogInvocation
 	@Override
-	public List<OrderDto> getAll() {
+	public List<OrderDto> getAll(Locale locale) {
 		return orderRepository.findAll().stream().map(mapper::toDto).toList();
 	}
 
 	@LogInvocation
 	@Transactional
 	@Override
-	public List<OrderDto> getAll(Paging paging) {
+	public List<OrderDto> getAll(Paging paging, Locale locale) {
 		int page = (int) paging.getPage();
 		int limit = paging.getLimit();
 		Sort sort = Sort.by(Direction.ASC, "id");
@@ -103,13 +109,13 @@ public class OrderServiceImpl implements OrderService {
 
 	@LogInvocation
 	@Override
-	public long countAll() {
+	public long countAll(Locale locale) {
 		return orderRepository.count();
 	}
 
 	@LogInvocation
 	@Override
-	public OrderDto create(OrderDto dto) {
+	public OrderDto create(OrderDto dto, Locale locale) {
 		Order order = mapper.toEntity(dto);
 		OrderDto orderDto = mapper.toDto(orderRepository.save(order));
 		return orderDto;
@@ -118,9 +124,9 @@ public class OrderServiceImpl implements OrderService {
 	@LogInvocation
 	@Transactional
 	@Override
-	public OrderDto update(OrderDto dto) throws EntityNotFoundException {
-		Order existing = orderRepository.findById(dto.getId()).orElseThrow(
-						() -> new EntityNotFoundException("order with id = " + dto.getId() + " wasn't found"));
+	public OrderDto update(OrderDto dto, Locale locale) throws EntityNotFoundException {
+		Order existing = orderRepository.findById(dto.getId()).orElseThrow(() -> new EntityNotFoundException(
+						messageSource.getMessage("order.error.not_found_by_id", new Object[] { dto.getId() }, locale)));
 		List<OrderInfo> infosFromDB = existing.getDetails();
 		List<Long> listInfoIdFromDB = infosFromDB.stream().map(elm -> elm.getId()).toList();
 		List<OrderInfo> infos = mapper.toDetails(dto.getDetailsDto());
@@ -132,8 +138,9 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 		for (Long id : infoIdForDelete) {
-			OrderInfo info = orderInfoRepository.findById(id).orElseThrow(
-							() -> new EntityNotFoundException("details with id = " + id + " wasn't found"));
+			OrderInfo info = orderInfoRepository.findById(id)
+							.orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage(
+											"order.error.details.not_found_with_id", new Object[] { id }, locale)));
 			info.setDeleted(true);
 			orderInfoRepository.save(info);
 		}
@@ -146,7 +153,7 @@ public class OrderServiceImpl implements OrderService {
 	@LogInvocation
 	@Override
 	public OrderDto preProcessUpdate(OrderDto orderDto, List<OrderInfoDto> list, Long detailsDtoId,
-					boolean increaseQuantity) throws EntityNotFoundException {
+					boolean increaseQuantity, Locale locale) throws EntityNotFoundException {
 		List<Integer> listOfIndexOfSubjectToRemoval = new ArrayList<>();
 		for (OrderInfoDto elm : list) {
 			if (elm.getId() == detailsDtoId) {
@@ -154,7 +161,8 @@ public class OrderServiceImpl implements OrderService {
 					elm.setBookQuantity(elm.getBookQuantity() + 1);
 					Optional<Book> optionalBook = bookRepository.findById(elm.getBookDto().getId());
 					Book book = optionalBook.orElseThrow(() -> new EntityNotFoundException(
-									"book with id = " + elm.getBookDto().getId() + " wasn't found"));
+									messageSource.getMessage("order.error.book_with_id_not_found",
+													new Object[] { elm.getBookDto().getId() }, locale)));
 					BigDecimal bookPriceFromCatalog = book.getPrice();
 					BigDecimal oldCost = orderDto.getTotalCost();
 					BigDecimal updatedCost = oldCost.add(bookPriceFromCatalog);
@@ -181,9 +189,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@LogInvocation
 	@Override
-	public void delete(Long id) throws EntityNotFoundException {
-		Order order = orderRepository.findById(id)
-						.orElseThrow(() -> new EntityNotFoundException("order with id = " + id + " wasn't found"));
+	public void delete(Long id, Locale locale) throws EntityNotFoundException {
+		Order order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
+						messageSource.getMessage("order.error.book_with_id_not_found", new Object[] { id }, locale)));
 		order.setDeleted(true);
 		orderRepository.save(order);
 	}

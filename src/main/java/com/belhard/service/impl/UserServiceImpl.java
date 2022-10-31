@@ -1,7 +1,9 @@
 package com.belhard.service.impl;
 
 import java.util.List;
+import java.util.Locale;
 
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,45 +32,42 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final Mapper mapper;
 	private final DigestUtil digestUtil;
+	private final MessageSource messageSource;
 
 	@Override
 	@LogInvocation
-	public UserDto create(UserDto userDto) throws SuchEntityExistsException {
-		validatePassword(userDto);
+	public UserDto create(UserDto userDto, Locale locale) throws SuchEntityExistsException {
 		String hashedPassword = digestUtil.hash(userDto.getPassword());
 		userDto.setPassword(hashedPassword);
 		User existing = userRepository.getUserByEmail(userDto.getEmail());
 		if (existing != null) {
-			throw new SuchEntityExistsException("User with email = " + userDto.getEmail() + " already exists");
+			Object[] args = new Object[] { userDto.getEmail() };
+			String message = messageSource.getMessage("user.error.already_exists", args, locale);
+			throw new SuchEntityExistsException(message);
 		}
 		User user = mapper.userToEntity(userDto);
 		User created = userRepository.save(user);
 		return mapper.userToDto(created);
 	}
 
-	private void validatePassword(UserDto userDto) throws WrongValueException {
-		if (userDto.getPassword().length() < 4) {
-			throw new WrongValueException("Password is too short. Password length have to more than three symbols");
-		}
-	}
-
 	@LogInvocation
 	@Override
-	public UserDto get(Long id) throws EntityNotFoundException {
-		User user = userRepository.findById(id)
-						.orElseThrow(() -> new EntityNotFoundException("user with id = " + id + " wasn't found"));
+	public UserDto get(Long id, Locale locale) throws EntityNotFoundException {
+		Object[] args = new Object[] { id };
+		String message = messageSource.getMessage("user.error.not_found_by_id", args, locale);
+		User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(message));
 		return mapper.userToDto(user);
 	}
 
 	@LogInvocation
 	@Override
-	public List<UserDto> getAll() {
+	public List<UserDto> getAll(Locale locale) {
 		return userRepository.findAll().stream().map(mapper::userToDto).toList();
 	}
 
 	@LogInvocation
 	@Override
-	public List<UserDto> getAll(Paging paging) {
+	public List<UserDto> getAll(Paging paging, Locale locale) {
 		int page = (int) paging.getPage();
 		int limit = paging.getLimit();
 		Sort sort = Sort.by(Direction.ASC, "id");
@@ -79,32 +78,35 @@ public class UserServiceImpl implements UserService {
 
 	@LogInvocation
 	@Override
-	public UserDto getUserByEmail(String email) throws EntityNotFoundException {
+	public UserDto getUserByEmail(String email, Locale locale) throws EntityNotFoundException {
 		User user = userRepository.getUserByEmail(email);
 		if (user == null) {
-			throw new EntityNotFoundException("user with email: " + email + " wasn't found");
+			String message = messageSource.getMessage("user.error.not_found_by_email", new Object[] { email }, locale);
+			throw new EntityNotFoundException(message);
 		}
 		return mapper.userToDto(user);
 	}
 
 	@LogInvocation
 	@Override
-	public List<UserDto> getUsersByLastName(String lastName) {
+	public List<UserDto> getUsersByLastName(String lastName, Locale locale) {
 		return userRepository.getUsersByLastName(lastName).stream().map(mapper::userToDto).toList();
 	}
 
 	@LogInvocation
 	@Override
-	public long countAll() {
+	public long countAll(Locale locale) {
 		return userRepository.count();
 	}
 
 	@LogInvocation
 	@Override
-	public UserDto update(UserDto userDto) throws SuchEntityExistsException {
+	public UserDto update(UserDto userDto, Locale locale) throws SuchEntityExistsException {
 		User existing = userRepository.getUserByEmail(userDto.getEmail());
 		if (existing != null && !(existing.getId().equals(userDto.getId()))) {
-			throw new SuchEntityExistsException("User with email = " + userDto.getEmail() + " already exists");
+			String message = messageSource.getMessage("user.error.already_exists", new Object[] { userDto.getEmail() },
+							locale);
+			throw new SuchEntityExistsException(message);
 		}
 		User user = mapper.userToEntity(userDto);
 		String hashedPassword = digestUtil.hash(userDto.getPassword());
@@ -114,27 +116,29 @@ public class UserServiceImpl implements UserService {
 
 	@LogInvocation
 	@Override
-	public void delete(Long id) throws EntityNotFoundException {
+	public void delete(Long id, Locale locale) throws EntityNotFoundException {
+		String message = messageSource.getMessage("user.error.not_found_by_id", new Object[] {id}, locale);
 		User user = userRepository.findById(id)
-						.orElseThrow(() -> new EntityNotFoundException("user with id = " + id + " wasn't found"));
+						.orElseThrow(() -> new EntityNotFoundException(message));
 		user.setDeleted(true);
 		userRepository.save(user);
 	}
 
 	@LogInvocation
 	@Override
-	public UserDto validate(String email, String password) throws WrongValueException {
+	public UserDto validate(String email, String password, Locale locale) throws WrongValueException {
 		String hashedPassword = digestUtil.hash(password);
 		User user = userRepository.getUserByEmail(email);
 		String userPassword = user.getPassword();
+		String message = messageSource.getMessage("user.security.wrong_email_password", null, locale);
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
-			throw new WrongValueException("Wrong email or password");
+			throw new WrongValueException(message);
 		}
 		if (userPassword.equals(hashedPassword)) {
-			return getUserByEmail(email);
+			return getUserByEmail(email, locale);
 		}
-		throw new WrongValueException("Wrong email or password");
+		throw new WrongValueException(message);
 	}
 }

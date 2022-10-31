@@ -4,7 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
-<html lang="en">
 <jsp:include page="../navbar.jsp"/>
 <body>
 	<jsp:include page="../paging.jsp" />

@@ -5,7 +5,8 @@ import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Component;
 
-@Component
+import lombok.RequiredArgsConstructor;
+
 //@Scope("prototype")
 public class MessageManager {
 	private static final String BUNDLE_NAME = "messages";
