@@ -3,10 +3,13 @@ package com.belhard.controller.command.impl.books;
 import java.util.List;
 import java.util.Locale;
 
+import javax.validation.Valid;
+
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -63,11 +66,21 @@ public class BooksCommand {
 		return "book/createBookForm";
 	}
 
+	@ModelAttribute
+	public BookDto book() {
+		BookDto book = new BookDto();
+		return book;
+	}
+
 	@RequestMapping("/create_book")
 	@ResponseStatus(HttpStatus.CREATED)
 	@LogInvocation
-	public String createBook(@ModelAttribute BookDto dto, Model model, Locale locale) {
-		BookDto created = service.create(dto, locale);
+	public String createBook(@ModelAttribute BookDto book, Errors errors, Model model, Locale locale) {
+		if (errors.hasErrors()) {
+			model.addAttribute("errors", errors.getFieldErrors());
+			return "book/createBookForm";
+		}
+		BookDto created = service.create(book, locale);
 		model.addAttribute("book", created);
 		String message = messageSource.getMessage("book.create.success", null, locale);
 		model.addAttribute("message", message);

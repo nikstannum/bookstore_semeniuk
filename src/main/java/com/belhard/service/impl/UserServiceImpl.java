@@ -2,7 +2,6 @@ package com.belhard.service.impl;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
 	public UserDto create(UserDto userDto, Locale locale) throws SuchEntityExistsException {
 		String hashedPassword = digestUtil.hash(userDto.getPassword());
 		userDto.setPassword(hashedPassword);
-		User existing = userRepository.getUserByEmail(userDto.getEmail()).get();
+		User existing = userRepository.getUserByEmail(userDto.getEmail());
 		if (existing != null) {
 			Object[] args = new Object[] { userDto.getEmail() };
 			String message = messageSource.getMessage("user.error.already_exists", args, locale);
@@ -80,8 +79,11 @@ public class UserServiceImpl implements UserService {
 	@LogInvocation
 	@Override
 	public UserDto getUserByEmail(String email, Locale locale) throws EntityNotFoundException {
-		String message = messageSource.getMessage("user.error.not_found_by_email", new Object[] { email }, locale);
-		User user = userRepository.getUserByEmail(email).orElseThrow(() -> new EntityNotFoundException(message));
+		User user = userRepository.getUserByEmail(email);
+		if (user == null) {
+			String message = messageSource.getMessage("user.error.not_found_by_email", new Object[] { email }, locale);
+			throw new EntityNotFoundException(message);
+		}
 		return mapper.userToDto(user);
 	}
 
@@ -100,7 +102,7 @@ public class UserServiceImpl implements UserService {
 	@LogInvocation
 	@Override
 	public UserDto update(UserDto userDto, Locale locale) throws SuchEntityExistsException {
-		User existing = userRepository.getUserByEmail(userDto.getEmail()).get();
+		User existing = userRepository.getUserByEmail(userDto.getEmail());
 		if (existing != null && !(existing.getId().equals(userDto.getId()))) {
 			String message = messageSource.getMessage("user.error.already_exists", new Object[] { userDto.getEmail() },
 							locale);
@@ -124,19 +126,17 @@ public class UserServiceImpl implements UserService {
 	@LogInvocation
 	@Override
 	public UserDto validate(String email, String password, Locale locale) throws WrongValueException {
-		String hashedPassword = digestUtil.hash(password);
-		Optional<User> optUser = userRepository.getUserByEmail(email);
 		String message = messageSource.getMessage("user.security.wrong_email_password", null, locale);
-		User user = optUser.orElseThrow(() -> new WrongValueException(message));
-		String userPassword = user.getPassword();
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			throw new WrongValueException(message);
 		}
-		if (userPassword.equals(hashedPassword)) {
-			return getUserByEmail(email, locale);
+		String hashedPassword = digestUtil.hash(password);
+		User user = userRepository.getUserByEmail(email);
+		if (user == null || !user.getPassword().equals(hashedPassword)) {
+			throw new WrongValueException(message);
 		}
-		throw new WrongValueException(message);
+		return getUserByEmail(email, locale);
 	}
 }
