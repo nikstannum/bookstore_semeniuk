@@ -13,11 +13,11 @@
 	<h3>${requestScope.message}</h3>
 	<form method="post" action="login">
 		<input type="hidden"/>
-		<label for="email-input" path="email"><spring:message code="user.login_form.email"/></label> 
-		<input id="email-input" path="email" minlength="1" type="email" required="required"/> 
+		<label for="email-input" ><spring:message code="user.login_form.email"/></label> 
+		<input id="email-input" name="email" minlength="1" type="email" required="required"/> 
 		<br/>
-		<label for="password-input" path="password"><spring:message code="user.login_form.password"/> </label> 
-		<input id="password-input" path="password" type="password" minlength="4" required="required"/>
+		<label for="password-input"><spring:message code="user.login_form.password"/> </label> 
+		<input id="password-input" name="password" type="password" minlength="4" required="required"/>
 		<br/>
 		<input type ="submit" value="<spring:message code="user.login_form.button_login"/>"/>
 
