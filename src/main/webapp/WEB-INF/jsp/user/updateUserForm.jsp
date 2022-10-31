@@ -1,38 +1,40 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html>
 <head>
 <jsp:include page="../navbar.jsp"/>
 </head>
 <body>
-	<h1>Update existing user</h1>
-	<form method="post" action="update_user">
+	<h1><spring:message code="user.message.updat_existing"/></h1>
+	<form:form method="post" action="update_user">
 		<input type="hidden" />
 		<input name="id" type="hidden" value="${requestScope.user.id}"/>
-		<label for="first-name-input">First name: </label>
-		<input id="first-name-input" name="firstName" type="text" minlength="1" required="required" value="${requestScope.user.firstName}"/>
+		<form:label for="first-name-input" path="firstName"><spring:message code="user.update_form.first_name"/> </form:label>
+		<form:input id="first-name-input" path="firstName" type="text" minlength="1" required="required" value="${requestScope.user.firstName}"/> <form:errors path="firstName"/>
 		<br/>
-		<label for="last-name-input">Last name: </label>
-		<input id="last-name-input" name="lastName" type="text" minlength="1" required="required" value="${requestScope.user.lastName}"/>
+		<form:label for="last-name-input" path="lastName"><spring:message code="user.update_form.last_name"/> </form:label>
+		<form:input id="last-name-input" path="lastName" type="text" minlength="1" required="required" value="${requestScope.user.lastName}"/> <form:errors path="lastName"/>
 		<br/>
-		<label for="email-input">Email: </label>
-		<input id="email-input" name="email" type="email" required="required" value="${requestScope.user.email}"/>
+		<form:label for="email-input" path="email"><spring:message code="user.update_form.email"/> </form:label>
+		<form:input id="email-input" path="email" type="email" required="required" value="${requestScope.user.email}"/> <form:errors path="email"/>
 		<br/>
-		<label for="password-input">Password: </label>
-		<input id="password-input" name="password" type="password" minlength="4" required="required"/>
+		<form:label for="password-input" path="password"><spring:message code="user.update_form.password"/> </form:label>
+		<form:input id="password-input" path="password" type="password" minlength="4" required="required"/> <form:errors path="password"/>
 		<br/>
-		<label for="role-input-user">User</label>
-		<input id="role-input-user" name="userRoleDto" type="radio" value="USER" required="required"/>
-		<label for="role-input-manager">Manager</label>
-		<input id="role-input-manager" name="userRoleDto" type="radio" value="MANAGER" required="required" />
-		<label for="role-input-admin">Admin</label>
-		<input id="role-input-admin" name="userRoleDto" type="radio" value="ADMIN" required="required" />
+		<form:label for="role-input-user" path="userRoleDto"><spring:message code="user.update_form.role.user"/></form:label>
+		<form:input id="role-input-user" path="userRoleDto" type="radio" value="USER" required="required"/> <form:errors path="userRoleDto"/>
+		<form:label for="role-input-manager" path="userRoleDto"><spring:message code="user.update_form.role.manager"/></form:label>
+		<form:input id="role-input-manager" path="userRoleDto" type="radio" value="MANAGER" required="required" /> <form:errors path="userRoleDto"/>
+		<form:label for="role-input-admin" path="userRoleDto"><spring:message code="user.update_form.role.admin"/></form:label>
+		<form:input id="role-input-admin" path="userRoleDto" type="radio" value="ADMIN" required="required" /> <form:errors path="userRoleDto"/>
 		<br/>
-		<input type ="submit" value="UPDATE"/>
+		<input type ="submit" value="<spring:message code="user.update_form.button_update"/>"/>
 
-	</form>
+	</form:form>
 
 </body>
 </html>

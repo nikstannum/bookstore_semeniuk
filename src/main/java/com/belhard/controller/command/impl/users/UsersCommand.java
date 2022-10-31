@@ -3,7 +3,6 @@ package com.belhard.controller.command.impl.users;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -34,7 +33,6 @@ public class UsersCommand {
 	private final UserService service;
 	private final PagingUtil pagingUtil;
 	private final MessageSource messageSource;
-
 
 	@LogInvocation
 	@RequestMapping("/all")
@@ -70,8 +68,8 @@ public class UsersCommand {
 
 	@RequestMapping("/update_user")
 	@LogInvocation
-	public String updateUser(@ModelAttribute UserDto dto, Model model, Locale locale) {
-		UserDto updated = service.update(dto, locale);
+	public String updateUser(UserDto user, Model model, Locale locale) {
+		UserDto updated = service.update(user, locale);
 		model.addAttribute("user", updated);
 		model.addAttribute("message", messageSource.getMessage("user.update.success", null, locale));
 		return "user/user";
@@ -91,7 +89,8 @@ public class UsersCommand {
 
 	@RequestMapping("/create_user")
 	@LogInvocation
-	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session, Locale locale) {
+	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session,
+					Locale locale) {
 		if (errors.hasErrors()) {
 			model.addAttribute("errors", errors.getFieldErrors());
 			return "user/createUserForm";
@@ -110,11 +109,11 @@ public class UsersCommand {
 
 	@LogInvocation
 	@RequestMapping("/login")
-	public String loginUser(@RequestParam String email, @RequestParam String password, HttpServletRequest req, Locale locale) {
+	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session, Model model,
+					Locale locale) {
 		UserDto userDto = service.validate(email, password, locale);
-		HttpSession session = req.getSession();
 		session.setAttribute("user", userDto);
-		req.setAttribute("message", messageSource.getMessage("user.login.success", null, locale));
+		model.addAttribute("message", messageSource.getMessage("user.login.success", null, locale));
 		return "index";
 	}
 
@@ -124,7 +123,7 @@ public class UsersCommand {
 		session.invalidate();
 		return "index";
 	}
-	
+
 	@ExceptionHandler
 	public String myAppExc(MyAppException e, Model model) {
 		model.addAttribute("message", e.getMessage());
