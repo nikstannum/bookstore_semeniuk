@@ -33,16 +33,19 @@
 				<form:input path="password" type="password" minlength="4" required="required"/>
 			</form:label> <form:errors path="password"/>
 			<br/>
+			
 			<form:label for="role-input-user" path="userRoleDto">
 				<spring:message code="user.register_form.role.user"/>
 			</form:label>
 			<form:errors path="userRoleDto"/>
 			<input id="role-input-user" name="userRoleDto" type="radio" value="USER" required="required"/>
+			
 			<form:label for="role-input-manager" path="userRoleDto">
 				<spring:message code="user.register_form.role.manager"/>
 			</form:label>
 			<form:errors path="userRoleDto"/>
 			<input id="role-input-manager" name="userRoleDto" type="radio" value="MANAGER" required="required"/>
+			
 			<form:label for="role-input-admin" path="userRoleDto">
 				<spring:message code="user.register_form.role.admin"/>
 			</form:label>
