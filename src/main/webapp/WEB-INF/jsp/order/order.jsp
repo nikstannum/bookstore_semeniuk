@@ -1,20 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <jsp:include page="../navbar.jsp"></jsp:include>
 </head>
-	<h2>result of search:</h2>
+	<h2><spring:message code="general.result.of_search"/></h2>
 
 	<table style="width: 100%">
 		<tr>
-			<th>order id</th>
-			<th>user</th>
-			<th>Items</th>
-			<th>status</th>
-			<th>action</th>
+			<th><spring:message code="order.table.header.order_id"/></th>
+			<th><spring:message code="order.table.header.user"/></th>
+			<th><spring:message code="order.table.header.items"/></th>
+			<th><spring:message code="order.table.header.status"/></th>
+			<th><spring:message code="order.table.header.action"/></th>
 		</tr>
 		<tr>
 			<td>${order.id}</td>
@@ -25,11 +26,11 @@
 						<li><a href="../books/${info.bookDto.id}">${info.bookDto.title}</a> ($${info.bookPrice}) x ${info.bookQuantity}</li>
 					</c:forEach>
 				</ul>
-				TOTAL PRICE = ${order.totalCost}
+				<spring:message code="order.message.total_cost"/>${order.totalCost}
 			</td>
 			<td>${order.statusDto}</td>
 			<td><a href="update?id=${order.id}"><input
-						type="submit" value="UPDATE" /></a></td>
+						type="submit" value="<spring:message code="order.table.button.update"/>" /></a></td>
 		</tr>
 	</table>
 
