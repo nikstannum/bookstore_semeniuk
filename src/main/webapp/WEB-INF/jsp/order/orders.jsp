@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,10 +25,10 @@
 	<table >
 		<tr>
 			<th>#</th>
-			<th>order id</th>
-			<th>user id</th>
-			<th>status</th>
-			<th>total cost</th>
+			<th><spring:message code="orders.table.header.order_id"/></th>
+			<th><spring:message code="orders.table.header.user_id"/></th>
+			<th><spring:message code="orders.table.header.status"/></th>
+			<th><spring:message code="orders.table.header.total_cost"/></th>
 		</tr>
 		<c:forEach items="${orders}" var="order" varStatus="counter">
 			<tr>
