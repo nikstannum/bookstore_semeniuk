@@ -9,10 +9,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import com.belhard.aop.LogInvocation;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @SuppressWarnings("serial")
 public class AuthorizationFilter extends HttpFilter {
+	private final MessageSource messageSource;
 
 	@Override
 	@LogInvocation
@@ -23,8 +30,9 @@ public class AuthorizationFilter extends HttpFilter {
 		if (requiresAuthorization(uri)) {
 			HttpSession session = req.getSession(false);
 			if (session == null || session.getAttribute("user") == null) {
-				req.setAttribute("message", "Require authorization");
-				res.sendRedirect("../users/login_form");
+				req.setAttribute("message", messageSource.getMessage("filter.require_authorization", null,
+								LocaleContextHolder.getLocale()));
+				req.getRequestDispatcher("/users/login_form").forward(req, res);
 				return;
 			}
 		}

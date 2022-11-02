@@ -1,13 +1,13 @@
 package com.belhard.controller.command.impl.orders;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,16 +49,17 @@ public class CartCommand {
 
 	@RequestMapping("orders/cart")
 	@LogInvocation
-	public String cartCommand(HttpSession session, Model model, Locale locale) {
+	public String cartCommand(HttpSession session, Model model) {
 		@SuppressWarnings("unchecked")
 		Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
 		UserDto user = (UserDto) session.getAttribute("user");
 		if (cart == null) {
-			model.addAttribute("message", messageSource.getMessage("cart.empty", null, locale));
+			model.addAttribute("message",
+							messageSource.getMessage("cart.empty", null, LocaleContextHolder.getLocale()));
 			return "order/cart";
 		}
-		model.addAttribute("message", messageSource.getMessage("cart.products", null, locale));
-		OrderDto processed = orderService.processCart(cart, user, locale);
+		model.addAttribute("message", messageSource.getMessage("cart.products", null, LocaleContextHolder.getLocale()));
+		OrderDto processed = orderService.processCart(cart, user);
 		model.addAttribute("cart", processed);
 		return "order/cart";
 	}

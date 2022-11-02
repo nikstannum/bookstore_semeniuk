@@ -1,12 +1,12 @@
 package com.belhard.controller.command.impl.users;
 
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -37,10 +37,10 @@ public class UsersCommand {
 	@LogInvocation
 	@RequestMapping("/all")
 	public String allUsers(@RequestParam(defaultValue = "10") Integer limit,
-					@RequestParam(defaultValue = "1") Long page, Model model, Locale locale) {
+					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);
-		List<UserDto> users = service.getAll(paging, locale);
-		long totalEntities = service.countAll(locale);
+		List<UserDto> users = service.getAll(paging);
+		long totalEntities = service.countAll();
 		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
 		model.addAttribute("users", users);
 		model.addAttribute("currentCommand", "users");
@@ -51,27 +51,29 @@ public class UsersCommand {
 
 	@RequestMapping("/{id}")
 	@LogInvocation
-	public String userById(@PathVariable Long id, Model model, Locale locale) {
-		UserDto dto = service.get(id, locale);
+	public String userById(@PathVariable Long id, Model model) {
+		UserDto dto = service.get(id);
 		model.addAttribute("user", dto);
-		model.addAttribute("message", messageSource.getMessage("general.result.of_search", null, locale));
+		model.addAttribute("message",
+						messageSource.getMessage("general.result.of_search", null, LocaleContextHolder.getLocale()));
 		return "user/user";
 	}
 
 	@LogInvocation
 	@RequestMapping("/update")
-	public String updateUserForm(Model model, @RequestParam Long id, Locale locale) {
-		UserDto user = service.get(id, locale);
+	public String updateUserForm(Model model, @RequestParam Long id) {
+		UserDto user = service.get(id);
 		model.addAttribute("user", user);
 		return "user/updateUserForm";
 	}
 
 	@RequestMapping("/update_user")
 	@LogInvocation
-	public String updateUser(UserDto user, Model model, Locale locale) {
-		UserDto updated = service.update(user, locale);
+	public String updateUser(UserDto user, Model model) {
+		UserDto updated = service.update(user);
 		model.addAttribute("user", updated);
-		model.addAttribute("message", messageSource.getMessage("user.update.success", null, locale));
+		model.addAttribute("message",
+						messageSource.getMessage("user.update.success", null, LocaleContextHolder.getLocale()));
 		return "user/user";
 	}
 
@@ -89,14 +91,14 @@ public class UsersCommand {
 
 	@RequestMapping("/create_user")
 	@LogInvocation
-	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session,
-					Locale locale) {
+	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session) {
 		if (errors.hasErrors()) {
 			model.addAttribute("errors", errors.getFieldErrors());
 			return "user/createUserForm";
 		}
-		UserDto created = service.create(user, locale);
-		model.addAttribute("message", messageSource.getMessage("user.create.success", null, locale));
+		UserDto created = service.create(user);
+		model.addAttribute("message",
+						messageSource.getMessage("user.create.success", null, LocaleContextHolder.getLocale()));
 		session.setAttribute("user", created);
 		return "user/user";
 	}
@@ -109,11 +111,12 @@ public class UsersCommand {
 
 	@LogInvocation
 	@RequestMapping("/login")
-	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session, Model model,
-					Locale locale) {
-		UserDto userDto = service.validate(email, password, locale);
+	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session,
+					Model model) {
+		UserDto userDto = service.validate(email, password);
 		session.setAttribute("user", userDto);
-		model.addAttribute("message", messageSource.getMessage("user.login.success", null, locale));
+		model.addAttribute("message",
+						messageSource.getMessage("user.login.success", null, LocaleContextHolder.getLocale()));
 		return "index";
 	}
 

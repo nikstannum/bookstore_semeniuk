@@ -28,11 +28,20 @@ public class ContextConfiguration implements WebMvcConfigurer {
 	public static void main(String[] args) {
 		SpringApplication.run(ContextConfiguration.class, args);
 	}
+	
+	@Bean
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("classpath:messages");
+		messageSource.setDefaultEncoding("UTF-8");
+		return messageSource;
+	}
 
 	@Bean
 	public FilterRegistrationBean<AuthorizationFilter> authorizationFilter() {
 		FilterRegistrationBean<AuthorizationFilter> registration = new FilterRegistrationBean<>();
-		registration.setFilter(new AuthorizationFilter());
+		AuthorizationFilter authorizationFilter = new AuthorizationFilter(messageSource());
+		registration.setFilter(authorizationFilter);
 		registration.addUrlPatterns("/users/*", "/orders/*");
 		registration.setOrder(1);
 		return registration;
