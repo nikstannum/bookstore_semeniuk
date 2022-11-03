@@ -10,7 +10,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.belhard.aop.LogInvocation;
 import com.belhard.service.OrderService;
@@ -22,10 +23,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Controller
 public class CartCommand {
-	private final OrderService orderService;
-	private final MessageSource messageSource;
 
-	@RequestMapping("add_to_cart")
+	@PostMapping("add_to_cart")
 	@LogInvocation
 	public String addToCart(HttpServletRequest req) {
 		Long bookId = Long.parseLong(req.getParameter("bookId"));
@@ -45,23 +44,6 @@ public class CartCommand {
 		String currentCommand = req.getParameter("currentCommand");
 		String currentPage = req.getParameter("currentPage");
 		return "redirect:" + currentCommand + "?page=" + currentPage;
-	}
-
-	@RequestMapping("orders/cart")
-	@LogInvocation
-	public String cartCommand(HttpSession session, Model model) {
-		@SuppressWarnings("unchecked")
-		Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
-		UserDto user = (UserDto) session.getAttribute("user");
-		if (cart == null) {
-			model.addAttribute("message",
-							messageSource.getMessage("cart.empty", null, LocaleContextHolder.getLocale()));
-			return "order/cart";
-		}
-		model.addAttribute("message", messageSource.getMessage("cart.products", null, LocaleContextHolder.getLocale()));
-		OrderDto processed = orderService.processCart(cart, user);
-		model.addAttribute("cart", processed);
-		return "order/cart";
 	}
 
 }

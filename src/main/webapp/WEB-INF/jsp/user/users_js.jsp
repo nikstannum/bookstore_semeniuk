@@ -5,24 +5,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="../navbar.jsp"></jsp:include>
+	<jsp:include page="../navbar.jsp"></jsp:include>
 	<script src="/js/jQuery-3.6.1.js"></script>
 	<script src="/js/users.js" defer></script>
 </head>
 <body>
-<jsp:include page="../paging.jsp"/>
-	<table >
-	<thead>
-		<tr>
-			<th>first name</th>
-			<th>last name</th>
-			<th>email</th>
-			<th>action</th>
-		</tr>
-	</thead>
-		<tbody>
-		</tbody>
-	</table>
-
+	<jsp:include page="../paging.jsp"/>
+		<table >
+			<thead>
+				<tr>
+					<th>first name</th>
+					<th>last name</th>
+					<th>email</th>
+					<th>action</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
 </body>
 </html>

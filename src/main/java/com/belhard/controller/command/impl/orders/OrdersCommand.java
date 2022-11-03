@@ -11,6 +11,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,8 +36,26 @@ public class OrdersCommand {
 	private final PagingUtil pagingUtil;
 	private final MessageSource messageSource;
 
+	@GetMapping("/cart")
 	@LogInvocation
-	@RequestMapping("/all")
+	public String cartCommand(HttpSession session, Model model) {
+		@SuppressWarnings("unchecked")
+		Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
+		UserDto user = (UserDto) session.getAttribute("user");
+		if (cart == null) {
+			model.addAttribute("message",
+							messageSource.getMessage("cart.empty", null, LocaleContextHolder.getLocale()));
+			return "order/cart";
+		}
+		model.addAttribute("message", messageSource.getMessage("cart.products", null, LocaleContextHolder.getLocale()));
+		OrderDto processed = service.processCart(cart, user);
+		model.addAttribute("cart", processed);
+		return "order/cart";
+	}
+	
+	
+	@LogInvocation
+	@GetMapping("/all")
 	public String allOrders(@RequestParam(defaultValue = "10") Integer limit,
 					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);
@@ -50,7 +69,7 @@ public class OrdersCommand {
 		return "order/orders";
 	}
 
-	@RequestMapping("/{id}")
+	@GetMapping("/{id}")
 	@LogInvocation
 	public String orderById(@PathVariable Long id, Model model) {
 		OrderDto dto = service.get(id);

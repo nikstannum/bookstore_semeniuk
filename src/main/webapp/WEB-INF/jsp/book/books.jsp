@@ -57,8 +57,14 @@ TH {
 						<input type="submit" value="<spring:message code="books.button.add_to_cart" />" />
 					</form>
 				</td>
-				<td><a href="update?id=${book.id}"><input
-						type="submit" value="<spring:message code="books.button.update" />" /></a></td>
+				<td>
+				<form method="get" action="update?id=${book.id}">
+						<input type="hidden"/>
+						<input type="hidden" name="id" value="${book.id}" />
+						<input type="submit" value="<spring:message code="books.button.update" />" />
+					</form>
+								
+				</td>
 			</tr>
 		</c:forEach>
 	</table>

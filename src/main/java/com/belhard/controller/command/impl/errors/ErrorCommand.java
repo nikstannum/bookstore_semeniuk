@@ -2,6 +2,7 @@ package com.belhard.controller.command.impl.errors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.belhard.aop.LogInvocation;

@@ -8,11 +8,13 @@
 <head>
 <title>create book</title>
 <jsp:include page="../navbar.jsp"></jsp:include>
+	<script src="/js/jQuery-3.6.1.js"></script>
+	<script src="/js/createBook.js" defer></script>
 </head>
 <body>
 	<h1><spring:message code="book.message.create_book"/></h1>
 	<div>
-		<form:form method="post" action="create_book" modelAttribute="bookDto">
+		<form:form  method="get"  modelAttribute="bookDto" >  <!-- method="get" action="create_book" -->
 			<input type="hidden" />
 			<form:label path="title">
 				<spring:message code="book.create_form.title"/>
@@ -52,7 +54,7 @@
 			</form:label> <form:errors path="coverDto"/>
 			<input id="cover-input-special" name="coverDto" type="radio" value="SPECIAL" required="required"/>			
 			<br/>
-			<form:button>
+			<form:button class="formButton">
 				<spring:message code="book.create_form.button.add"/>
 			</form:button>
 		</form:form>

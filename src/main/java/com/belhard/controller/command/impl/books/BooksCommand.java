@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,7 +28,7 @@ import com.belhard.service.dto.BookDto;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("books")
+//@RequestMapping("books")
 @RequiredArgsConstructor
 public class BooksCommand {
 	private final BookService service;
@@ -34,7 +36,7 @@ public class BooksCommand {
 	private final MessageSource messageSource;
 
 	@LogInvocation
-	@GetMapping("/all")
+	@GetMapping("books/all")
 	public String allBooks(@RequestParam(defaultValue = "10") Integer limit,
 					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);
@@ -47,9 +49,15 @@ public class BooksCommand {
 		model.addAttribute("currentPage", paging.getPage());
 		return "book/books";
 	}
+	
+	@LogInvocation
+	@GetMapping("api/books/all")
+	public String allBooksRest() {
+		return "book/books_js";
+	}
 
 	@LogInvocation
-	@RequestMapping("/{id}")
+	@GetMapping("books/{id}")
 	public String bookById(@PathVariable Long id, Model model) {
 		BookDto dto = service.get(id);
 		model.addAttribute("book", dto);
@@ -59,7 +67,7 @@ public class BooksCommand {
 	}
 
 	@LogInvocation
-	@RequestMapping("/create_book_form")
+	@GetMapping("books/create_book_form")
 	public String createBookForm() {
 		return "book/createBookForm";
 	}
@@ -70,7 +78,7 @@ public class BooksCommand {
 		return book;
 	}
 
-	@RequestMapping("/create_book")
+	@PostMapping("books/create_book")
 	@ResponseStatus(HttpStatus.CREATED)
 	@LogInvocation
 	public String createBook(@ModelAttribute BookDto book, Errors errors, Model model) {
@@ -85,7 +93,7 @@ public class BooksCommand {
 		return "book/book";
 	}
 
-	@RequestMapping("/update")
+	@GetMapping("books/update")
 	@LogInvocation
 	public String updateBookForm(@RequestParam Long id, Model model) {
 		BookDto book = service.get(id);
@@ -94,7 +102,7 @@ public class BooksCommand {
 	}
 
 	@LogInvocation
-	@RequestMapping("/update_book")
+	@PostMapping("books/update_book")
 	public String updateBook(@ModelAttribute BookDto dto, Model model) {
 		BookDto updated = service.update(dto);
 		model.addAttribute("book", updated);
