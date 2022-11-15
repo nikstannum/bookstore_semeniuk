@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/users")
-public class RestUserController {
+public class RestUserConmmand {
 	private final UserService service;
 
 	@LogInvocation

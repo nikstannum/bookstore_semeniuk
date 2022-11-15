@@ -52,7 +52,6 @@ public class Book {
 	@Convert(converter = BookCoverConverter.class)
 	private BookCover cover;
 
-	@Transient
 	@Column(name = "deleted")
 	private boolean deleted;
 

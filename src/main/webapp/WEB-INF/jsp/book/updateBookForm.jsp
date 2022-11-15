@@ -10,7 +10,7 @@
 </head>
 <body>
 	<h1><spring:message code="book.message.update_form"/></h1>
-	<form method="post" action="update_book">
+	<form>
 		<input type="hidden" />
 		<input name="id" type="hidden" value="${requestScope.book.id}"/>
 		<label for="title-input"><spring:message code="book.update_form.title"/> </label>
@@ -35,8 +35,7 @@
 		<label for="cover-input-special"><spring:message code="book.update_form.cover.special"/> </label>
 		<input id="cover-input-special" name="coverDto" type="radio" value="SPECIAL" required="required"/>
 		<br/>
-		<input type ="submit" value="<spring:message code="book.cupdate_form.button.update"/>"/>
-
+		<input type ="submit" value="<spring:message code="book.update_form.button.update"/>"/>
 	</form>
 
 </body>

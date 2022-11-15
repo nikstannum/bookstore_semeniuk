@@ -11,8 +11,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistration;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
@@ -24,11 +22,11 @@ import com.belhard.interceptor.PrintLogInterceptor;
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableJpaRepositories
-public class ContextConfiguration implements WebMvcConfigurer {
+public class AppConfig implements WebMvcConfigurer {
 	public static void main(String[] args) {
-		SpringApplication.run(ContextConfiguration.class, args);
+		SpringApplication.run(AppConfig.class, args);
 	}
-	
+
 	@Bean
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -55,12 +53,6 @@ public class ContextConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(localeChangeInterceptor());
 	}
 
-	@Override
-	public void addViewControllers(ViewControllerRegistry registry) {
-		ViewControllerRegistration registration = registry.addViewController("/");
-		registration.setViewName("index");
-	}
-
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
@@ -74,6 +66,5 @@ public class ContextConfiguration implements WebMvcConfigurer {
 		localeResolver.setCookieMaxAge(120);
 		return localeResolver;
 	}
-	
 
 }

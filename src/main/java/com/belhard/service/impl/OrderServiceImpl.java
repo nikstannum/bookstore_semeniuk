@@ -199,4 +199,10 @@ public class OrderServiceImpl implements OrderService {
 		order.setDeleted(true);
 		orderRepository.save(order);
 	}
+
+	@Override
+	public Page<OrderDto> getAll(Pageable pageable) { // FIXME
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

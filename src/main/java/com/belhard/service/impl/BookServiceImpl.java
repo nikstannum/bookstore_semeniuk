@@ -52,9 +52,9 @@ public class BookServiceImpl implements BookService {
 
 	private void validateUpdate(BookDto bookDto) throws EntityNotFoundException {
 		Book existing = bookRepository.getBookByIsbn(bookDto.getIsbn());
-		if (existing == null) {
+		if (existing != null && !(existing.getId().equals(bookDto.getId()))) {
 			Object[] obj = new Object[] { bookDto.getIsbn() };
-			String message = messageSource.getMessage("book.error.book_with_isbn_wasn't_found", obj,
+			String message = messageSource.getMessage("book.error.book_with_isbn_already_exists", obj,
 							LocaleContextHolder.getLocale());
 			throw new EntityNotFoundException(message);
 		}
@@ -79,14 +79,21 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	@LogInvocation
 	public List<BookDto> getAll(Paging paging) {
-		int page = (int) paging.getPage();
-		int limit = paging.getLimit();
-		Sort sort = Sort.by(Direction.ASC, "id");
-		Pageable pageable = PageRequest.of(page - 1, limit, sort);
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@LogInvocation
+	public Page<BookDto> getAll(Pageable pageable) {
+		Sort sort = pageable.getSort();
+		if (!sort.isSorted()) {
+			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Direction.ASC, "id");
+		}
 		Page<Book> booksPage = bookRepository.findAll(pageable);
-		return booksPage.toList().stream().map(mapper::bookToDto).toList();
+		Page<BookDto> booksDtoPage = booksPage.map(mapper::bookToDto);
+		return booksDtoPage;
 	}
 
 	@LogInvocation

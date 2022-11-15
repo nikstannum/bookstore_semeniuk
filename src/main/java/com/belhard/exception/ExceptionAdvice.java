@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@ControllerAdvice("com.belhard")
+@ControllerAdvice("com.com.belhard.controller.command.impl")
 public class ExceptionAdvice {
 	private final MessageSource messageSource;
 

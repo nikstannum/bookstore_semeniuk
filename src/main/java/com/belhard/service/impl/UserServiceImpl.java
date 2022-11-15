@@ -143,4 +143,10 @@ public class UserServiceImpl implements UserService {
 		}
 		return getUserByEmail(email);
 	}
+
+	@Override
+	public Page<UserDto> getAll(Pageable pageable) { // FIXME
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

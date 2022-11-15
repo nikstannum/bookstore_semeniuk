@@ -1,7 +1,7 @@
 package com.belhard.exception;
 
 @SuppressWarnings("serial")
-public class WrongValueException extends MyAppException {
+public class WrongValueException extends ClientException {
 
 	public WrongValueException() {
 	}

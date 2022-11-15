@@ -6,58 +6,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>create book</title>
-<jsp:include page="../navbar.jsp"></jsp:include>
+	<title>create book</title>
+	<jsp:include page="../navbar.jsp"></jsp:include>
 	<script src="/js/jQuery-3.6.1.js"></script>
 	<script src="/js/createBook.js" defer></script>
 </head>
 <body>
 	<h1><spring:message code="book.message.create_book"/></h1>
 	<div>
-		<form:form  method="get"  modelAttribute="bookDto" >  <!-- method="get" action="create_book" -->
-			<input type="hidden" />
-			<form:label path="title">
-				<spring:message code="book.create_form.title"/>
-				<form:input path="title" type="text" minlength="1" required="required"/>
-			</form:label> <form:errors path="title"/>
-			<br/>
-			<form:label path="author">
-				<spring:message code="book.create_form.author"/>
-				<form:input path="author" type="text" minlength="1" required="required"/>
-			</form:label> <form:errors path="author"/>
-			<br/>
-			<form:label path="isbn">
-				<spring:message code="book.create_form.isbn"/>
-				<form:input path="isbn" type="text" minlength="1" required="required"/>
-			</form:label> <form:errors path="isbn"/>
-			<br/>
-			<form:label path="pages">
-				<spring:message code="book.create_form.pages"/>
-				<form:input path="pages" type="number" minlength="1" required="required"/>
-			</form:label> <form:errors path="pages"/>
-			<br/>
-			<form:label path="price">
-				<spring:message code="book.create_form.price"/>
-				<form:input path="price" type="text" required="required" minlength="1"/>
-			</form:label> <form:errors path="price"/>
-			<br />
-			<form:label for="cover-input-soft" path="coverDto">
+		<form class="input-form">
+		    <label for="input-title"><spring:message code="book.create_form.title"/></label>
+		    <input id="input-title" type="text" name="title" minlength="1" required="required"/>
+		    <br/>
+		    <label for="input-author"><spring:message code="book.create_form.author"/></label>
+		    <input id="input-author" type="text" name="author" minlength="1" required="required"/>
+		    <br/>
+		    <label for="input-isbn"><spring:message code="book.create_form.isbn"/></label>
+		    <input id="input-isbn" type="text" name="isbn" minlength="1" required="required"/>
+		    <br/>
+		    <label for="input-pages"><spring:message code="book.create_form.pages"/></label>
+		    <input id="input-pages" type="number" name="pages" minlength="1" required="required"/>
+		    <br/>
+		    <label for="input-price"><spring:message code="book.create_form.price"/></label>
+		    <input id="input-price" type="text" name="price" minlength="1" required="required"/>
+		    <br/>
+		    <label>
+				<input name="coverDto" type="radio" value="SOFT" required="required"/>
 				<spring:message code="book.create_form.cover.soft"/>
-			</form:label> <form:errors path="coverDto"/>
-			<input id="cover-input-soft" name="coverDto" type="radio" value="SOFT" required="required"/>
-			<form:label for="cover-input-hard" path="coverDto">
+			</label>
+			<label>
+				<input name="coverDto" type="radio" value="HARD" required="required"/>
 				<spring:message code="book.create_form.cover.hard"/>
-			</form:label> <form:errors path="coverDto"/>
-			<input id="cover-input-hard" name="coverDto" type="radio" value="HARD" required="required"/>
-			<form:label for="cover-input-special" path="coverDto">
+			</label>
+			<label>
+				<input name="coverDto" type="radio" value="SPECIAL" required="required"/>			
 				<spring:message code="book.create_form.cover.special"/>
-			</form:label> <form:errors path="coverDto"/>
-			<input id="cover-input-special" name="coverDto" type="radio" value="SPECIAL" required="required"/>			
+			</label>
 			<br/>
-			<form:button class="formButton">
-				<spring:message code="book.create_form.button.add"/>
-			</form:button>
-		</form:form>
+		    <button class="create"><spring:message code="book.create_form.button.add"/></button>
+		</form>
 	</div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 package com.belhard.exception;
 
 @SuppressWarnings("serial")
-public class SuchEntityExistsException extends MyAppException {
+public class SuchEntityExistsException extends ClientException {
 
 	public SuchEntityExistsException() {
 	}

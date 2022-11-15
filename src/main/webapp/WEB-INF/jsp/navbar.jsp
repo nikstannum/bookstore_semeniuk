@@ -54,7 +54,7 @@
 				<li class="nav-item"><a class="nav-link" aria-current="page"
 					href="/"><fmt:message key="navbar.home"/></a></li>
 				<li class="nav-item"><a class="nav-link"
-					href="/books/all"><fmt:message key="navbar.allbooks"/></a></li>
+					href="/books"><fmt:message key="navbar.allbooks"/></a></li>
 				<li class="nav-item"><a class="nav-link"
 					href="/users/all"><fmt:message key="navbar.allusers"/></a></li>
 				<li class="nav-item"><a class="nav-link"

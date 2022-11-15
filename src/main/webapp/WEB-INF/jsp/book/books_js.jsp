@@ -6,15 +6,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="../navbar.jsp"/>
-	<script src="/js/jQuery-3.6.1.js"></script>
-	<script src="/js/books.js" defer></script>
+	<script defer src="/js/jQuery-3.6.1.js"></script>
+	<script defer src="/js/books.js" defer></script>
 </head>
 <body>
-	<jsp:include page="../paging.jsp" />
+	<jsp:include page="../navbar.jsp"/>
+	<div class="pagination">
+		<button class="first"><spring:message code="paging.first_page"/></button>
+		<button class="prev"><spring:message code="paging.previous_page"/></button>
+		<button class="current"></button>
+		<button class="next"><spring:message code="paging.next_page"/></button>
+		<button class="last"><spring:message code="paging.last_page"/></button>
+	</div>
+	<div class="query-string" style="display: none">${pageContext.request.queryString}</div>
 	<div>
 		<h5>
-			<a href="create_book_form"><spring:message code="books.create_new_book" /></a>
+			<a href="books/create_book_form"><spring:message code="books.create_new_book" /></a>
 		</h5>
 	</div>
 	<div>
@@ -31,6 +38,7 @@
 				<th><spring:message code="book.table.header.author" /></th>
 				<th><spring:message code="books.add_book_to_cart" /></th>
 				<th><spring:message code="books.update_book" /></th>
+				<th><spring:message code="books.delete_book" /></th>
 			</tr>
 		</thead>
 		<tbody>

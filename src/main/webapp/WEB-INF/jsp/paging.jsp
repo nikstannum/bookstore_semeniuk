@@ -6,27 +6,27 @@
 <html>
 <head>
 	<c:if test="${requestScope.currentPage == requestScope.totalPages && requestScope.currentPage != 1}">
-		<a href="?page=1"><button name="button"><spring:message code="paging.first_page"/></button></a>
+		<a href="?page=1"><button class="first-page"><spring:message code="paging.first_page"/></button></a>
 		<a href="?page=${requestScope.currentPage - 1}">
-			<button name="button"><spring:message code="paging.previous_page"/></button></a>
+			<button class="prev-page"><spring:message code="paging.previous_page"/></button></a>
 		<spring:message code="paging.current_page"/> ${requestScope.currentPage} <spring:message code="paging.total_page"/> ${requestScope.totalPages}
 	</c:if>
 	
 	<c:if test="${requestScope.currentPage == 1 && requestScope.totalPages > 1}">
 				<spring:message code="paging.current_page"/> ${requestScope.currentPage} <spring:message code="paging.total_page"/> ${requestScope.totalPages}
 			<a href="?page=${requestScope.currentPage + 1}"><button
-				name="button"><spring:message code="paging.next_page"/></button></a>
-		<a href="?page=${requestScope.totalPages}"><button name="button"><spring:message code="paging.last_page"/></button></a>
+				class="next-page"><spring:message code="paging.next_page"/></button></a>
+		<a href="?page=${requestScope.totalPages}"><button class="last-page"><spring:message code="paging.last_page"/></button></a>
 	</c:if>
 	<c:if
 		test="${requestScope.currentPage > 1 && requestScope.currentPage < requestScope.totalPages}">
-		<a href="?page=1"><button name="button"><spring:message code="paging.first_page"/></button></a>
+		<a href="?page=1"><button class="first-page"><spring:message code="paging.first_page"/></button></a>
 		<a href="?page=${requestScope.currentPage - 1}"><button
-				name="button"><spring:message code="paging.previous_page"/></button></a>
+				class="prev-page"><spring:message code="paging.previous_page"/></button></a>
 			<spring:message code="paging.current_page"/> ${requestScope.currentPage} out of ${requestScope.totalPages}
 			<a href="?page=${requestScope.currentPage + 1}"><button
-				name="button"><spring:message code="paging.next_page"/></button></a>
-		<a href="?page=${requestScope.totalPages}"><button name="button"><spring:message code="paging.last_page"/></button></a>
+				class="next-page"><spring:message code="paging.next_page"/></button></a>
+		<a href="?page=${requestScope.totalPages}"><button class="last-page"><spring:message code="paging.last_page"/></button></a>
 	</c:if>
 </head>
 <form method="get" action="?page">

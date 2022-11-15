@@ -1,7 +1,7 @@
 package com.belhard.exception;
 
 @SuppressWarnings("serial")
-public class EntityNotFoundException extends MyAppException {
+public class EntityNotFoundException extends ClientException {
 
 	public EntityNotFoundException() {
 	}
