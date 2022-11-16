@@ -29,18 +29,15 @@ $(function() {
 		if ($XHR.status == 201) {
 			const uri = $XHR.getResponseHeader("Location");
 			window.location.href = uri;
-		} else {
-			alert("Couldn't create book. Server error");
-			console.log("ERROR:", data);
 		}
 	}
 
 	function processError(response) {
 		$(".error").remove();
 		if (response.status == 422) {
-			const validationError = response.responseJSON;
-			for (const field in validationError.messages) {
-				validationError.messages[field].forEach(msg => {
+			const validationResultDto = response.responseJSON;
+			for (const field in validationResultDto.messages) {
+				validationResultDto.messages[field].forEach(msg => {
 					$("form").prepend($(`<div class="error">${field}: ${msg}</div>`));
 				})
 			}

@@ -13,13 +13,30 @@ $(function() {
 		const coverDto = $("input[name='coverDto']:checked").val();
 		const book = {title, author, isbn, pages, price, coverDto };
 		
-		
 		$.ajax({
 			type: "PUT",
 			url: `/api/books/${id}`,
 			data: JSON.stringify(book),
+			success: processUpdated,
+			error: processError,
 			dataType: "json",
 			contentType: "application/json"
 		});
 	}
-})
+	function processUpdated(book) {
+		$(".error").remove();
+		window.location.href = `/books/${book.id}`;
+	}
+
+	function processError(response) {
+		$(".error").remove();
+		if (response.status == 422) {
+			const validationResultDto = response.responseJSON;
+			for (const field in validationResultDto.messages) {
+				validationResultDto.messages[field].forEach(msg => {
+					$("form").prepend($(`<div class="error">${field}: ${msg}</div>`));
+				})
+			}
+		}
+	}
+});

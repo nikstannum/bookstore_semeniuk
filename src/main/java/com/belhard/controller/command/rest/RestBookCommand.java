@@ -55,7 +55,7 @@ public class RestBookCommand {
 
 	@PostMapping()
 	@LogInvocation
-	public ResponseEntity<BookDto> createBook(@RequestBody @Valid BookDto book, Errors errors) { // FIXME to do processing errors
+	public ResponseEntity<BookDto> createBook(@RequestBody @Valid BookDto book, Errors errors) {
 		checkErrors(errors);
 		BookDto created = bookService.create(book);
 		return buildResponseCreated(created);
@@ -63,9 +63,8 @@ public class RestBookCommand {
 
 	@LogInvocation
 	@PutMapping("/{id}")
-	public BookDto updateBook(@PathVariable Long id, @RequestBody @Valid BookDto book, Errors errors) { // FIXME to do
-																										// processing
-																										// errors
+	public BookDto updateBook(@PathVariable Long id, @RequestBody @Valid BookDto book, Errors errors) {
+		checkErrors(errors);
 		book.setId(id);
 		return bookService.update(book);
 	}
