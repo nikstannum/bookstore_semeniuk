@@ -60,10 +60,10 @@ public class BooksCommand {
 		return "book/updateBookForm_js";
 	}
 
-//	@ExceptionHandler
-//	public String myAppExc(MyAppException e, Model model) {
-//		model.addAttribute("message", e.getMessage());
-//		return "error";
-//	}
+	@ExceptionHandler
+	public String myAppExc(MyAppException e, Model model) {
+		model.addAttribute("message", e.getMessage());
+		return "error";
+	}
 
 }
