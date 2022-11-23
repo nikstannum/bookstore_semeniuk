@@ -5,10 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="../navbar.jsp"/>
-</head>
-<jsp:include page="../paging.jsp"/>
-<body>
+<script defer src="/js/jQuery-3.6.1.js"></script>
  <style>
    TABLE {
     width: 100%; 
@@ -22,6 +19,10 @@
     background: #b0e0e6;
    }
   </style>
+</head>
+<body>
+<jsp:include page="../navbar.jsp"/>
+<jsp:include page="../paging.jsp"/>
 	<table >
 		<tr>
 			<th>#</th>

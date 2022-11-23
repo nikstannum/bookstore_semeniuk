@@ -7,11 +7,11 @@
 <html>
 <head>
 	<title>update book</title>
-	<jsp:include page="../navbar.jsp"></jsp:include>
 	<script src="/js/jQuery-3.6.1.js"></script>
 	<script src="/js/updateBook.js" defer></script>
 </head>
 <body>
+	<jsp:include page="../navbar.jsp"></jsp:include>
 	<h1><spring:message code="book.message.update_form"/></h1>
 	<form class="input-form">
 		<input id="input-id" name="id" type="hidden" value="${requestScope.book.id}"/>

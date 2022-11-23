@@ -5,11 +5,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<jsp:include page="../navbar.jsp"></jsp:include>
 	<script src="/js/jQuery-3.6.1.js"></script>
 	<script src="/js/users.js" defer></script>
 </head>
 <body>
+	<jsp:include page="../navbar.jsp"></jsp:include>
 	<jsp:include page="../paging.jsp"/>
 		<table >
 			<thead>

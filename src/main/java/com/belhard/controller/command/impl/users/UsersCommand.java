@@ -112,9 +112,9 @@ public class UsersCommand {
 
 	@LogInvocation
 	@RequestMapping("/login")
-	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session,
+	public String loginUser(@RequestParam String username, @RequestParam String password, HttpSession session,
 					Model model) {
-		UserDto userDto = service.validate(email, password);
+		UserDto userDto = service.validate(username, password);
 		session.setAttribute("user", userDto);
 		model.addAttribute("message",
 						messageSource.getMessage("user.login.success", null, LocaleContextHolder.getLocale()));

@@ -6,9 +6,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="../navbar.jsp"></jsp:include>
+<script defer src="/js/jQuery-3.6.1.js"></script>
 </head>
 <body>
+<jsp:include page="../navbar.jsp"></jsp:include>
 	<h1><spring:message code="user.message.register_new_user"/></h1>
 	<div>
 		<form:form method="post" action="create_user" modelAttribute="userDto">

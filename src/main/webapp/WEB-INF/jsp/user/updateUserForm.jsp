@@ -6,9 +6,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="../navbar.jsp"/>
+<script defer src="/js/jQuery-3.6.1.js"></script>
 </head>
 <body>
+<jsp:include page="../navbar.jsp"/>
 	<h1><spring:message code="user.message.update_existing"/></h1>
 	<form:form method="post" action="update_user" modelAttribute="userDto">
 		<input type="hidden" />

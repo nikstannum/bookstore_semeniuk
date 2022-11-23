@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 		String message = messageSource.getMessage("user.security.wrong_email_password", null,
 						LocaleContextHolder.getLocale());
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			throw new WrongValueException(message);
 		}

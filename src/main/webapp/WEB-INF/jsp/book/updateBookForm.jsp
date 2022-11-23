@@ -6,9 +6,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="../navbar.jsp"></jsp:include>
+<script defer src="/js/jQuery-3.6.1.js"></script>
 </head>
 <body>
+<jsp:include page="../navbar.jsp"></jsp:include>
 	<h1><spring:message code="book.message.update_form"/></h1>
 	<form>
 		<input type="hidden" />

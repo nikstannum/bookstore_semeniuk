@@ -7,11 +7,11 @@
 <html>
 <head>
 	<title>create book</title>
-	<jsp:include page="../navbar.jsp"></jsp:include>
 	<script src="/js/jQuery-3.6.1.js"></script>
 	<script src="/js/createBook.js" defer></script>
 </head>
 <body>
+	<jsp:include page="../navbar.jsp"></jsp:include>
 	<h1><spring:message code="book.message.create_book"/></h1>
 	<div>
 		<form class="input-form">

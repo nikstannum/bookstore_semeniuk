@@ -7,9 +7,10 @@
 <html>
 <head>
 <title>create book</title>
-<jsp:include page="../navbar.jsp"></jsp:include>
+<script defer src="/js/jQuery-3.6.1.js"></script>
 </head>
 <body>
+<jsp:include page="../navbar.jsp"></jsp:include>
 	<h1><spring:message code="book.message.create_book"/></h1>
 	<div>
 		<form:form method="post" action="create_book" modelAttribute="bookDto">

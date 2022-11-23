@@ -1,3 +1,4 @@
+import {prepareCsrfRequestHeaders} from "./util.js";
 
 const cssLink = $("<link>");
 $("head").append(cssLink);
@@ -10,12 +11,12 @@ cssLink.attr({
 $(function() {
 
 	const refresh = () => {
-		const params = $(".query-string").text();
+		const params = $(`meta[name="query-string"]`).attr("content");
 		$.get("/api/books?" + params, processBooks);
 	};
 
 	const updateQueryString = (page) => {
-		$(".query-string").text(`page=${page.number}&size=${page.size}`)
+		$(`meta[name="query-string"]`).attr("content", `page=${page.number}&size=${page.size}`);
 	};
 
 	const renderTable = (page, response) => {
@@ -37,16 +38,22 @@ $(function() {
 		</tr>
 		`);
 		$row.find(".buttonCart").on("click", () => $.ajax({
-			type: "POST",
+			type: "GET",
 			url: `/api/cart/${book.id}`,
 			success: refresh
 		}));
+
+		const headers = prepareCsrfRequestHeaders();
+
 		$row.find(".buttonDelete").on("click", () => $.ajax({
 			type: "DELETE",
+			headers: headers,
 			url: `/api/books/${book.id}`,
 			success: refresh
 		}));
 		$tbody.append($row);
+
+
 	};
 
 	const renderPaginationButtons = (page) => {
@@ -67,8 +74,11 @@ $(function() {
 			renderTable(page, response);
 			renderPaginationButtons(page);
 		}
+
+		const headers = prepareCsrfRequestHeaders();
 		$.ajax({
 			type: "POST",
+			headers: headers,
 			url: `/api/messages`,
 			data: JSON.stringify(['books.add_book_to_cart', 'books.button.update', 'books.delete_book']),
 			success: process,

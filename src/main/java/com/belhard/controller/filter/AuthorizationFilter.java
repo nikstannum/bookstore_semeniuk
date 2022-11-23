@@ -25,17 +25,17 @@ public class AuthorizationFilter extends HttpFilter {
 	@LogInvocation
 	protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 					throws IOException, ServletException {
-//		String uri = req.getServletPath();
-//
-//		if (requiresAuthorization(uri)) {
-//			HttpSession session = req.getSession(false);
-//			if (session == null || session.getAttribute("user") == null) {
-//				req.setAttribute("message", messageSource.getMessage("filter.require_authorization", null,
-//								LocaleContextHolder.getLocale()));
-//				req.getRequestDispatcher("/users/login_form").forward(req, res);
-//				return;
-//			}
-//		}
+		String uri = req.getServletPath();
+
+		if (requiresAuthorization(uri)) {
+			HttpSession session = req.getSession(false);
+			if (session == null || session.getAttribute("user") == null) {
+				req.setAttribute("message", messageSource.getMessage("filter.require_authorization", null,
+								LocaleContextHolder.getLocale()));
+				req.getRequestDispatcher("/users/login_form").forward(req, res);
+				return;
+			}
+		}
 		chain.doFilter(req, res);
 	}
 

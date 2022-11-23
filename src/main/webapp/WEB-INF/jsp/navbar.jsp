@@ -2,15 +2,17 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <c:if test="${sessionScope.language != null}">
-	<fmt:setLocale value="${sessionScope.language}"/>
+	<fmt:setLocale value="${sessionScope.language}" />
 </c:if>
-<fmt:setBundle basename="messages"/>
+<fmt:setBundle basename="messages" />
 <!DOCTYPE html>
-<html lang="ru">
-<html>
+<html lang="en">
 <head>
+<meta name="_csrf_header" content="${_csrf.headerName}">
+<meta name="_csrf_token" content="${_csrf.token}">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -30,52 +32,60 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
 	integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
 	crossorigin="anonymous"></script>
+<script defer src="/js/navbar.js"></script>
+<script defer src="/js/jQuery-3.6.1.js"></script>
 <style>
-.rounded-img {
-	width: 60%;
-	border-radius: 50%;
-	box-shadow: 0 0 10px rgba(45, 9, 9, 50);
-	padding: 0.3em;
-	margin-bottom: 1em;
-}
+	.rounded-img {
+		width: 60%;
+		border-radius: 50%;
+		box-shadow: 0 0 10px rgba(45, 9, 9, 50);
+		padding: 0.3em;
+		margin-bottom: 1em;
+	}
 </style>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-	<div class="container">
-		<a class="navbar-brand p-0" href="/images/favicon-32x32.png"><img
-			src="/images/favicon-32x32.png" alt="icon" width="40" /></a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-			data-bs-target="#navbarNav" aria-controls="navbarNav"
-			aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav">
-				<li class="nav-item"><a class="nav-link" aria-current="page"
-					href="/"><fmt:message key="navbar.home"/></a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="/books"><fmt:message key="navbar.allbooks"/></a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="/users/all"><fmt:message key="navbar.allusers"/></a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="/orders/all"><fmt:message key="navbar.allorders"/></a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="/orders/cart"><fmt:message key="navbar.cart"/></a></li>
-				<c:if test="${sessionScope.user == null}">
-					<li class="nav-item"><a class="nav-link"
-						href="/users/create_user_form"><fmt:message key="navbar.signup"/></a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="/users/login_form"><fmt:message key="navbar.signin"/></a></li>
-				</c:if>
-				<c:if test="${sessionScope.user != null}">
-					<li class="nav-item"><a class="nav-link"
-						href="/users/logout"><fmt:message key="navbar.logout"/></a></li>
-				</c:if>
-     	 <li class="nav-item"><a class="nav-link" href="?lang=en"><img src="/images/langUK.png" alt="English" width="30"/></a></li>
-     	 <li class="nav-item"><a class="nav-link" href="?lang=ru"><img src="/images/langRU.jpg" alt="Russian" width="30"/></a></li>
-			</ul>
-		</div>
-	</div>
-</nav>
 </head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container">
+			<a class="navbar-brand p-0" href="/images/favicon-32x32.png"><img
+				src="/images/favicon-32x32.png" alt="icon" width="40" /></a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link" aria-current="page"
+						href="/"><fmt:message key="navbar.home" /></a></li>
+					<li class="nav-item"><a class="nav-link" href="/books"><fmt:message
+								key="navbar.allbooks" /></a></li>
+					<li class="nav-item"><a class="nav-link" href="/users/all"><fmt:message
+								key="navbar.allusers" /></a></li>
+					<li class="nav-item"><a class="nav-link" href="/orders/all"><fmt:message
+								key="navbar.allorders" /></a></li>
+					<li class="nav-item"><a class="nav-link" href="/orders/cart"><fmt:message
+								key="navbar.cart" /></a></li>
+								
+					<sec:authorize access="isAnonymous()">
+						<li class="nav-item"><a class="nav-link"
+							href="/users/create_user_form"><fmt:message
+									key="navbar.signup" /></a></li>
+						<li class="nav-item"><a class="nav-link"
+							href="/users/login_form"><fmt:message key="navbar.signin" /></a></li>
+					</sec:authorize>
+					<sec:authorize access="isAuthenticated()">
+						<li class="nav-item-logout"><a class="nav-link" href="/users/logout"><fmt:message
+									key="navbar.logout" /></a></li>
+					</sec:authorize>
+					<li class="nav-item"><a class="nav-link" href="?lang=en"><img
+							src="/images/langUK.png" alt="English" width="30" /></a></li>
+					<li class="nav-item"><a class="nav-link" href="?lang=ru"><img
+							src="/images/langRU.jpg" alt="Russian" width="30" /></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</body>
 </html>

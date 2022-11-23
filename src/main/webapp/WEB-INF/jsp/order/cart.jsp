@@ -6,9 +6,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="../navbar.jsp"></jsp:include>
+<script defer src="/js/jQuery-3.6.1.js"></script>
 </head>
 <body>
+<jsp:include page="../navbar.jsp"></jsp:include>
 	<h5>${requestScope.message}</h5>
 	<c:if test="${requestScope.cart != null}">
 	<table style="width: 100%">

@@ -5,9 +5,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="navbar.jsp"></jsp:include>
+<script defer src="/js/jQuery-3.6.1.js"></script>
 </head>
 <body>
+<jsp:include page="navbar.jsp"></jsp:include>
 	<h1><spring:message code="error.error"/></h1>
 	<h3><spring:message code="error.something_went_wrong"/>.</h3>
 	<h4>${requestScope.message}</h4>

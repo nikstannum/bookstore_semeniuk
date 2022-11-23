@@ -5,8 +5,11 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
 <html lang="en">
-<jsp:include page="navbar.jsp"></jsp:include>
+<head>
+<script defer src="/js/jQuery-3.6.1.js"></script>
+</head>
 <body>
+	<jsp:include page="navbar.jsp"/>
 	<div>
 		<c:if test="${sessionScope.user != null}">
 			<spring:message code="main.welcome"/>, ${user.firstName}!

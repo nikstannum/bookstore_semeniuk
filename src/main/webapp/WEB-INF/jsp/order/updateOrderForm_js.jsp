@@ -5,11 +5,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<jsp:include page="../navbar.jsp"></jsp:include>
 	<script src="/js/jQuery-3.6.1.js"></script>
 	<script src="/js/updateOrderForm.js" defer></script>
 </head>
 <body>
+<jsp:include page="../navbar.jsp"></jsp:include>
 	<h5>${requestScope.message}</h5>
 	<table style="width: 100%">
 		<thead>

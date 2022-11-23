@@ -6,8 +6,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta name="query-string" content="${pageContext.request.queryString}"/>
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+	<meta name="_csrf_token" content="${_csrf.token}">
 	<script defer src="/js/jQuery-3.6.1.js"></script>
-	<script defer src="/js/books.js" defer></script>
+	<script type="module" src="/js/books.js" defer></script>
 </head>
 <body>
 	<jsp:include page="../navbar.jsp"/>
@@ -18,7 +21,6 @@
 		<button class="next"><spring:message code="paging.next_page"/></button>
 		<button class="last"><spring:message code="paging.last_page"/></button>
 	</div>
-	<div class="query-string" style="display: none">${pageContext.request.queryString}</div>
 	<div>
 		<h5>
 			<a href="books/create_book_form"><spring:message code="books.create_new_book" /></a>
