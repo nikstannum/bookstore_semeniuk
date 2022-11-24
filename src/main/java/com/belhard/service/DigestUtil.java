@@ -11,18 +11,20 @@ import org.springframework.stereotype.Component;
 public class DigestUtil {
 
 	public String hash(String password) {
-		try {
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-			try {
-				messageDigest.update(password.getBytes("UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
-			}
-			byte[] bytes = messageDigest.digest();
-			BigInteger bigInteger = new BigInteger(1, bytes);
-			return bigInteger.toString(16).toUpperCase();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
+		
+		return password;
+//		try {
+//			MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+//			try {
+//				messageDigest.update(password.getBytes("UTF-8"));
+//			} catch (UnsupportedEncodingException e) {
+//				throw new RuntimeException(e);
+//			}
+//			byte[] bytes = messageDigest.digest();
+//			BigInteger bigInteger = new BigInteger(1, bytes);
+//			return bigInteger.toString(16).toUpperCase();
+//		} catch (NoSuchAlgorithmException e) {
+//			throw new RuntimeException(e);
+//		}
 	}
 }

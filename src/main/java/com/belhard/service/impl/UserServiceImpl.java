@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.belhard.aop.LogInvocation;
@@ -31,13 +32,13 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final Mapper mapper;
-	private final DigestUtil digestUtil;
+	private final PasswordEncoder passwordEncoder;
 	private final MessageSource messageSource;
 
 	@Override
 	@LogInvocation
 	public UserDto create(UserDto userDto) throws SuchEntityExistsException {
-		String hashedPassword = digestUtil.hash(userDto.getPassword());
+		String hashedPassword = passwordEncoder.encode(userDto.getPassword());
 		userDto.setPassword(hashedPassword);
 		User existing = userRepository.getUserByEmail(userDto.getEmail());
 		if (existing != null) {
@@ -111,7 +112,7 @@ public class UserServiceImpl implements UserService {
 			throw new SuchEntityExistsException(message);
 		}
 		User user = mapper.userToEntity(userDto);
-		String hashedPassword = digestUtil.hash(userDto.getPassword());
+		String hashedPassword = passwordEncoder.encode(userDto.getPassword());
 		user.setPassword(hashedPassword);
 		return mapper.userToDto(userRepository.save(user));
 	}
@@ -136,9 +137,9 @@ public class UserServiceImpl implements UserService {
 		} catch (InterruptedException e) {
 			throw new WrongValueException(message);
 		}
-		String hashedPassword = digestUtil.hash(password);
 		User user = userRepository.getUserByEmail(email);
-		if (user == null || !user.getPassword().equals(hashedPassword)) {
+		boolean correctPassword = passwordEncoder.matches(password, user.getPassword());
+		if (user == null || !correctPassword) {
 			throw new WrongValueException(message);
 		}
 		return getUserByEmail(email);

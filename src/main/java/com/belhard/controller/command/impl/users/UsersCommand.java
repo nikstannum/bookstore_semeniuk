@@ -7,13 +7,16 @@ import javax.validation.Valid;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -34,9 +37,10 @@ public class UsersCommand {
 	private final UserService service;
 	private final PagingUtil pagingUtil;
 	private final MessageSource messageSource;
+	private final UserDetailsService userDetailsService;
 
 	@LogInvocation
-	@RequestMapping("/all")
+	@GetMapping("/all")
 	public String allUsers(@RequestParam(defaultValue = "10") Integer limit,
 					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);
@@ -50,7 +54,7 @@ public class UsersCommand {
 		return "user/users";
 	}
 
-	@RequestMapping("/{id}")
+	@GetMapping("/{id}")
 	@LogInvocation
 	public String userById(@PathVariable Long id, Model model) {
 		UserDto dto = service.get(id);
@@ -61,14 +65,14 @@ public class UsersCommand {
 	}
 
 	@LogInvocation
-	@RequestMapping("/update")
+	@GetMapping("/update")
 	public String updateUserForm(Model model, @RequestParam Long id) {
 		UserDto user = service.get(id);
 		model.addAttribute("user", user);
 		return "user/updateUserForm";
 	}
 
-	@RequestMapping("/update_user")
+	@PostMapping("/update_user")
 	@LogInvocation
 	public String updateUser(UserDto user, Model model) {
 		UserDto updated = service.update(user);
@@ -78,7 +82,7 @@ public class UsersCommand {
 		return "user/user";
 	}
 
-	@RequestMapping("/create_user_form")
+	@GetMapping("/create_user_form")
 	@LogInvocation
 	public String createUserForm() {
 		return "user/createUserForm";
@@ -90,7 +94,7 @@ public class UsersCommand {
 		return user;
 	}
 
-	@RequestMapping("/create_user")
+	@PostMapping("/create_user")
 	@LogInvocation
 	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session) {
 		if (errors.hasErrors()) {
@@ -104,24 +108,24 @@ public class UsersCommand {
 		return "user/user";
 	}
 
-	@RequestMapping("/login_form")
+	@GetMapping("/login_form")
 	@LogInvocation
 	public String loginForm() {
 		return "user/loginForm";
 	}
 
+	@PostMapping("/login")
 	@LogInvocation
-	@RequestMapping("/login")
-	public String loginUser(@RequestParam String username, @RequestParam String password, HttpSession session,
+	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session,
 					Model model) {
-		UserDto userDto = service.validate(username, password);
+		UserDto userDto = service.validate(email, password);
 		session.setAttribute("user", userDto);
 		model.addAttribute("message",
 						messageSource.getMessage("user.login.success", null, LocaleContextHolder.getLocale()));
 		return "index";
 	}
 
-	@RequestMapping("/logout")
+	@PostMapping("/logout")
 	@LogInvocation
 	public String logout(HttpSession session) {
 		session.invalidate();
