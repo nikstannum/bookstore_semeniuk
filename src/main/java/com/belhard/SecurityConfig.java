@@ -1,11 +1,7 @@
 package com.belhard;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -14,15 +10,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -35,12 +27,8 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		return httpSecurity
 
-						.sessionManagement()
-						.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-						.invalidSessionUrl("/")
-						.sessionFixation()
-						.changeSessionId()
-						.and()
+						.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).invalidSessionUrl("/")
+						.sessionFixation().changeSessionId().and()
 
 						.authorizeRequests().mvcMatchers("/css/**", "/js/**", "/images/**", "/", "/api/**").permitAll()
 						.mvcMatchers(HttpMethod.POST, "/users/login").permitAll()
@@ -53,7 +41,8 @@ public class SecurityConfig {
 						// users
 						.mvcMatchers(HttpMethod.GET, "/users/create_user_form", "/users/update", "/users/login_form")
 						.permitAll()
-						.mvcMatchers(HttpMethod.POST, "/users/create_user", "/users/update_user", "/users/login", "/users/logout")
+						.mvcMatchers(HttpMethod.POST, "/users/create_user", "/users/update_user", "/users/login",
+										"/users/logout")
 						.permitAll()
 
 						.mvcMatchers(HttpMethod.GET, "/users/**").authenticated()
@@ -64,7 +53,7 @@ public class SecurityConfig {
 						// orders
 						.mvcMatchers(HttpMethod.GET, "/orders/cart").permitAll()
 						.mvcMatchers(HttpMethod.POST, "/orders/checkout").permitAll()
-						
+
 						.mvcMatchers(HttpMethod.GET, "/orders/**").hasAnyAuthority("MANAGER", "ADMIN")
 						.mvcMatchers(HttpMethod.POST, "/orders/**").hasAnyAuthority("MANAGER", "ADMIN")
 						.mvcMatchers(HttpMethod.PUT, "/orders/**").hasAnyAuthority("MANAGER", "ADMIN")
@@ -75,29 +64,19 @@ public class SecurityConfig {
 						.and()
 
 						// login conf
-						.formLogin().loginPage("/login_form")
-						.loginProcessingUrl("/users/login")
-						.usernameParameter("email")
-						.successHandler(null)
-						.defaultSuccessUrl("/")
-						.failureUrl("/login_form?error")
-						.permitAll()
-						.and()
-						
+						.formLogin().loginPage("/login_form").loginProcessingUrl("/users/login")
+						.usernameParameter("email").successHandler(null).defaultSuccessUrl("/")
+						.failureUrl("/login_form?error").permitAll().and()
+
 						// logout conf
-						.logout().logoutUrl("/users/logout")
-						.clearAuthentication(true)
-						.invalidateHttpSession(true)
-						.deleteCookies("JSESSIONID")
-						.logoutSuccessUrl("/login_form?logout")
-						.permitAll()
-						.and()
+						.logout().logoutUrl("/users/logout").clearAuthentication(true).invalidateHttpSession(true)
+						.deleteCookies("JSESSIONID").logoutSuccessUrl("/login_form?logout").permitAll().and()
 
 //						.csrf().disable()
 
 						.build();
 	}
-	
+
 	@Bean
 	public UserDetailsService userDetailsService(DataSource dataSource) {
 		JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
