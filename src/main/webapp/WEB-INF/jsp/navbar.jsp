@@ -73,7 +73,7 @@
 							href="/users/create_user_form"><fmt:message
 									key="navbar.signup" /></a></li>
 						<li class="nav-item"><a class="nav-link"
-							href="/users/login_form"><fmt:message key="navbar.signin" /></a></li>
+							href="/login_form"><fmt:message key="navbar.signin" /></a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
 						<li class="nav-item-logout"><a class="nav-link" href="/users/logout"><fmt:message

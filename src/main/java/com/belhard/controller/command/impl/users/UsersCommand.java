@@ -107,11 +107,11 @@ public class UsersCommand {
 		return "user/user";
 	}
 
-	@GetMapping("/login_form")
-	@LogInvocation
-	public String loginForm() {
-		return "user/loginForm";
-	}
+//	@GetMapping("/login_form")
+//	@LogInvocation
+//	public String loginForm() {
+//		return "user/loginForm";
+//	}
 
 //	@PostMapping("/login")
 //	@LogInvocation

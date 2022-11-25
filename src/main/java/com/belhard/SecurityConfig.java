@@ -65,11 +65,11 @@ public class SecurityConfig {
 						.and()
 
 						// login conf
-						.formLogin().loginPage("/users/login_form")
+						.formLogin().loginPage("/login_form")
 						.loginProcessingUrl("/users/login")
 						.usernameParameter("email")
 						.defaultSuccessUrl("/")
-						.failureUrl("/users/login_form?error")
+						.failureUrl("/login_form?error")
 						.permitAll()
 						.and()
 						
@@ -78,7 +78,7 @@ public class SecurityConfig {
 						.clearAuthentication(true)
 						.invalidateHttpSession(true)
 						.deleteCookies("JSESSIONID")
-						.logoutSuccessUrl("/users/login_form?logout")
+						.logoutSuccessUrl("/login_form?logout")
 						.permitAll()
 						.and()
 
