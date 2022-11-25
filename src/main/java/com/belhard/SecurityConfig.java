@@ -27,8 +27,12 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		return httpSecurity
 
-						.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).invalidSessionUrl("/")
-						.sessionFixation().changeSessionId().and()
+						.sessionManagement()
+						.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+						.invalidSessionUrl("/")
+						.sessionFixation()
+						.changeSessionId()
+						.and()
 
 						.authorizeRequests().mvcMatchers("/css/**", "/js/**", "/images/**", "/", "/api/**").permitAll()
 						.mvcMatchers(HttpMethod.POST, "/users/login").permitAll()
@@ -41,10 +45,10 @@ public class SecurityConfig {
 						// users
 						.mvcMatchers(HttpMethod.GET, "/users/create_user_form", "/users/update", "/users/login_form")
 						.permitAll()
-						.mvcMatchers(HttpMethod.POST, "/users/create_user", "/users/update_user", "/users/login")
+						.mvcMatchers(HttpMethod.POST, "/users/create_user", "/users/update_user", "/users/login", "/users/logout")
 						.permitAll()
 
-						.mvcMatchers(HttpMethod.GET, "/users/all").authenticated()
+						.mvcMatchers(HttpMethod.GET, "/users/**").authenticated()
 						.mvcMatchers(HttpMethod.POST, "/users/**").authenticated()
 						.mvcMatchers(HttpMethod.PUT, "/users/**").authenticated()
 						.mvcMatchers(HttpMethod.DELETE, "/users/**").authenticated()
@@ -62,16 +66,21 @@ public class SecurityConfig {
 
 						// login conf
 						.formLogin().loginPage("/users/login_form")
-						.loginProcessingUrl("/kandibober")
+						.loginProcessingUrl("/users/login")
+						.usernameParameter("email")
 						.defaultSuccessUrl("/")
 						.failureUrl("/users/login_form?error")
 						.permitAll()
-						.usernameParameter("email")
 						.and()
 						
 						// logout conf
-						.logout().logoutUrl("/users/logout").clearAuthentication(true).invalidateHttpSession(true)
-						.deleteCookies("JSESSIONID").logoutSuccessUrl("/users/login?logout").permitAll().and()
+						.logout().logoutUrl("/users/logout")
+						.clearAuthentication(true)
+						.invalidateHttpSession(true)
+						.deleteCookies("JSESSIONID")
+						.logoutSuccessUrl("/users/login_form?logout")
+						.permitAll()
+						.and()
 
 //						.csrf().disable()
 

@@ -12,7 +12,7 @@
 <jsp:include page="../navbar.jsp"></jsp:include>
 	<h1><spring:message code="user.message.login"/></h1>
 	<h3>${requestScope.message}</h3>
-	<form method="post" action="/kandibober">
+	<form method="post" action="/users/login">
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		<label for="email-input" ><spring:message code="user.login_form.email"/></label> 
 		<input id="email-input" name="email" minlength="1" type="email" required="required"/> 

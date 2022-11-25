@@ -33,7 +33,7 @@
 	href="images/apple-touch-icon.png" />
 
 <link rel="icon" type="image/png" sizes="16x16"
-	href="images/favicon-16x16.png" />
+	href="/images/favicon-16x16.png" />
 <link rel="manifest" href="images/site.webmanifest" />
 <script
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"

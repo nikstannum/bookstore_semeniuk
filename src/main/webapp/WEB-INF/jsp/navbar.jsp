@@ -32,7 +32,7 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
 	integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
 	crossorigin="anonymous"></script>
-<script defer src="/js/navbar.js"></script>
+<script type="module" src="/js/navbar.js"></script>
 <script defer src="/js/jQuery-3.6.1.js"></script>
 <style>
 	.rounded-img {

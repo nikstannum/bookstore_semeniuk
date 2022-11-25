@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +12,12 @@
 <body>
 	<jsp:include page="navbar.jsp"/>
 	<div>
-		<c:if test="${sessionScope.user != null}">
-			<spring:message code="main.welcome"/>, ${user.firstName}!
-		</c:if>
-		<c:if test="${sessionScope.user == null}">
+		<sec:authorize access="isAuthenticated()">
+			<spring:message code="main.welcome"/>, <sec:authentication property="principal.username"/>
+		</sec:authorize>
+		<sec:authorize access="!isAuthenticated()">
 			<spring:message code="main.welcome"/>, guest!
-		</c:if>
+		</sec:authorize>
 	</div>
 	<div class="container text-center my-5">
 		<div class="row">

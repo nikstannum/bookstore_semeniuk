@@ -37,7 +37,6 @@ public class UsersCommand {
 	private final UserService service;
 	private final PagingUtil pagingUtil;
 	private final MessageSource messageSource;
-	private final UserDetailsService userDetailsService;
 
 	@LogInvocation
 	@GetMapping("/all")
@@ -114,23 +113,23 @@ public class UsersCommand {
 		return "user/loginForm";
 	}
 
-	@PostMapping("/login")
-	@LogInvocation
-	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session,
-					Model model) {
-		UserDto userDto = service.validate(email, password);
-		session.setAttribute("user", userDto);
-		model.addAttribute("message",
-						messageSource.getMessage("user.login.success", null, LocaleContextHolder.getLocale()));
-		return "index";
-	}
+//	@PostMapping("/login")
+//	@LogInvocation
+//	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session,
+//					Model model) {
+//		UserDto userDto = service.validate(email, password);
+//		session.setAttribute("user", userDto);
+//		model.addAttribute("message",
+//						messageSource.getMessage("user.login.success", null, LocaleContextHolder.getLocale()));
+//		return "index";
+//	}
 
-	@PostMapping("/logout")
-	@LogInvocation
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "index";
-	}
+//	@PostMapping("/logout")
+//	@LogInvocation
+//	public String logout(HttpSession session) {
+//		session.invalidate();
+//		return "index";
+//	}
 
 	@ExceptionHandler
 	public String myAppExc(MyAppException e, Model model) {
