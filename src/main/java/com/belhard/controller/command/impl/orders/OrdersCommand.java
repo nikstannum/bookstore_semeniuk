@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,7 @@ import com.belhard.controller.util.PagingUtil;
 import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.exception.MyAppException;
 import com.belhard.service.OrderService;
+import com.belhard.service.UserService;
 import com.belhard.service.dto.OrderDto;
 import com.belhard.service.dto.OrderDto.StatusDto;
 import com.belhard.service.dto.OrderInfoDto;
@@ -32,7 +34,8 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("orders")
 public class OrdersCommand {
-	private final OrderService service;
+	private final OrderService orderService;
+	private final UserService userService;
 	private final PagingUtil pagingUtil;
 	private final MessageSource messageSource;
 
@@ -48,19 +51,18 @@ public class OrdersCommand {
 			return "order/cart";
 		}
 		model.addAttribute("message", messageSource.getMessage("cart.products", null, LocaleContextHolder.getLocale()));
-		OrderDto processed = service.processCart(cart, user);
+		OrderDto processed = orderService.processCart(cart, user);
 		model.addAttribute("cart", processed);
 		return "order/cart";
 	}
-	
-	
+
 	@LogInvocation
 	@GetMapping("/all")
 	public String allOrders(@RequestParam(defaultValue = "10") Integer limit,
 					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);
-		List<OrderDto> orders = service.getAll(paging);
-		long totalEntities = service.countAll();
+		List<OrderDto> orders = orderService.getAll(paging);
+		long totalEntities = orderService.countAll();
 		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
 		model.addAttribute("orders", orders);
 		model.addAttribute("currentCommand", "orders");
@@ -72,7 +74,7 @@ public class OrdersCommand {
 	@GetMapping("/{id}")
 	@LogInvocation
 	public String orderById(@PathVariable Long id, Model model) {
-		OrderDto dto = service.get(id);
+		OrderDto dto = orderService.get(id);
 		model.addAttribute("order", dto);
 		return "order/order";
 	}
@@ -80,7 +82,7 @@ public class OrdersCommand {
 	@RequestMapping("/update")
 	@LogInvocation
 	public String updateForm(HttpSession session, @RequestParam Long id) {
-		OrderDto order = service.get(id);
+		OrderDto order = orderService.get(id);
 		session.setAttribute("order", order);
 		session.setAttribute("status", order.getStatusDto());
 		return "order/updateOrderForm_js";
@@ -92,7 +94,7 @@ public class OrdersCommand {
 		OrderDto orderDto = (OrderDto) session.getAttribute("order");
 		List<OrderInfoDto> infosDto = orderDto.getDetailsDto();
 		boolean increase = false;
-		OrderDto order = service.preProcessUpdate(orderDto, infosDto, detailsDtoId, increase);
+		OrderDto order = orderService.preProcessUpdate(orderDto, infosDto, detailsDtoId, increase);
 		session.setAttribute("order", order);
 		return "order/updateOrderForm";
 	}
@@ -103,7 +105,7 @@ public class OrdersCommand {
 		OrderDto orderDto = (OrderDto) session.getAttribute("order");
 		List<OrderInfoDto> infosDto = orderDto.getDetailsDto();
 		boolean increase = true;
-		OrderDto order = service.preProcessUpdate(orderDto, infosDto, detailsDtoId, increase);
+		OrderDto order = orderService.preProcessUpdate(orderDto, infosDto, detailsDtoId, increase);
 		session.setAttribute("order", order);
 		return "order/updateOrderForm";
 	}
@@ -113,7 +115,7 @@ public class OrdersCommand {
 	public String updateOrder(HttpSession session, @RequestParam StatusDto statusDto) {
 		OrderDto orderDto = (OrderDto) session.getAttribute("order");
 		orderDto.setStatusDto(statusDto);
-		service.update(orderDto);
+		orderService.update(orderDto);
 		session.removeAttribute("order");
 		return "redirect:all";
 	}
@@ -121,8 +123,14 @@ public class OrdersCommand {
 	@RequestMapping("/checkout")
 	@LogInvocation
 	public String checkoutOrder(HttpServletRequest req, Model model) {
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		if (email.equalsIgnoreCase("anonymousUser")) {
+			model.addAttribute("message",
+							messageSource.getMessage("general.please.login", null, LocaleContextHolder.getLocale()));
+			return "user/loginForm";
+		}
+		UserDto userDto = userService.getUserByEmail(email);
 		HttpSession session = req.getSession();
-		UserDto userDto = (UserDto) session.getAttribute("user");
 		if (userDto == null) {
 			model.addAttribute("message",
 							messageSource.getMessage("general.please.login", null, LocaleContextHolder.getLocale()));
@@ -130,8 +138,8 @@ public class OrdersCommand {
 		}
 		@SuppressWarnings("unchecked")
 		Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
-		OrderDto orderDto = service.processCart(cart, userDto);
-		OrderDto created = service.create(orderDto);
+		OrderDto orderDto = orderService.processCart(cart, userDto);
+		OrderDto created = orderService.create(orderDto);
 		req.setAttribute("order", created);
 		req.setAttribute("message",
 						messageSource.getMessage("order.create.success", null, LocaleContextHolder.getLocale()));

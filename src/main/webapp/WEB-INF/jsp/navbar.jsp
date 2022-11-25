@@ -32,7 +32,6 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
 	integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
 	crossorigin="anonymous"></script>
-<script type="module" src="/js/navbar.js"></script>
 <script defer src="/js/jQuery-3.6.1.js"></script>
 <style>
 	.rounded-img {
@@ -41,6 +40,10 @@
 		box-shadow: 0 0 10px rgba(45, 9, 9, 50);
 		padding: 0.3em;
 		margin-bottom: 1em;
+	}
+	.logout_button {
+		border: non;
+		background: non;
 	}
 </style>
 </head>
@@ -76,9 +79,14 @@
 							href="/login_form"><fmt:message key="navbar.signin" /></a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
-						<li class="nav-item-logout"><a class="nav-link" href="/users/logout"><fmt:message
-									key="navbar.logout" /></a></li>
+						<li class="nav-item-logout">
+							<form method="post" action="/users/logout">
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+								<input class="logout_button" type ="submit" value="<spring:message code="navbar.logout"/>"/>
+							</form>
+						</li>
 					</sec:authorize>
+					
 					<li class="nav-item"><a class="nav-link" href="?lang=en"><img
 							src="/images/langUK.png" alt="English" width="30" /></a></li>
 					<li class="nav-item"><a class="nav-link" href="?lang=ru"><img

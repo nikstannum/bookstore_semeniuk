@@ -55,10 +55,12 @@ public class SecurityConfig {
 
 						// orders
 						.mvcMatchers(HttpMethod.GET, "/orders/cart").permitAll()
-						.mvcMatchers(HttpMethod.GET, "/orders/**").hasAnyAuthority("USER", "MANAGER", "ADMIN")
-						.mvcMatchers(HttpMethod.POST, "/orders/**").hasAnyAuthority("USER", "MANAGER", "ADMIN")
-						.mvcMatchers(HttpMethod.PUT, "/orders/**").hasAnyAuthority("USER", "MANAGER", "ADMIN")
-						.mvcMatchers(HttpMethod.DELETE, "/orders/**").hasAnyAuthority("USER", "MANAGER", "ADMIN")
+						.mvcMatchers(HttpMethod.POST, "/orders/checkout").permitAll()
+						
+						.mvcMatchers(HttpMethod.GET, "/orders/**").hasAnyAuthority("MANAGER", "ADMIN")
+						.mvcMatchers(HttpMethod.POST, "/orders/**").hasAnyAuthority("MANAGER", "ADMIN")
+						.mvcMatchers(HttpMethod.PUT, "/orders/**").hasAnyAuthority("MANAGER", "ADMIN")
+						.mvcMatchers(HttpMethod.DELETE, "/orders/**").hasAnyAuthority("MANAGER", "ADMIN")
 
 						.anyRequest().permitAll()
 //						.anyRequest().denyAll()

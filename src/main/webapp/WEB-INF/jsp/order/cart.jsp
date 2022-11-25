@@ -42,9 +42,10 @@
 	<div><spring:message code="cart.total_cost"/>${cart.totalCost}</div>
 	<div>
 		<form method="post" action="checkout">
-						<input type="hidden" name="command" value="checkout_order" /> <input
-							type="hidden" name="cart" value="${cart}" /> <input
-							type="submit" value="<spring:message code="cart.button_checkout"/>" />
+						<input type="hidden" name="command" value="checkout_order" />
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+						<input type="hidden" name="cart" value="${cart}" />
+						<input type="submit" value="<spring:message code="cart.button_checkout"/>" />
 					</form>
 	</div>
 	</c:if>
