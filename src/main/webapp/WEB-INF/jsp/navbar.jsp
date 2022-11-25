@@ -64,6 +64,14 @@
 						href="/"><fmt:message key="navbar.home" /></a></li>
 					<li class="nav-item"><a class="nav-link" href="/books"><fmt:message
 								key="navbar.allbooks" /></a></li>
+								
+					<sec:authorize access="hasAuthority('USER')">
+						<li class="nav-item"><a class="nav-link" href="/users/personal">
+						Personal Area</a></li>
+					</sec:authorize>
+								
+								
+								
 					<li class="nav-item"><a class="nav-link" href="/users/all"><fmt:message
 								key="navbar.allusers" /></a></li>
 					<li class="nav-item"><a class="nav-link" href="/orders/all"><fmt:message

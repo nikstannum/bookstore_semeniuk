@@ -7,8 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -34,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("users")
 public class UsersCommand {
 
-	private final UserService service;
+	private final UserService userService;
 	private final PagingUtil pagingUtil;
 	private final MessageSource messageSource;
 
@@ -43,8 +42,8 @@ public class UsersCommand {
 	public String allUsers(@RequestParam(defaultValue = "10") Integer limit,
 					@RequestParam(defaultValue = "1") Long page, Model model) {
 		Paging paging = pagingUtil.getPaging(limit, page);
-		List<UserDto> users = service.getAll(paging);
-		long totalEntities = service.countAll();
+		List<UserDto> users = userService.getAll(paging);
+		long totalEntities = userService.countAll();
 		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
 		model.addAttribute("users", users);
 		model.addAttribute("currentCommand", "users");
@@ -56,7 +55,7 @@ public class UsersCommand {
 	@GetMapping("/{id}")
 	@LogInvocation
 	public String userById(@PathVariable Long id, Model model) {
-		UserDto dto = service.get(id);
+		UserDto dto = userService.get(id);
 		model.addAttribute("user", dto);
 		model.addAttribute("message",
 						messageSource.getMessage("general.result.of_search", null, LocaleContextHolder.getLocale()));
@@ -66,7 +65,7 @@ public class UsersCommand {
 	@LogInvocation
 	@GetMapping("/update")
 	public String updateUserForm(Model model, @RequestParam Long id) {
-		UserDto user = service.get(id);
+		UserDto user = userService.get(id);
 		model.addAttribute("user", user);
 		return "user/updateUserForm";
 	}
@@ -74,7 +73,7 @@ public class UsersCommand {
 	@PostMapping("/update_user")
 	@LogInvocation
 	public String updateUser(UserDto user, Model model) {
-		UserDto updated = service.update(user);
+		UserDto updated = userService.update(user);
 		model.addAttribute("user", updated);
 		model.addAttribute("message",
 						messageSource.getMessage("user.update.success", null, LocaleContextHolder.getLocale()));
@@ -100,7 +99,7 @@ public class UsersCommand {
 			model.addAttribute("errors", errors.getFieldErrors());
 			return "user/createUserForm";
 		}
-		UserDto created = service.create(user);
+		UserDto created = userService.create(user);
 		model.addAttribute("message",
 						messageSource.getMessage("user.create.success", null, LocaleContextHolder.getLocale()));
 		session.setAttribute("user", created);
@@ -113,16 +112,25 @@ public class UsersCommand {
 //		return "user/loginForm";
 //	}
 
-//	@PostMapping("/login")
-//	@LogInvocation
-//	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session,
-//					Model model) {
-//		UserDto userDto = service.validate(email, password);
-//		session.setAttribute("user", userDto);
-//		model.addAttribute("message",
-//						messageSource.getMessage("user.login.success", null, LocaleContextHolder.getLocale()));
-//		return "index";
-//	}
+	@PostMapping("/login")
+	@LogInvocation
+	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session,
+					Model model) {
+		UserDto userDto = userService.validate(email, password);
+		session.setAttribute("user", userDto);
+		model.addAttribute("message",
+						messageSource.getMessage("user.login.success", null, LocaleContextHolder.getLocale()));
+		return "index";
+	}
+
+	@GetMapping("/personal")
+	@LogInvocation
+	public String personalData() {
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		UserDto userDto = userService.getUserByEmail(email);
+		Long id = userDto.getId();
+		return "redirect:/users/" + id;
+	}
 
 //	@PostMapping("/logout")
 //	@LogInvocation
