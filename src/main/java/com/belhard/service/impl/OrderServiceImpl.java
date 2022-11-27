@@ -159,7 +159,7 @@ public class OrderServiceImpl implements OrderService {
 					boolean increaseQuantity) throws EntityNotFoundException {
 		List<Integer> listOfIndexOfSubjectToRemoval = new ArrayList<>();
 		for (OrderInfoDto elm : list) {
-			if (elm.getId() == detailsDtoId) {
+			if (elm.getId().equals(detailsDtoId)) {
 				if (increaseQuantity) {
 					elm.setBookQuantity(elm.getBookQuantity() + 1);
 					Optional<Book> optionalBook = bookRepository.findById(elm.getBookDto().getId());
