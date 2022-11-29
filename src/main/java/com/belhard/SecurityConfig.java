@@ -81,7 +81,7 @@ public class SecurityConfig {
 	public UserDetailsService userDetailsService(DataSource dataSource) {
 		JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
 		manager.setUsersByUsernameQuery(
-						"SELECT u.email, u.password, u.deleted = false as enabled FROM users u WHERE u.email = ?");
+						"SELECT u.email, u.password, u.deleted = false as enabled FROM users u WHERE u.email = ? AND deleted = false");
 		manager.setAuthoritiesByUsernameQuery(
 						"SELECT u.email, r.name FROM users u, role r WHERE u.role_id = r.role_id and u.email = ?");
 		return manager;

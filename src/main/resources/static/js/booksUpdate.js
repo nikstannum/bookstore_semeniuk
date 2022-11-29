@@ -17,6 +17,8 @@ $(function() {
 
 	const updateQueryString = (page) => {
 		$(`meta[name="query-string"]`).attr("content", `page=${page.number}&size=${page.size}`);
+		const paramsAfter = $(`meta[name="query-string"]`).attr("content");
+		console.log("paramsAfter: " + paramsAfter);
 	};
 
 	const renderTable = (page, response) => {
@@ -28,7 +30,7 @@ $(function() {
 
 	const renderTableRow = (book, $tbody, i, response) => {
 		const $row = $(`
-		<tr >
+		<tr id="row-${book.id}">
 			<td>${i}</td>
 			<td><a href="books/${book.id}">${book.title}</a></td>
 			<td>${book.author}</td>

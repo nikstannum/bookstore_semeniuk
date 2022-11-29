@@ -1,5 +1,6 @@
 package com.belhard.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.MessageSource;
@@ -9,6 +10,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +25,6 @@ import com.belhard.dao.entity.User;
 import com.belhard.exception.EntityNotFoundException;
 import com.belhard.exception.SuchEntityExistsException;
 import com.belhard.exception.WrongValueException;
-import com.belhard.service.DigestUtil;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
 import com.belhard.serviceutil.Mapper;
@@ -69,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
 	@LogInvocation
 	@Override
-	public List<UserDto> getAll(Paging paging) {
+	public List<UserDto> getAll(Paging paging) { // FIXME to delete
 		int page = (int) paging.getPage();
 		int limit = paging.getLimit();
 		Sort sort = Sort.by(Direction.ASC, "id");
@@ -114,7 +119,15 @@ public class UserServiceImpl implements UserService {
 		User user = mapper.userToEntity(userDto);
 		String hashedPassword = passwordEncoder.encode(userDto.getPassword());
 		user.setPassword(hashedPassword);
-		return mapper.userToDto(userRepository.save(user));
+		UserDto updated = mapper.userToDto(userRepository.save(user));
+		List<GrantedAuthority> updAuthorities = new ArrayList<>();
+		SimpleGrantedAuthority role = new SimpleGrantedAuthority(updated.getUserRoleDto().toString());
+		updAuthorities.add(role);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Authentication newAuth = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
+						authentication.getCredentials(), updAuthorities);
+		SecurityContextHolder.getContext().setAuthentication(newAuth);
+		return updated;
 	}
 
 	@LogInvocation
@@ -146,8 +159,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<UserDto> getAll(Pageable pageable) { // FIXME
-		// TODO Auto-generated method stub
-		return null;
+	public Page<UserDto> getAll(Pageable pageable) {
+		Sort sort = pageable.getSort();
+		if (!sort.isSorted()) {
+			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Direction.ASC, "id");
+		}
+		Page<User> pageUser = userRepository.findAll(pageable);
+		Page<UserDto> pageUserDto = pageUser.map(mapper::userToDto);
+		return pageUserDto;
 	}
 }

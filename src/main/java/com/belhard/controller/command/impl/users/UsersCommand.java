@@ -1,7 +1,5 @@
 package com.belhard.controller.command.impl.users;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -20,11 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.belhard.aop.LogInvocation;
-import com.belhard.controller.util.PagingUtil;
-import com.belhard.controller.util.PagingUtil.Paging;
 import com.belhard.exception.MyAppException;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
+import com.belhard.service.dto.UserDto.UserRoleDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,22 +31,27 @@ import lombok.RequiredArgsConstructor;
 public class UsersCommand {
 
 	private final UserService userService;
-	private final PagingUtil pagingUtil;
 	private final MessageSource messageSource;
+
+//	@LogInvocation
+//	@GetMapping("/all")
+//	public String allUsers(@RequestParam(defaultValue = "10") Integer limit,
+//					@RequestParam(defaultValue = "1") Long page, Model model) {
+//		Paging paging = pagingUtil.getPaging(limit, page);
+//		List<UserDto> users = userService.getAll(paging);
+//		long totalEntities = userService.countAll();
+//		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
+//		model.addAttribute("users", users);
+//		model.addAttribute("currentCommand", "users");
+//		model.addAttribute("currentPage", paging.getPage());
+//		model.addAttribute("totalPages", totalPages);
+//		return "user/users";
+//	}
 
 	@LogInvocation
 	@GetMapping("/all")
-	public String allUsers(@RequestParam(defaultValue = "10") Integer limit,
-					@RequestParam(defaultValue = "1") Long page, Model model) {
-		Paging paging = pagingUtil.getPaging(limit, page);
-		List<UserDto> users = userService.getAll(paging);
-		long totalEntities = userService.countAll();
-		long totalPages = pagingUtil.getTotalPages(totalEntities, paging.getLimit());
-		model.addAttribute("users", users);
-		model.addAttribute("currentCommand", "users");
-		model.addAttribute("currentPage", paging.getPage());
-		model.addAttribute("totalPages", totalPages);
-		return "user/users";
+	public String allUsers() {
+		return "user/users_js";
 	}
 
 	@GetMapping("/{id}")
@@ -105,7 +107,6 @@ public class UsersCommand {
 		session.setAttribute("user", created);
 		return "user/user";
 	}
-
 //	@GetMapping("/login_form")
 //	@LogInvocation
 //	public String loginForm() {

@@ -6,11 +6,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta name="query-string" content="${pageContext.request.queryString}"/>
+	<meta name="query-string" content="${pageContext.request.queryString}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
 	<meta name="_csrf_token" content="${_csrf.token}">
 	<script defer src="/js/jQuery-3.6.1.js"></script>
-	<script type="module" src="/js/books.js" defer></script>
+	<script type="module" src="/js/books.js"></script>  
 </head>
 <body>
 	<jsp:include page="../navbar.jsp"/>

@@ -49,7 +49,6 @@ public class User {
 	@Convert(converter = UserRoleConverter.class)
 	private UserRole userRole;
 
-	@Transient
 	@Column(name = "deleted")
 	private boolean deleted;
 
