@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,25 +35,26 @@
 				<form:input path="password" type="password" minlength="4" required="required"/>
 			</form:label> <form:errors path="password"/>
 			<br/>
-			
-			<form:label for="role-input-user" path="userRoleDto">
-				<spring:message code="user.register_form.role.user"/>
-			</form:label>
-			<form:errors path="userRoleDto"/>
-			<input id="role-input-user" name="userRoleDto" type="radio" value="USER" required="required"/>
-			
-			<form:label for="role-input-manager" path="userRoleDto">
-				<spring:message code="user.register_form.role.manager"/>
-			</form:label>
-			<form:errors path="userRoleDto"/>
-			<input id="role-input-manager" name="userRoleDto" type="radio" value="MANAGER" required="required"/>
-			
-			<form:label for="role-input-admin" path="userRoleDto">
-				<spring:message code="user.register_form.role.admin"/>
-			</form:label>
-			<form:errors path="userRoleDto"/>
-			<input id="role-input-admin" name="userRoleDto" type="radio" value="ADMIN" required="required"/>
-			<br/>
+			<sec:authorize access="hasAuthority('ADMIN')">
+				<form:label for="role-input-user" path="userRoleDto">
+					<spring:message code="user.register_form.role.user"/>
+				</form:label>
+				<form:errors path="userRoleDto"/>
+				<input id="role-input-user" name="userRoleDto" type="radio" value="USER" required="required"/>
+				
+				<form:label for="role-input-manager" path="userRoleDto">
+					<spring:message code="user.register_form.role.manager"/>
+				</form:label>
+				<form:errors path="userRoleDto"/>
+				<input id="role-input-manager" name="userRoleDto" type="radio" value="MANAGER" required="required"/>
+				
+				<form:label for="role-input-admin" path="userRoleDto">
+					<spring:message code="user.register_form.role.admin"/>
+				</form:label>
+				<form:errors path="userRoleDto"/>
+				<input id="role-input-admin" name="userRoleDto" type="radio" value="ADMIN" required="required"/>
+				<br/>
+			</sec:authorize>
 			<form:button><spring:message code="user.register_form.button_register"/></form:button>
 		</form:form>
 	</div>

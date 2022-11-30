@@ -79,7 +79,7 @@
 					<li class="nav-item"><a class="nav-link" href="/orders/cart"><fmt:message
 								key="navbar.cart" /></a></li>
 								
-					<sec:authorize access="isAnonymous()">
+					<sec:authorize access="isAnonymous() || hasAuthority('ADMIN')">
 						<li class="nav-item"><a class="nav-link"
 							href="/users/create_user_form"><fmt:message
 									key="navbar.signup" /></a></li>
@@ -94,7 +94,6 @@
 							</form>
 						</li>
 					</sec:authorize>
-					
 					<li class="nav-item"><a class="nav-link" href="?lang=en"><img
 							src="/images/langUK.png" alt="English" width="30" /></a></li>
 					<li class="nav-item"><a class="nav-link" href="?lang=ru"><img

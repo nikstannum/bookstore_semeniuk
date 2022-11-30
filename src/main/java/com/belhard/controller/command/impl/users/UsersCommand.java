@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -96,7 +97,7 @@ public class UsersCommand {
 
 	@PostMapping("/create_user")
 	@LogInvocation
-	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session) {
+	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session, Authentication authentication) {
 		if (errors.hasErrors()) {
 			model.addAttribute("errors", errors.getFieldErrors());
 			return "user/createUserForm";

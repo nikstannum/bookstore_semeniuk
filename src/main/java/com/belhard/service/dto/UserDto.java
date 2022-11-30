@@ -4,6 +4,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.belhard.service.dto.util.ConstraintField;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,9 +23,11 @@ public class UserDto {
 	@NotBlank(message = "{general.errors.field.empty}")
 	@Size(min = 4, message = "{errors.user.password.short}")
 	private String password;
-	@NotNull(message = "{general.errors.field.empty}")
+	
+	@ConstraintField
 	private UserRoleDto userRoleDto;
 
+	
 	public enum UserRoleDto {
 		ADMIN, MANAGER, USER
 	}

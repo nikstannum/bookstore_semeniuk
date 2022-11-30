@@ -32,7 +32,7 @@ public class SecurityConfig {
 
 						.authorizeRequests().mvcMatchers("/css/**", "/js/**", "/images/**", "/", "/api/**").permitAll()
 						.mvcMatchers(HttpMethod.POST, "/users/login").permitAll()
-
+						
 						// books
 						.mvcMatchers(HttpMethod.GET, "/books/**").permitAll().mvcMatchers(HttpMethod.POST, "/books/**")
 						.hasAuthority("MANAGER").mvcMatchers(HttpMethod.PUT, "/books/**").hasAuthority("MANAGER")

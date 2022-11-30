@@ -40,7 +40,11 @@ public class Mapper {
 		user.setLastName(userDto.getLastName());
 		user.setEmail(userDto.getEmail());
 		user.setPassword(userDto.getPassword());
-		user.setUserRole(UserRole.valueOf(userDto.getUserRoleDto().toString()));
+		if (userDto.getUserRoleDto() == null) {
+			user.setUserRole(UserRole.USER);
+		} else {
+			user.setUserRole(UserRole.valueOf(userDto.getUserRoleDto().toString()));
+		}
 		return user;
 	}
 
