@@ -120,13 +120,6 @@ public class UserServiceImpl implements UserService {
 		String hashedPassword = passwordEncoder.encode(userDto.getPassword());
 		user.setPassword(hashedPassword);
 		UserDto updated = mapper.userToDto(userRepository.save(user));
-		List<GrantedAuthority> updAuthorities = new ArrayList<>();
-		SimpleGrantedAuthority role = new SimpleGrantedAuthority(updated.getUserRoleDto().toString());
-		updAuthorities.add(role);
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Authentication newAuth = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
-						authentication.getCredentials(), updAuthorities);
-		SecurityContextHolder.getContext().setAuthentication(newAuth);
 		return updated;
 	}
 

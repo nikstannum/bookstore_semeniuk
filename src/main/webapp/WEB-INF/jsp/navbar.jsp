@@ -79,7 +79,7 @@
 					<li class="nav-item"><a class="nav-link" href="/orders/cart"><fmt:message
 								key="navbar.cart" /></a></li>
 								
-					<sec:authorize access="isAnonymous() || hasAuthority('ADMIN')">
+					<sec:authorize access="isAnonymous()">
 						<li class="nav-item"><a class="nav-link"
 							href="/users/create_user_form"><fmt:message
 									key="navbar.signup" /></a></li>

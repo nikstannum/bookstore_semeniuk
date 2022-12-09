@@ -1,12 +1,13 @@
 package com.belhard.controller.command.impl.users;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -19,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.belhard.aop.LogInvocation;
+import com.belhard.aop.UpdateAuthorities;
 import com.belhard.exception.MyAppException;
 import com.belhard.service.UserService;
 import com.belhard.service.dto.UserDto;
-import com.belhard.service.dto.UserDto.UserRoleDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -75,7 +76,8 @@ public class UsersCommand {
 
 	@PostMapping("/update_user")
 	@LogInvocation
-	public String updateUser(UserDto user, Model model) {
+	@UpdateAuthorities
+	public String updateUser(UserDto user, HttpServletRequest req, Model model) {
 		UserDto updated = userService.update(user);
 		model.addAttribute("user", updated);
 		model.addAttribute("message",
@@ -97,7 +99,7 @@ public class UsersCommand {
 
 	@PostMapping("/create_user")
 	@LogInvocation
-	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session, Authentication authentication) {
+	public String createUser(@ModelAttribute @Valid UserDto user, Errors errors, Model model, HttpSession session) {
 		if (errors.hasErrors()) {
 			model.addAttribute("errors", errors.getFieldErrors());
 			return "user/createUserForm";

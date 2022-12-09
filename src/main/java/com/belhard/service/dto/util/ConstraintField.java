@@ -18,8 +18,8 @@ public @interface ConstraintField {
 
 	String message() default "{general.errors.field.empty}";
 
-	Class<?>[] groups() default {};
+	Class<?>[] groups() default {}; // FIXME try delete
 
-	Class<? extends Payload>[] payload() default {};
+	Class<? extends Payload>[] payload() default {}; // FIXME try delete
 
 }
