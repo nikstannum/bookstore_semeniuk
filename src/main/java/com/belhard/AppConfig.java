@@ -3,6 +3,7 @@ package com.belhard;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -22,6 +23,7 @@ import com.belhard.interceptor.PrintLogInterceptor;
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableJpaRepositories
+@ServletComponentScan
 public class AppConfig implements WebMvcConfigurer {
 	public static void main(String[] args) {
 		SpringApplication.run(AppConfig.class, args);
@@ -66,5 +68,6 @@ public class AppConfig implements WebMvcConfigurer {
 		localeResolver.setCookieMaxAge(120);
 		return localeResolver;
 	}
+	
 
 }

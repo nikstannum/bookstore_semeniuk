@@ -17,11 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
-import org.springframework.security.web.session.ConcurrentSessionFilter;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
-import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,15 +29,10 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-		return httpSecurity	
-						.sessionManagement()
-						.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-						.invalidSessionUrl("/")
-						.sessionFixation().changeSessionId().maximumSessions(1)
-						.expiredSessionStrategy(sessionInformationExpiredStrategy()) // FIXME
-						.sessionRegistry(sessionRegistry()) // FIXME
-						.expiredUrl("/users/logout") // FIXME
-						.and().and()
+		return httpSecurity.sessionManagement()
+
+						.sessionCreationPolicy(SessionCreationPolicy.ALWAYS).invalidSessionUrl("/").sessionFixation()
+						.changeSessionId().maximumSessions(-1).expiredUrl("/").and().and()
 
 						.authorizeRequests().mvcMatchers("/css/**", "/js/**", "/images/**", "/", "/api/**").permitAll()
 						.mvcMatchers(HttpMethod.POST, "/users/login").permitAll()
@@ -90,21 +81,9 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public HttpSessionEventPublisher httpSessionEventPublisher() { // TODO something unknown
-		return new HttpSessionEventPublisher();
-	}
-
-	@Bean
-	public SessionRegistry sessionRegistry() { // TODO something unknown
+	public SessionRegistry sessionRegistry() {
 		SessionRegistryImpl registry = new SessionRegistryImpl();
 		return registry;
-	}
-
-	@Bean
-	public SessionInformationExpiredStrategy sessionInformationExpiredStrategy() { // TODO something unknown
-		SimpleRedirectSessionInformationExpiredStrategy strategy = new SimpleRedirectSessionInformationExpiredStrategy(
-						"/users/logout");
-		return strategy;
 	}
 
 	@Bean

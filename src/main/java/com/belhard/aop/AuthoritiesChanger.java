@@ -45,8 +45,6 @@ public class AuthoritiesChanger {
 				if (sessionInformations != null) {
 					for (SessionInformation info : sessionInformations) {
 						info.expireNow();
-						String sessionId = info.getSessionId();
-						sessionRegistry.removeSessionInformation(sessionId);
 					}
 				}
 			}
